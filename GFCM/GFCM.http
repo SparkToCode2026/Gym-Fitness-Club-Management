@@ -1,0 +1,6 @@
+@GFCM_HostAddress = http://localhost:5079
+
+GET {{GFCM_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
