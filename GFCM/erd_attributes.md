@@ -46,7 +46,7 @@ Basis for JWT auth. Covers Member, Trainer, and Admin via `Role`.
 | Name | string | e.g. Basic, Premium |
 | Description | string | nullable |
 | DurationInDays | int | |
-| Price | decimal | |
+| Price | double | |
 | MaxClassesPerMonth | int | nullable, for tier limits |
 | IsActive | bool | |
 
@@ -123,7 +123,7 @@ Acts as the junction between User and ClassSchedule (many-to-many with extra att
 | Id | int (PK) | |
 | UserId | int (FK → User) | |
 | MembershipId | int (FK → Membership) | nullable |
-| Amount | decimal | |
+| Amount | double | |
 | PaymentDate | DateTime | |
 | PaymentMethod | enum (Card, Cash, Transfer) | |
 | Status | enum (Pending, Completed, Failed, Refunded) | |
@@ -170,10 +170,10 @@ Acts as the junction between User and ClassSchedule (many-to-many with extra att
 | Id | int (PK) | |
 | UserId | int (FK → User) | |
 | Date | DateTime | |
-| WeightKg | decimal | |
-| HeightCm | decimal | |
-| BodyFatPercentage | decimal | nullable |
-| MuscleMassKg | decimal | nullable |
+| WeightKg | double | |
+| HeightCm | double | |
+| BodyFatPercentage | double | nullable |
+| MuscleMassKg | double | nullable |
 
 **Relationships:** many-1 User
 
