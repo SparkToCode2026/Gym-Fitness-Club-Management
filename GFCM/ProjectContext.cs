@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿﻿using GFCM.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GFCM
 {
@@ -8,6 +9,8 @@ namespace GFCM
 
 
         // Dev2:
+        public DbSet<MembershipPlan> membershipPlans { get; set; }
+        public DbSet<Membership> memberships { get; set; }
 
 
         // Dev3:
