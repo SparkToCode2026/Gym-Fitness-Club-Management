@@ -12,14 +12,11 @@ namespace GFCM.Models
         [Required]
         public string userName { get; set; }
         public string email { get; set; }
+        [Required]
         [JsonIgnore]
         public string passwordHash { get; set; }
-        public enum role
-        {
-            Admin,
-            Trainer,
-            Member
-        }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public UserRole role { get; set; }
         public string phoneNumber { get; set; }
         public DateTime createdAt { get; set; }
         public bool isActive { get; set; }
@@ -28,5 +25,12 @@ namespace GFCM.Models
         [InverseProperty("user")]
         [JsonIgnore]
         public TrainerProfile trainerProfile { get; set; }
+    }
+
+    public enum UserRole
+    {
+        Admin,
+        Trainer,
+        Member
     }
 }

@@ -1,15 +1,14 @@
-﻿namespace GFCM.Models
+﻿using System.Text.Json.Serialization;
+
+namespace GFCM.Models
 {
     public class UserRegister
     {
         public string userName { get; set; }
         public string email { get; set; }
         public string password { get; set; }
-        public enum role
-        {
-            Admin,
-            Trainer,
-            Member
-        }
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public UserRole role { get; set; }
     }
 }

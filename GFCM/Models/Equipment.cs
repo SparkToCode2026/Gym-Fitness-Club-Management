@@ -9,15 +9,16 @@ namespace GFCM.Models
         [Key]
         [JsonIgnore]
         public int equipmentId { get; set; }
+
+        [Required]
         public string equipmentName { get; set; }
+
         public int quantity { get; set; }
+
         public DateTime purchaseDate { get; set; }
-        public enum maintenanceStatus
-        {
-            Operational, 
-            UnderMaintenance, 
-            Retired
-        }
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public EquipmentStatus maintenanceStatus { get; set; }
 
         //[1] Branch : [M] Equipment
         [ForeignKey("branch")]
@@ -25,7 +26,13 @@ namespace GFCM.Models
 
         //navigation
         [JsonIgnore]
-        public Branch branch { get; set; } 
+        public Branch branch { get; set; }
+    }
 
+    public enum EquipmentStatus
+    {
+        Operational,
+        UnderMaintenance,
+        Retired
     }
 }

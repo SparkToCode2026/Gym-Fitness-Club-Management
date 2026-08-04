@@ -9,33 +9,45 @@ namespace GFCM.Models
         [Key]
         [JsonIgnore]
         public int paymentId { get; set; }
-        public double amount { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal amount { get; set; }
+
         public DateTime paymentDate { get; set; }
-        public enum paymentMethod
-        {
-            Card, 
-            Cash, 
-            Transfer
-        }
-        public enum paymentStatus
-        {
-            Pending,
-            Completed,
-            Failed,
-            Refunded
-        }
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public PaymentMethod paymentMethod { get; set; }
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public PaymentStatus paymentStatus { get; set; }
 
         //[1] User : [M] Payment
         [ForeignKey("user")]
         public int userId { get; set; }
+
+        [JsonIgnore]
+        public User user { get; set; }
 
         //[1] Membership : [M] Payment
         [ForeignKey("membership")]
         public int? membershipId { get; set; }
 
         [JsonIgnore]
-        public User user {  get; set; }
-        [JsonIgnore]
-        public Membership? membership {  get; set; }
+        public Membership? membership { get; set; }
+    }
+
+    public enum PaymentMethod
+    {
+        Card,
+        Cash,
+        Transfer
+    }
+
+    public enum PaymentStatus
+    {
+        Pending,
+        Completed,
+        Failed,
+        Refunded
     }
 }
