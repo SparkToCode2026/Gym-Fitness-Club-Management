@@ -23,5 +23,14 @@ public class ClassBooking
     public ClassSchedule classSchedule { get; set; }
 
     public DateTime bookingDate { get; set; }
-    public string bookingStatus { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public BookingStatus bookingStatus { get; set; }
+}
+
+public enum BookingStatus
+{
+    Booked,
+    Cancelled,
+    Attended
 }
