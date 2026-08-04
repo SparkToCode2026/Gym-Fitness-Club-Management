@@ -1,0 +1,27 @@
+namespace GFCM.Models;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+public class ClassBooking
+{
+    [Key]
+    [JsonIgnore]
+    public int classBookingId { get; set; }
+
+    [ForeignKey("user")]
+    public int userId { get; set; }
+
+    [JsonIgnore]
+    public User user { get; set; }
+
+    [ForeignKey("classSchedule")]
+    public int classScheduleId { get; set; }
+
+    [JsonIgnore]
+    public ClassSchedule classSchedule { get; set; }
+
+    public DateTime bookingDate { get; set; }
+    public string bookingStatus { get; set; }
+}
