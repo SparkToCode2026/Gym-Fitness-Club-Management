@@ -6,7 +6,8 @@ namespace GFCM
     public class ProjectContext : DbContext
     {
         // Dev1:
-
+        public DbSet<User> users {  get; set; }
+        public DbSet<TrainerProfile> trainerProfiles { get; set; }
 
         // Dev2:
         public DbSet<MembershipPlan> membershipPlans { get; set; }
