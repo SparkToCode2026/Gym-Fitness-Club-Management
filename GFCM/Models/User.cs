@@ -25,7 +25,7 @@ namespace GFCM.Models
         public bool isActive { get; set; }
 
 
-        [InverseProperty("trainerProfile")]
+        [InverseProperty("user")]
         [JsonIgnore]
         public TrainerProfile trainerProfile { get; set; }
     }
