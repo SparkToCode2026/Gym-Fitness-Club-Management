@@ -1,4 +1,4 @@
-﻿﻿using GFCM.Models;
+﻿using GFCM.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace GFCM
@@ -15,16 +15,23 @@ namespace GFCM
 
 
         // Dev3:
+        public DbSet<ClassSchedule> classSchedules { get; set; }
+        public DbSet<ClassBooking> classBookings { get; set; }
 
 
         // Dev4
+        public DbSet<Equipment> equipment { get; set; }
+        public DbSet<Payment> payments { get; set; }
 
 
         // Dev5:
+        public DbSet<Attendance> attendances { get; set; }
+        public DbSet<WorkoutPlan> workoutPlans { get; set; }
 
 
         // Dev6:
-
+        public DbSet<BodyMetric> bodyMetrics { get; set; }
+        public DbSet<Branch> branches { get; set; }
 
         public ProjectContext(DbContextOptions<ProjectContext> options) : base(options)
         {
