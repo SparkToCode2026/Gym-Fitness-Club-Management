@@ -1,39 +1,41 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace GFCM.Models
 {
     public class Payment
     {
         [Key]
-        public int PaymentId { get; set; }
-        public double PaymentAmount { get; set; }
-        public DateTime PaymentDate { get; set; }
-        public enum PaymentMethod
+        [JsonIgnore]
+        public int paymentId { get; set; }
+        public double amount { get; set; }
+        public DateTime paymentDate { get; set; }
+        public enum paymentMethod
         {
-            Cash,
-            CreditCard,
-            DebitCard,
-            BankTransfer,
+            Card, 
+            Cash, 
+            Transfer
         }
-        public enum PaymentStatus
+        public enum paymentStatus
         {
             Pending,
-            Paid,
+            Completed,
             Failed,
             Refunded
         }
 
         //[1] User : [M] Payment
-        [ForeignKey("_user")]
-        public int UserId { get; set; }
+        [ForeignKey("user")]
+        public int userId { get; set; }
 
         //[1] Membership : [M] Payment
-        [ForeignKey("_membership")]
-        public int MembershipId { get; set; }
+        [ForeignKey("membership")]
+        public int? membershipId { get; set; }
 
-
-        public User? _user {  get; set; }
-        public Membership? _membership {  get; set; }
+        [JsonIgnore]
+        public User user {  get; set; }
+        [JsonIgnore]
+        public Membership? membership {  get; set; }
     }
 }
