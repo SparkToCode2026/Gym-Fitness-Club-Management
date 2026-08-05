@@ -122,6 +122,32 @@ namespace GFCM.Controllers;
             
         }
         
+        //CASE 04 — Cancel a Class
+        [HttpDelete("remove")]
+        public IActionResult Remove(int classScheduleId)
+        {
+            var schedule = context.classSchedules
+                .FirstOrDefault(c => c.classScheduleId == classScheduleId);
+            if (schedule == null)
+                return NotFound("Class not found");
+
+            var bookings = context.classBookings
+                .Where(b => b.classScheduleId == classScheduleId && b.bookingStatus == BookingStatus.Booked)
+                .ToList();
+
+            foreach (var booking in bookings)
+            {
+                booking.bookingStatus = BookingStatus.Cancelled;
+            }
+
+            context.classSchedules.Remove(schedule);
+            context.SaveChanges();
+
+            return Ok(new { message = "Class cancelled", bookingsCancelled = bookings.Count });
+        }
+        
+        
+        
         
         
         
