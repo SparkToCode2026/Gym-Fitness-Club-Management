@@ -203,6 +203,31 @@
 
       return Ok(bookings);
     }
+    
+    //Case 14 — Get a Booking
+    [HttpGet("get")]
+    public IActionResult Get(int userId, int classScheduleId)
+    {
+      var booking = context.classBookings
+        .Include(b => b.user)
+        .Include(b => b.classSchedule)
+        .Where(b => b.userId == userId && b.classScheduleId == classScheduleId)
+        .Select(b => new
+        {
+          b.userId,
+          b.classScheduleId,
+          b.bookingDate,
+          bookingStatus = b.bookingStatus.ToString(),
+          memberName = b.user!.userName,
+          className = b.classSchedule!.className
+        })
+        .FirstOrDefault();
+
+      if (booking == null)
+        return NotFound("Booking not found");
+
+      return Ok(booking);
+    }
       
     
   }
