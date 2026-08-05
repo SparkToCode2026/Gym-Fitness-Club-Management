@@ -3,6 +3,7 @@
   using Microsoft.AspNetCore.Mvc;
   using MailKit.Net.Smtp;
   using MailKit.Security;
+  using Microsoft.EntityFrameworkCore;
   using MimeKit;
 
   namespace GFCM.Controllers;
@@ -182,6 +183,26 @@
       return Ok("Booking cancelled");
     }
     
+    //Case 13 — Get All Bookings
+    [HttpGet("getAll")]
+    public IActionResult GetAll()
+    {
+      var bookings = context.classBookings
+        .Include(b => b.user)
+        .Include(b => b.classSchedule)
+        .Select(b => new
+        {
+          b.userId,
+          b.classScheduleId,
+          b.bookingDate,
+          bookingStatus = b.bookingStatus.ToString(),
+          memberName = b.user!.userName,
+          className = b.classSchedule!.className
+        })
+        .ToList();
+
+      return Ok(bookings);
+    }
       
     
   }
