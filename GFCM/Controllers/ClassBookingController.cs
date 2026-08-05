@@ -229,5 +229,33 @@
       return Ok(booking);
     }
       
+    //Case 15 — A Member's Bookings
+    [HttpGet("getByUser")]
+    public IActionResult GetByUser(int userId, string? status)
+    {
+      var query = context.classBookings.Where(b => b.userId == userId);
+
+      if (!string.IsNullOrEmpty(status) &&
+          Enum.TryParse<BookingStatus>(status, true, out var parsedStatus))
+      {
+        query = query.Where(b => b.bookingStatus == parsedStatus);
+      }
+
+      var bookings = query
+        .Include(b => b.classSchedule)
+        .OrderByDescending(b => b.bookingDate)
+        .Select(b => new
+        {
+          b.classScheduleId,
+          b.bookingDate,
+          bookingStatus = b.bookingStatus.ToString(),
+          className = b.classSchedule!.className,
+          startTime = b.classSchedule!.startTime
+        })
+        .ToList();
+
+      return Ok(new { count = bookings.Count, bookings });
+    }
+    
     
   }
