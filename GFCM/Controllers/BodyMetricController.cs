@@ -8,7 +8,7 @@ namespace GFCM.Controllers
     [Route("bodymetric")]
     public class BodyMetricController : ControllerBase
     {
-        // TODO (self-study): [Authorize]
+        
 
         private readonly ProjectContext context;
 
@@ -181,7 +181,7 @@ namespace GFCM.Controllers
     }
 }
 
-
-
-
-
+ 
+  
+    
+    
