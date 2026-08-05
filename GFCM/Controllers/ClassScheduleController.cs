@@ -229,5 +229,26 @@ namespace GFCM.Controllers;
             return Ok(new { count = result.Count, classes = result });
         }
         
+        //Case 08 — How Full Is a Class
+        [HttpGet("getBookingCount")]
+        public IActionResult GetBookingCount(int classScheduleId)
+        {
+            var schedule = context.classSchedules
+                .FirstOrDefault(c => c.classScheduleId == classScheduleId);
+            if (schedule == null)
+                return NotFound("Class not found");
+
+            int bookedCount = context.classBookings.Count(b =>
+                b.classScheduleId == classScheduleId && b.bookingStatus == BookingStatus.Booked);
+
+            return Ok(new
+            {
+                classScheduleId,
+                booked = bookedCount,
+                capacity = schedule.capacity,
+                remaining = schedule.capacity - bookedCount
+            });
+        }
+        
 
     }
