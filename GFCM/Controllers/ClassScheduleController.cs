@@ -1,6 +1,7 @@
 
 using GFCM.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace GFCM.Controllers;
@@ -147,7 +148,28 @@ namespace GFCM.Controllers;
         }
         
         
-        
+        //Case 05 — Get the Timetable
+        [HttpGet("getAll")]
+        public IActionResult GetAll()
+        {
+            var timetable = context.classSchedules
+                .Include(c => c.branch)
+                .Include(c => c.trainerProfile).ThenInclude(t => t!.user)
+                .OrderBy(c => c.startTime)
+                .Select(c => new
+                {
+                    c.classScheduleId,
+                    c.className,
+                    c.startTime,
+                    c.endTime,
+                    c.capacity,
+                    trainerName = c.trainerProfile!.user!.userName,
+                    branchName = c.branch!.branchName
+                })
+                .ToList();
+
+            return Ok(timetable);
+        }
         
         
         
