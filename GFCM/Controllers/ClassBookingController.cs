@@ -152,6 +152,22 @@
       
     }
     
+    //Case 11 — Mark Attendance or Cancel
+    [HttpPatch("updateStatus")]
+    public IActionResult UpdateStatus(int userId, int classScheduleId, BookingStatus newStatus)
+    {
+      var booking = context.classBookings.FirstOrDefault(b =>
+        b.userId == userId && b.classScheduleId == classScheduleId);
+      if (booking == null)
+        return NotFound("Booking not found");
+
+      booking.bookingStatus = newStatus;
+      context.SaveChanges();
+
+      return Ok("Booking status updated");
+    }
+    
+    
       
     
   }
