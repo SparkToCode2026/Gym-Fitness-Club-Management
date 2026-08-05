@@ -172,6 +172,31 @@ namespace GFCM.Controllers;
         }
         
         
+        //Case 06 — Get a Class
+        [HttpGet("get")]
+        public IActionResult Get(int classScheduleId)
+        {
+            var schedule = context.classSchedules
+                .Include(c => c.branch)
+                .Include(c => c.trainerProfile).ThenInclude(t => t!.user)
+                .Where(c => c.classScheduleId == classScheduleId)
+                .Select(c => new
+                {
+                    c.classScheduleId,
+                    c.className,
+                    c.startTime,
+                    c.endTime,
+                    c.capacity,
+                    trainerName = c.trainerProfile!.user!.userName,
+                    branchName = c.branch!.branchName
+                })
+                .FirstOrDefault();
+
+            if (schedule == null)
+                return NotFound("Class not found");
+
+            return Ok(schedule);
+        }
         
 
     }
