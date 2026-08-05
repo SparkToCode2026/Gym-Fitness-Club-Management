@@ -198,5 +198,36 @@ namespace GFCM.Controllers;
             return Ok(schedule);
         }
         
+        //Case 07 - Filter the Timetable
+        [HttpGet("getByDate")]
+        public IActionResult GetByDate(DateTime? from, DateTime? to, int? branchId)
+        {
+            var query = context.classSchedules.AsQueryable();
+
+            if (from.HasValue)
+                query = query.Where(c => c.startTime >= from.Value);
+
+            if (to.HasValue)
+                query = query.Where(c => c.startTime <= to.Value);
+
+            if (branchId.HasValue)
+                query = query.Where(c => c.branchId == branchId.Value);
+
+            var result = query
+                .OrderBy(c => c.startTime)
+                .Select(c => new
+                {
+                    c.classScheduleId,
+                    c.className,
+                    c.startTime,
+                    c.endTime,
+                    c.capacity,
+                    c.branchId
+                })
+                .ToList();
+
+            return Ok(new { count = result.Count, classes = result });
+        }
+        
 
     }
