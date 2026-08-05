@@ -113,5 +113,45 @@
       
     }
     
+    //Case 10 — Move a Booking to Another Class
+    [HttpPut("update")]
+    public IActionResult Update(int userId, int classScheduleId, int newClassScheduleId)
+    {
+      var existing = context.classBookings.FirstOrDefault(b =>
+        b.userId == userId && b.classScheduleId == classScheduleId);
+      if (existing == null)
+        return NotFound("Booking not found");
+      
+      var targetSchedule = context.classSchedules
+        .FirstOrDefault(c => c.classScheduleId == newClassScheduleId);
+      if (targetSchedule == null)
+        return NotFound("Target class not found");
+      
+      bool alreadyBookedTarget = context.classBookings.Any(b =>
+        b.userId == userId && b.classScheduleId == newClassScheduleId);
+      if (alreadyBookedTarget)
+        return BadRequest("Already booked into the target class");
+      
+      int bookedInTarget = context.classBookings.Count(b =>
+        b.classScheduleId == newClassScheduleId && b.bookingStatus == BookingStatus.Booked);
+      if (bookedInTarget >= targetSchedule.capacity)
+        return Conflict("Class is full");
+      
+      context.classBookings.Remove(existing);
+      context.classBookings.Add(new ClassBooking
+      {
+        userId = existing.userId,
+        classScheduleId = newClassScheduleId,
+        bookingDate = existing.bookingDate,
+        bookingStatus = existing.bookingStatus
+      });
+      
+      context.SaveChanges();
+
+      return Ok("Booking moved");
+      
+    }
+    
+      
     
   }
