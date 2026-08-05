@@ -41,7 +41,7 @@ namespace GFCM.Controllers
         [HttpPut("update")]
         public IActionResult UpdateUser(int id, UserUpdate update)
         {
-            var user = context.users.FirstOrDefault(u => u.userId == id);
+            User user = context.users.FirstOrDefault(u => u.userId == id)!;
             if (user == null)
             {
                 return NotFound("User not found");
@@ -60,7 +60,7 @@ namespace GFCM.Controllers
         [HttpPatch("updateRole")]
         public IActionResult UpdateUserRole(int id, UserRole role)
         {
-            var user = context.users.FirstOrDefault(u => u.userId == id);
+            User user = context.users.FirstOrDefault(u => u.userId == id)!;
             if (user == null)
             {
                 return NotFound("User not found");
@@ -81,7 +81,7 @@ namespace GFCM.Controllers
 
         [HttpDelete("delete")]
         public IActionResult DeleteUser(int id) {
-            var user = context.users.FirstOrDefault(u => u.userId == id);
+            User user = context.users.FirstOrDefault(u => u.userId == id)!;
             if (user == null)
             {
                 return NotFound("User not found");
@@ -115,7 +115,7 @@ namespace GFCM.Controllers
         [HttpGet("get")]
         public IActionResult GetUser(int id)
         {
-            var user = context.users.FirstOrDefault(u => u.userId == id);
+            User user = context.users.FirstOrDefault(u => u.userId == id)!;
 
             if (user == null)
             {
@@ -129,7 +129,7 @@ namespace GFCM.Controllers
         [HttpGet("getByRole")]
         public IActionResult GetUsersByRole(UserRole role)
         {
-            var users = context.users
+            List<User> users = context.users
             .Where(u => u.role == role)
             .ToList();
 
