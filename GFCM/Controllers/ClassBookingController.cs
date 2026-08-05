@@ -167,6 +167,20 @@
       return Ok("Booking status updated");
     }
     
+    //Case 12 — Cancel a Booking
+    [HttpDelete("remove")]
+    public IActionResult Remove(int userId, int classScheduleId)
+    {
+      var booking = context.classBookings.FirstOrDefault(b =>
+        b.userId == userId && b.classScheduleId == classScheduleId);
+      if (booking == null)
+        return NotFound("Booking not found");
+
+      booking.bookingStatus = BookingStatus.Cancelled;
+      context.SaveChanges();
+
+      return Ok("Booking cancelled");
+    }
     
       
     
