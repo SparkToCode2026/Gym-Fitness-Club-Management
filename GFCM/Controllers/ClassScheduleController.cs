@@ -92,6 +92,38 @@ namespace GFCM.Controllers;
         }
         
         
+        //CASE 03 - Reassign a Class to Another Trainer
+        [HttpPatch("updateTrainer")]
+        public IActionResult UpdateTrainer(int classScheduleId, int newTrainerProfileId)
+        {
+            var schedule = context.classSchedules
+                .FirstOrDefault(c => c.classScheduleId == classScheduleId);
+            if (schedule == null)
+                return NotFound("Class not found");
+
+            var newTrainer = context.trainerProfiles
+                .FirstOrDefault(t => t.trainerProfileId == newTrainerProfileId);
+            if (newTrainer == null)
+                return NotFound("Trainer not found");
+            
+            // Check the NEW trainer isn't already busy
+            bool clash = context.classSchedules.Any(c =>
+                c.classScheduleId != classScheduleId &&
+                c.trainerProfileId == newTrainerProfileId &&
+                c.startTime < schedule.endTime && c.endTime > schedule.startTime);
+
+            if (clash)
+                return Conflict("Trainer already has a class in that time slot");
+
+            schedule.trainerProfileId = newTrainerProfileId;
+            context.SaveChanges();
+
+            return Ok("Trainer reassigned");
+            
+        }
+        
+        
+        
         
 
     }
