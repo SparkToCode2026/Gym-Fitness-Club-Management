@@ -53,6 +53,45 @@ namespace GFCM.Controllers;
         }
         
         
+        //CASE 02 - Update a Class Slot
+        [HttpPut("update")]
+        public IActionResult Update(int classScheduleId, [FromBody] ClassSchedule updated)
+        {
+            var existing = context.classSchedules
+                .FirstOrDefault(c => c.classScheduleId == classScheduleId);
+            if (existing == null)
+                return NotFound("Class not found");
+            
+            if (updated.endTime <= updated.startTime)
+                return BadRequest("endTime must be after startTime");
+            
+            //Self-exclusion
+            bool clash = context.classSchedules.Any(c =>
+                c.classScheduleId != classScheduleId &&
+                c.trainerProfileId == existing.trainerProfileId &&
+                c.startTime < updated.endTime && c.endTime > updated.startTime);
+            
+            if (clash)
+                return Conflict("Trainer already has a class in that time slot");
+
+            int alreadyBooked = context.classBookings.Count(b =>
+                b.classScheduleId == classScheduleId && b.bookingStatus == BookingStatus.Booked);
+
+            if (updated.capacity < alreadyBooked)
+                return Conflict("New capacity is below the number of existing bookings");
+
+            existing.className = updated.className;
+            existing.startTime = updated.startTime;
+            existing.endTime = updated.endTime;
+            existing.capacity = updated.capacity;
+
+            context.SaveChanges();
+
+            return Ok("Class updated");
+            
+        }
+        
+        
         
 
     }
