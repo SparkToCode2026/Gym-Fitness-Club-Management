@@ -257,5 +257,44 @@
       return Ok(new { count = bookings.Count, bookings });
     }
     
+    //Case 16 — Bookings per Class
+    [HttpGet("countByClass")]
+    public IActionResult CountByClass()
+    {
+      var grouped = context.classBookings
+        .GroupBy(b => b.classScheduleId)
+        .Select(g => new
+        {
+          classScheduleId = g.Key,
+          totalBookings = g.Count(),
+          attended = g.Count(b => b.bookingStatus == BookingStatus.Attended)
+        })
+        .OrderByDescending(g => g.totalBookings)
+        .ToList();
+      
+      var scheduleIds = grouped.Select(g => g.classScheduleId).ToList();
+      var scheduleNames = context.classSchedules
+        .Where(c => scheduleIds.Contains(c.classScheduleId))
+        .ToDictionary(c => c.classScheduleId, c => c.className);
+      
+      var result = grouped.Select(g => new
+      {
+        g.classScheduleId,
+        className = scheduleNames.ContainsKey(g.classScheduleId) ? scheduleNames[g.classScheduleId] : null,
+        g.totalBookings,
+        g.attended
+      }).ToList();
+
+      return Ok(result);
+    }
     
+    [HttpGet("getByStatus")]
+    public IActionResult GetBookingsByStatus(BookingStatus status)
+    {
+      var bookings = context.classBookings
+        .Where(b => b.bookingStatus == status)
+        .ToList();
+
+      return Ok(bookings);
+    }
   }
