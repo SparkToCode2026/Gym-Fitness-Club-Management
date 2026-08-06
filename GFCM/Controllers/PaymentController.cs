@@ -1,5 +1,6 @@
 ﻿using GFCM.Models;
 using Microsoft.AspNetCore.Mvc;
+using static System.Net.WebRequestMethods;
 
 namespace GFCM.Controllers
 {
@@ -65,6 +66,23 @@ namespace GFCM.Controllers
              
         }
 
+        [HttpPatch("updateStatus")]
+        public IActionResult ConfirmOrFailAPayment(int id, PaymentStatus newStatus)
+        {
+            Payment p = context.payments.FirstOrDefault(p => p.paymentId == id);
+            if(p == null)
+            {
+                return NotFound("Payment Not Found");
+            }
+            if (!Enum.IsDefined(typeof(PaymentStatus), newStatus))
+            {
+                return BadRequest("PaymentStatus must be Pending, Completed, Failed or Refunded.");
+            }
+            PaymentStatus oldStatus = p.paymentStatus;
+            p.paymentStatus = newStatus;
+            context.SaveChanges();
+            return Ok($"PaymentStatus Updated successfuly from {oldStatus} to {newStatus}");            
+        }
 
 
 
