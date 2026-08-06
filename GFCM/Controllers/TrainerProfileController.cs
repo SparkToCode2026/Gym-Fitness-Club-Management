@@ -15,6 +15,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 09 — Add a Trainer Profile
         [HttpPost("add")]
         public IActionResult AddTrainerProfile(TrainerProfile profile)
         {
@@ -42,6 +43,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 10 — Update a Trainer Profile
         [HttpPut("update")]
         public IActionResult UpdateTrainerProfile(int trainerProfileId, TrainerProfileUpdate updatedProfile)
         {
@@ -61,6 +63,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 11 — Move a Trainer to Another Branch
         [HttpPatch("updateBranch")]
         public IActionResult UpdateTrainerProfileBranch(int trainerProfileId, int newBranchId)
         {
@@ -83,6 +86,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 12 — Remove a Trainer Profile
         [HttpDelete("remove")]
         public IActionResult RemoveTrainerProfile(int trainerProfileId)
         {
@@ -105,6 +109,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 13 — Get All Trainer Profiles
         [HttpGet("getAll")]
         public IActionResult GetAllTrainerProfiles()
         {
@@ -124,6 +129,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 14 — Get a Trainer Profile
         [HttpGet("get")]
         public IActionResult GetTrainerProfile(int trainerProfileId)
         {
@@ -140,6 +146,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 15 — Get Trainers by Specialization
         [HttpGet("getBySpecialization")]
         public IActionResult GetTrainerProfilesBySpecialization(string specialization, int? branchId)
         {
@@ -168,6 +175,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 16 — Trainers by Experience
         [HttpGet("getByExperience")]
         public IActionResult GetTrainerProfilesByExperience()
         {

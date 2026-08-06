@@ -15,6 +15,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 01 — Add a User
         [HttpPost("add")]
         public IActionResult AddUser(UserRegister register)
         {
@@ -38,6 +39,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 02 — Update a User
         [HttpPut("update")]
         public IActionResult UpdateUser(int id, UserUpdate update)
         {
@@ -57,6 +59,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 03 — Change a User's Role
         [HttpPatch("updateRole")]
         public IActionResult UpdateUserRole(int id, UserRole role)
         {
@@ -79,6 +82,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 04 — Remove a User
         [HttpDelete("delete")]
         public IActionResult DeleteUser(int id) {
             User user = context.users.FirstOrDefault(u => u.userId == id)!;
@@ -93,6 +97,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 05 — Get All Users
         [HttpGet("getAll")]
         public IActionResult GetAllUsers()
         {
@@ -112,6 +117,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 06 — Get a User
         [HttpGet("get")]
         public IActionResult GetUser(int id)
         {
@@ -126,6 +132,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 07 — Get Users by Role
         [HttpGet("getByRole")]
         public IActionResult GetUsersByRole(UserRole role)
         {
@@ -137,6 +144,7 @@ namespace GFCM.Controllers
         }
 
 
+        //Case 08 — Count Users by Role
         [HttpGet("countByRole")]
         public IActionResult CountUsersByRole()
         {
