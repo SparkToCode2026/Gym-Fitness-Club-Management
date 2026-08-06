@@ -1,6 +1,15 @@
-﻿namespace GFCM.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace GFCM.Controllers
 {
-    public class PaymentController
+    public class PaymentController : ControllerBase
     {
+        private ProjectContext context;
+
+        public PaymentController(ProjectContext _context)
+        {
+            context = _context;
+        }
+
     }
 }
