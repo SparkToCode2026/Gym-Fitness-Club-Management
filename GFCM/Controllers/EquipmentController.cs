@@ -65,23 +65,23 @@ namespace GFCM.Controllers
         }
 
         [HttpPatch("updateStatus")]
-        public IActionResult updateStatus(int id, string newStatus)
+        public IActionResult updateStatus(int id, EquipmentStatus newStatus)
         {
             Equipment e = context.equipment.FirstOrDefault(e => e.equipmentId == id);
 
-            //convert string to enum
             if (e == null)
             {
                 return NotFound("Equipment Not Found");
             }
-            if (!Enum.TryParse<EquipmentStatus>(newStatus, true, out EquipmentStatus presentStatus))
+            if (!Enum.IsDefined(typeof(EquipmentStatus), newStatus))
             {
-                return BadRequest("EquipmentStatus must be Operational, UnderMaintenance or Retired");
+                return BadRequest("EquipmentStatus must be Operational, UnderMaintenance or Retired.");
             }
+
             EquipmentStatus oldStatus = e.maintenanceStatus;
-            e.maintenanceStatus = presentStatus;
+            e.maintenanceStatus = newStatus;
             context.SaveChanges();
-            return Ok($"Maintenance Status Updated successfuly from {oldStatus} to {presentStatus}");
+            return Ok($"Maintenance Status Updated successfuly from {oldStatus} to {newStatus}");
 
         }
 
@@ -138,7 +138,6 @@ namespace GFCM.Controllers
                 return Ok(e);
                 
         }
-
 
 
     }
