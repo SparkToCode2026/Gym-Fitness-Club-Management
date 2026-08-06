@@ -139,6 +139,32 @@ namespace GFCM.Controllers
                 
         }
 
+        [HttpGet("getByBranch")]
+        public IActionResult FilterEquipment(int? branchId, EquipmentStatus? status)
+        {
+            var query = context.equipment.AsQueryable();
+
+            if (branchId.HasValue && status.HasValue)
+            {
+                query = query.Where(e => e.branchId == branchId.Value && e.maintenanceStatus == status.Value);
+            }
+        
+            var e = query.Include(e => e.branch).Select(e => new
+            {
+                e.equipmentId,
+                e.equipmentName,
+                e.quantity,
+                e.purchaseDate,
+                e.maintenanceStatus,
+                branchName = e.branch.branchName
+            }).ToList();
+
+            return Ok(new
+            {
+                Count = e.Count,
+                Data = e
+            });
+        }
 
     }
 }
