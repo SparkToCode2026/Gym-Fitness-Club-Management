@@ -14,7 +14,6 @@ namespace GFCM.Models
         public string equipmentName { get; set; }
 
         public int quantity { get; set; }
-
         public DateTime purchaseDate { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
