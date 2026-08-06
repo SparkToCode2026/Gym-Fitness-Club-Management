@@ -84,7 +84,24 @@ namespace GFCM.Controllers
             return Ok($"PaymentStatus Updated successfuly from {oldStatus} to {newStatus}");            
         }
 
+        [HttpDelete("remove")]
+        public IActionResult RemoveAPayment(int id)
+        {
+            Payment p = context.payments.FirstOrDefault(p => p.paymentId == id);
+            if(p == null)
+            {
+                return NotFound("Payment not found");
+            }
+            if (p.paymentStatus == PaymentStatus.Completed || p.paymentStatus == PaymentStatus.Refunded)
+            {
+                return Conflict("Completed payments cannot be deleted");
+            }
 
+            context.payments.Remove(p);
+            context.SaveChanges();
+            return Ok("Payment deleted successfully");
+
+        }
 
 
     }
