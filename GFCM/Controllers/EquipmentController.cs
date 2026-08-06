@@ -16,7 +16,7 @@ namespace GFCM.Controllers
         }
 
         [HttpPost("add")]
-        public IActionResult add(Equipment e)
+        public IActionResult AddEquipment(Equipment e)
         {
             //Verify the branch exists
             var branch = context.branches.FirstOrDefault(b => b.branchId == e.branchId);
@@ -43,7 +43,7 @@ namespace GFCM.Controllers
         }
          
         [HttpPut("update")]
-        public IActionResult update(int id, Equipment newE )
+        public IActionResult UpdateAnEquipmentRecord(int id, Equipment newE )
         {
             Equipment e = context.equipment.FirstOrDefault(e => e.equipmentId == id);
 
@@ -66,7 +66,7 @@ namespace GFCM.Controllers
         }
 
         [HttpPatch("updateStatus")]
-        public IActionResult updateStatus(int id, EquipmentStatus newStatus)
+        public IActionResult FlagEquipmentMaintenance(int id, EquipmentStatus newStatus)
         {
             Equipment e = context.equipment.FirstOrDefault(e => e.equipmentId == id);
 
@@ -87,7 +87,7 @@ namespace GFCM.Controllers
         }
 
         [HttpDelete("remove")]
-        public IActionResult remove(int id) 
+        public IActionResult DecommissionEquipment(int id) 
         {
             Equipment e = context.equipment.FirstOrDefault(e => e.equipmentId == id);
             if (e == null)
@@ -100,7 +100,7 @@ namespace GFCM.Controllers
         }
 
         [HttpGet("getAll")]
-        public IActionResult getAll() 
+        public IActionResult GetAllEquipment() 
         { 
             var equipment = context.equipment.
                 Include(e => e.branch).
@@ -119,7 +119,7 @@ namespace GFCM.Controllers
         }
 
         [HttpGet("get")]
-        public IActionResult get(int id)
+        public IActionResult GetEquipment(int id)
         {
                 var e = context.equipment.Include(e => e.branch).               
                 Select(e => new
