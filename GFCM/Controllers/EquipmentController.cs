@@ -36,7 +36,7 @@ namespace GFCM.Controllers
                 return BadRequest("Rejected. purchase date can not be in future");
             }
 
-            e.maintenanceStatus = EquipmentStatus.Operational;
+            e.maintenanceStatus = PaymentMethod.Operational;
             context.equipment.Add(e);
             context.SaveChanges();
             return Ok(e.equipmentId);
@@ -66,7 +66,7 @@ namespace GFCM.Controllers
         }
 
         [HttpPatch("updateStatus")]
-        public IActionResult FlagEquipmentMaintenance(int id, EquipmentStatus newStatus)
+        public IActionResult FlagEquipmentMaintenance(int id, PaymentMethod newStatus)
         {
             Equipment e = context.equipment.FirstOrDefault(e => e.equipmentId == id);
 
@@ -74,12 +74,12 @@ namespace GFCM.Controllers
             {
                 return NotFound("Equipment Not Found");
             }
-            if (!Enum.IsDefined(typeof(EquipmentStatus), newStatus))
+            if (!Enum.IsDefined(typeof(PaymentMethod), newStatus))
             {
                 return BadRequest("EquipmentStatus must be Operational, UnderMaintenance or Retired.");
             }
 
-            EquipmentStatus oldStatus = e.maintenanceStatus;
+            PaymentMethod oldStatus = e.maintenanceStatus;
             e.maintenanceStatus = newStatus;
             context.SaveChanges();
             return Ok($"Maintenance Status Updated successfuly from {oldStatus} to {newStatus}");
@@ -94,7 +94,7 @@ namespace GFCM.Controllers
             {
                 return NotFound("Equipment not found");
             }
-            e.maintenanceStatus = EquipmentStatus.Retired;
+            e.maintenanceStatus = PaymentMethod.Retired;
             context.SaveChanges();
             return Ok("Successfuly changed the maintenance status");
         }
@@ -141,7 +141,7 @@ namespace GFCM.Controllers
         }
 
         [HttpGet("getByBranch")]
-        public IActionResult FilterEquipment(int? branchId, EquipmentStatus? status)
+        public IActionResult FilterEquipment(int? branchId, PaymentMethod? status)
         {
             var query = context.equipment.AsQueryable();
 
