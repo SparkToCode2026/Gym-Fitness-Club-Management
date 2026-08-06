@@ -172,7 +172,7 @@ namespace GFCM.Controllers
                 .Select(x => new
                 {
                     x.membershipPlanId,
-                    planName = plans.FirstOrDefault(p => p.membershipPlanId == x.membershipPlanId).planName,
+                    planName = plans.FirstOrDefault(p => p.membershipPlanId == x.membershipPlanId)?.planName,
                     x.subscribers
                 })
                 .ToList();
