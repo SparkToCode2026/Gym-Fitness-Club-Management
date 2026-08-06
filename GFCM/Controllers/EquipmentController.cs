@@ -1,6 +1,7 @@
 ﻿using GFCM.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 
 namespace GFCM.Controllers
 {
@@ -166,5 +167,17 @@ namespace GFCM.Controllers
             });
         }
 
+        [HttpGet("countByStatus")]
+        public IActionResult InventoryBreakdownbyStatus()
+        {
+            var breakdown = context.equipment
+            .GroupBy(e => e.maintenanceStatus)
+            .Select(g => new {
+                status = g.Key,
+                records = g.Count(),
+                totalUnits = g.Sum(e => e.quantity)
+        }).ToList();
+            return Ok(breakdown);
+        }
     }
 }
