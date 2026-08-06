@@ -42,5 +42,32 @@ namespace GFCM.Controllers
                 paymentId = p.paymentId
             });
         }
+
+        [HttpPut("update")]
+        public IActionResult CorrectPendingPayment(int id, Payment p)
+        {
+             var payment = context.payments.FirstOrDefault(p => p.paymentId == id);
+             if(payment == null)
+             {
+                return NotFound();
+             }
+             if(payment.paymentStatus == PaymentStatus.Completed || payment.paymentStatus == PaymentStatus.Refunded)
+             {
+                return Conflict("Completed payments cannot be edited");
+             }
+            else
+            {
+                payment.amount = p.amount;
+                payment.paymentMethod = p.paymentMethod;
+                context.SaveChanges();
+                return Ok("Payment Updated Successfuly");
+            }
+             
+        }
+
+
+
+
+
     }
 }
