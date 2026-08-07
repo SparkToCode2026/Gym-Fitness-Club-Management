@@ -6,7 +6,7 @@ using System.Reflection.Metadata.Ecma335;
 namespace GFCM.Controllers
 {
     [ApiController]
-    [Route("Equipment")]
+    [Route("equipment")]
     public class EquipmentController : ControllerBase
 
     {
