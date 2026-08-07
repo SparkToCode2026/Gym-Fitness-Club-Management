@@ -1,5 +1,6 @@
 ﻿using GFCM.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using static System.Net.WebRequestMethods;
 
 namespace GFCM.Controllers
@@ -101,6 +102,26 @@ namespace GFCM.Controllers
             context.SaveChanges();
             return Ok("Payment deleted successfully");
 
+        }
+
+        [HttpGet("getAll")]
+        public IActionResult GetAllPayments()
+        {
+            var payment = context.payments.
+            Include(p => p.user).Include(p => p.membership).
+            OrderByDescending(p => p.paymentDate).
+            Select(p => new
+            {
+                p.paymentId,
+                p.amount,
+                p.paymentDate,
+                p.paymentStatus,
+                p.paymentMethod,
+                payerName = p.user.userName
+
+            }).ToList();
+
+            return Ok(payment);
         }
 
 
