@@ -186,6 +186,37 @@ namespace GFCM.Controllers
             });
         }
 
+        [HttpGet("totalRevenue")]
+        public IActionResult TotalRevenueReport()
+        {
+            decimal Total = context.payments
+            .Where(p => p.paymentStatus == PaymentStatus.Completed).Sum(p => p.amount);
+
+            var byMonth = context.payments
+                .Where(p => p.paymentStatus == PaymentStatus.Completed)
+                .GroupBy(p => new 
+                { 
+                    p.paymentDate.Year, 
+                    p.paymentDate.Month 
+                })
+                .Select(g => new 
+                { g.Key.Year, 
+                  g.Key.Month, 
+                  total = g.Sum(p => p.amount) 
+                })
+                .OrderBy(x => x.Year).ThenBy(x => x.Month)
+                .ToList();
+            return Ok(new
+            {
+                TotalRevenue = Total.ToString("F2"),
+                MonthlyRevenue = byMonth.Select(x => new
+                {
+                    x.Year,
+                    x.Month,
+                    Total = x.total.ToString("F2")
+                })
+            });
+        }
 
     }
 }
