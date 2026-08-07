@@ -145,5 +145,47 @@ namespace GFCM.Controllers
             return Ok(p);
 
         }
+
+        [HttpGet("getByDate")]
+        public IActionResult FilterPayments(DateTime? from,DateTime? to,PaymentStatus? status,PaymentMethod? method)
+        {
+            var query = context.payments.Include(p => p.user).Include(p => p.membership)
+            .AsQueryable();
+            if (from.HasValue)
+            {
+                query = query.Where(p => p.paymentDate >= from.Value);
+            }
+            if (to.HasValue)
+            {
+                query = query.Where(p => p.paymentDate <= to.Value);
+            }
+            if (status.HasValue)
+            {
+                query = query.Where(p => p.paymentStatus == status.Value);
+            }
+            if (method.HasValue)
+            {
+                query = query.Where(p => p.paymentMethod == method.Value);
+            }
+
+            var p = query.OrderByDescending(p=> p.paymentDate).
+                Select(p => new
+                {
+                    p.paymentId,
+                    p.amount,
+                    p.paymentDate,
+                    p.paymentStatus,
+                    p.paymentMethod,
+                    payerName = p.user.userName
+                }).ToList();
+            return Ok(new
+            {
+                Count = p.Count,
+                Sum = p.Sum(l => l.amount),
+                Data = p
+            });
+        }
+
+
     }
 }
