@@ -124,6 +124,26 @@ namespace GFCM.Controllers
             return Ok(payment);
         }
 
+        [HttpGet("get")]
+        public IActionResult GetAPayment(int id)
+        {
+            var p = context.payments.
+            Include(p => p.user).Include(p => p.membership).
+            Select(p => new
+            {
+                p.paymentId,
+                p.amount,
+                p.paymentDate,
+                p.paymentStatus,
+                p.paymentMethod,
+                payerName = p.user.userName
+            }).FirstOrDefault(p => p.paymentId == id);
+            if (p == null)
+            {
+                return NotFound("Payment not found");
+            }
+            return Ok(p);
 
+        }
     }
 }
