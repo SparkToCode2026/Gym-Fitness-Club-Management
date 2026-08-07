@@ -74,7 +74,7 @@ namespace GFCM.Controllers
             plan.planDescription = updatedPlan.planDescription;
             context.SaveChanges();
 
-            return Ok();
+            return Ok("Workout plan updated successfully");
         }
 
 
@@ -105,7 +105,7 @@ namespace GFCM.Controllers
 
             context.SaveChanges();
 
-            return Ok();
+            return Ok("Workout plan reassigned successfully");
         }
 
 
@@ -122,7 +122,7 @@ namespace GFCM.Controllers
             context.workoutPlans.Remove(plan);
             context.SaveChanges();
 
-            return Ok();
+            return Ok("Workout plan deleted successfully");
         }
 
 
