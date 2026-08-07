@@ -14,10 +14,11 @@ namespace GFCM.Models
         public string equipmentName { get; set; }
 
         public int quantity { get; set; }
+
         public DateTime purchaseDate { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public PaymentMethod maintenanceStatus { get; set; }
+        public EquipmentStatus maintenanceStatus { get; set; }
 
         //[1] Branch : [M] Equipment
         [ForeignKey("branch")]
@@ -28,7 +29,7 @@ namespace GFCM.Models
         public Branch branch { get; set; }
     }
 
-    public enum PaymentMethod
+    public enum EquipmentStatus
     {
         Operational,
         UnderMaintenance,

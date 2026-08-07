@@ -5,6 +5,8 @@ using static System.Net.WebRequestMethods;
 
 namespace GFCM.Controllers
 {
+    [ApiController]
+    [Route("Payment")]
     public class PaymentController : ControllerBase
     {
         private ProjectContext context;

@@ -5,6 +5,8 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace GFCM.Controllers
 {
+    [ApiController]
+    [Route("Equipment")]
     public class EquipmentController : ControllerBase
 
     {
@@ -36,7 +38,7 @@ namespace GFCM.Controllers
                 return BadRequest("Rejected. purchase date can not be in future");
             }
 
-            e.maintenanceStatus = PaymentMethod.Operational;
+            e.maintenanceStatus = EquipmentStatus.Operational;
             context.equipment.Add(e);
             context.SaveChanges();
             return Ok(e.equipmentId);
@@ -66,7 +68,7 @@ namespace GFCM.Controllers
         }
 
         [HttpPatch("updateStatus")]
-        public IActionResult FlagEquipmentMaintenance(int id, PaymentMethod newStatus)
+        public IActionResult FlagEquipmentMaintenance(int id, EquipmentStatus newStatus)
         {
             Equipment e = context.equipment.FirstOrDefault(e => e.equipmentId == id);
 
@@ -74,12 +76,12 @@ namespace GFCM.Controllers
             {
                 return NotFound("Equipment Not Found");
             }
-            if (!Enum.IsDefined(typeof(PaymentMethod), newStatus))
+            if (!Enum.IsDefined(typeof(EquipmentStatus), newStatus))
             {
                 return BadRequest("EquipmentStatus must be Operational, UnderMaintenance or Retired.");
             }
 
-            PaymentMethod oldStatus = e.maintenanceStatus;
+            EquipmentStatus oldStatus = e.maintenanceStatus;
             e.maintenanceStatus = newStatus;
             context.SaveChanges();
             return Ok($"Maintenance Status Updated successfuly from {oldStatus} to {newStatus}");
@@ -94,7 +96,7 @@ namespace GFCM.Controllers
             {
                 return NotFound("Equipment not found");
             }
-            e.maintenanceStatus = PaymentMethod.Retired;
+            e.maintenanceStatus = EquipmentStatus.Retired;
             context.SaveChanges();
             return Ok("Successfuly changed the maintenance status");
         }
@@ -141,7 +143,7 @@ namespace GFCM.Controllers
         }
 
         [HttpGet("getByBranch")]
-        public IActionResult FilterEquipment(int? branchId, PaymentMethod? status)
+        public IActionResult FilterEquipment(int? branchId, EquipmentStatus? status)
         {
             var query = context.equipment.AsQueryable();
 
