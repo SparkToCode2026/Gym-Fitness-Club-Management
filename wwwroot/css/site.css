@@ -1,0 +1,602 @@
+/* ==========================================================================
+   Gym & Fitness Club Management — shared stylesheet
+   Owner: FE Dev 1. Nobody else edits this file.
+
+   Layered on top of Bootstrap 5.3, loaded from CDN in every page BEFORE
+   this file. Everything here either overrides a Bootstrap variable or adds
+   a utility the task sheets reference by name.
+
+   Deliberately short. Bootstrap does the work; this gives the twelve pages
+   one identity and one status vocabulary.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. Tokens
+   Bootstrap 5.3 reads --bs-* custom properties, so overriding them here
+   re-themes every component without touching a single Bootstrap class.
+
+   Primary is petrol blue, not Bootstrap's default #0d6efd. Green and amber
+   are reserved for status meaning (see section 5), so the interactive
+   colour has to sit outside both or a "Save" button reads as a success
+   state.
+   -------------------------------------------------------------------------- */
+:root {
+  /* surface */
+  --gym-ink:        #16202a;   /* headings, primary text */
+  --gym-body:       #3d4a58;   /* body copy */
+  --gym-muted:      #6b7a8c;   /* secondary text, empty states */
+  --gym-line:       #dde3ea;   /* borders, dividers */
+  --gym-surface:    #f6f8fa;   /* page background */
+  --gym-raised:     #ffffff;   /* cards, table background */
+
+  /* brand */
+  --gym-primary:      #1f5673;
+  --gym-primary-dark: #163f54;
+  --gym-primary-tint: #e8f0f4;
+
+  /* status — see section 5 */
+  --gym-live:     #1a7f5a;
+  --gym-live-bg:  #e3f3ec;
+  --gym-hold:     #9a6209;
+  --gym-hold-bg:  #fdf1dc;
+  --gym-closed:   #5c6b7a;
+  --gym-closed-bg:#eef1f4;
+  --gym-stop:     #a52834;
+  --gym-stop-bg:  #fbe9eb;
+
+  /* geometry */
+  --gym-radius:   6px;
+  --gym-shadow:   0 1px 2px rgba(22, 32, 42, .06),
+                  0 1px 3px rgba(22, 32, 42, .04);
+
+  /* Bootstrap overrides */
+  --bs-primary:        var(--gym-primary);
+  --bs-primary-rgb:    31, 86, 115;
+  --bs-body-color:     var(--gym-body);
+  --bs-body-bg:        var(--gym-surface);
+  --bs-border-color:   var(--gym-line);
+  --bs-border-radius:  var(--gym-radius);
+  --bs-link-color:     var(--gym-primary);
+  --bs-link-hover-color: var(--gym-primary-dark);
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--gym-primary);
+  --bs-btn-border-color: var(--gym-primary);
+  --bs-btn-hover-bg: var(--gym-primary-dark);
+  --bs-btn-hover-border-color: var(--gym-primary-dark);
+  --bs-btn-active-bg: var(--gym-primary-dark);
+  --bs-btn-disabled-bg: var(--gym-primary);
+  --bs-btn-disabled-border-color: var(--gym-primary);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--gym-primary);
+  --bs-btn-border-color: var(--gym-primary);
+  --bs-btn-hover-bg: var(--gym-primary);
+  --bs-btn-hover-border-color: var(--gym-primary);
+}
+
+
+/* --------------------------------------------------------------------------
+   2. Base
+   -------------------------------------------------------------------------- */
+body {
+  background: var(--gym-surface);
+  color: var(--gym-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5 {
+  color: var(--gym-ink);
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+/* Tabular figures for anything numeric. Money, counts and times line up
+   column to column instead of drifting, which matters on a page with a
+   hundred rows of amounts. Apply with class="num" on a td or a stat value. */
+.num,
+.stat-value,
+td.num,
+th.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+
+/* --------------------------------------------------------------------------
+   3. Page furniture
+   -------------------------------------------------------------------------- */
+
+/* Standard header: title left, primary action right. Every page uses it. */
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--gym-line);
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+/* Small grey line under the title for row counts: "24 branches" */
+.page-header .count {
+  color: var(--gym-muted);
+  font-size: .875rem;
+  font-weight: 400;
+  margin-left: .5rem;
+}
+
+/* Filter row above a table. Wraps cleanly on mobile. */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: end;
+  padding: .875rem 1rem;
+  margin-bottom: 1rem;
+  background: var(--gym-raised);
+  border: 1px solid var(--gym-line);
+  border-radius: var(--gym-radius);
+}
+
+.filter-bar .form-label {
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--gym-muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: .25rem;
+}
+
+.filter-bar .form-control,
+.filter-bar .form-select {
+  min-width: 150px;
+}
+
+
+/* --------------------------------------------------------------------------
+   4. Tables
+   -------------------------------------------------------------------------- */
+.table {
+  --bs-table-bg: var(--gym-raised);
+  margin-bottom: 0;
+}
+
+.table-wrap {
+  background: var(--gym-raised);
+  border: 1px solid var(--gym-line);
+  border-radius: var(--gym-radius);
+  box-shadow: var(--gym-shadow);
+  overflow: hidden;
+}
+
+.table > thead th {
+  background: var(--gym-surface);
+  color: var(--gym-muted);
+  font-size: .75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  border-bottom: 1px solid var(--gym-line);
+  white-space: nowrap;
+}
+
+.table > tbody td {
+  vertical-align: middle;
+  border-color: var(--gym-line);
+}
+
+/* Actions column: keeps buttons on one line and hard right. */
+.table-actions {
+  white-space: nowrap;
+  text-align: right;
+  width: 1%;
+}
+
+.table-actions .btn {
+  --bs-btn-padding-y: .2rem;
+  --bs-btn-padding-x: .5rem;
+  --bs-btn-font-size: .8125rem;
+}
+
+/* A row the soft delete left behind: deactivated user, retired plan,
+   cancelled booking. Visible but clearly stood down. */
+.row-inactive {
+  opacity: .55;
+}
+
+.row-inactive td:not(.table-actions) {
+  text-decoration: line-through;
+  text-decoration-color: var(--gym-line);
+}
+
+/* Nullable field placeholder. Use for a missing body fat reading, a
+   membership-less payment, a member with no trainer profile. Renders an
+   em dash so the cell reads as "not measured", never as broken. */
+.nil::before {
+  content: "—";
+  color: var(--gym-muted);
+}
+
+
+/* --------------------------------------------------------------------------
+   5. Status badges  — the one thing to get right
+   Twelve status values run across all twelve pages. Staff scan these all
+   day, so they are grouped by what they MEAN rather than by which model
+   they came from:
+
+     live    Active · Booked · Completed · Operational   — running, good
+     hold    Pending · UnderMaintenance                  — needs a decision
+     closed  Cancelled · Expired · Retired               — over, not an error
+     stop    Failed                                      — went wrong
+
+   Colour is never the only signal: the label is always spelled out, so
+   this reads correctly for a colour-blind user too.
+   -------------------------------------------------------------------------- */
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .25rem .55rem;
+  border-radius: 100px;
+  font-size: .75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.badge-status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.badge-live   { color: var(--gym-live);   background: var(--gym-live-bg);   border-color: rgba(26,127,90,.18); }
+.badge-hold   { color: var(--gym-hold);   background: var(--gym-hold-bg);   border-color: rgba(154,98,9,.18); }
+.badge-closed { color: var(--gym-closed); background: var(--gym-closed-bg); border-color: rgba(92,107,122,.18); }
+.badge-stop   { color: var(--gym-stop);   background: var(--gym-stop-bg);   border-color: rgba(165,40,52,.18); }
+
+
+/* --------------------------------------------------------------------------
+   6. Live session indicator
+   A member checked in with no check-out yet is the one genuinely live fact
+   in the system. It gets the only motion on the site — a slow pulse — so
+   "in the gym right now" is legible from across the front desk.
+   -------------------------------------------------------------------------- */
+.badge-live-session {
+  color: var(--gym-live);
+  background: var(--gym-live-bg);
+  border-color: rgba(26,127,90,.18);
+}
+
+.badge-live-session::before {
+  animation: gym-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes gym-pulse {
+  0%, 100% { opacity: 1;  transform: scale(1); }
+  50%      { opacity: .35; transform: scale(.8); }
+}
+
+/* Elapsed time next to it, e.g. "1h 42m" */
+.elapsed {
+  font-variant-numeric: tabular-nums;
+  color: var(--gym-muted);
+  font-size: .8125rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   7. Stat cards — dashboard and per-page aggregates
+   -------------------------------------------------------------------------- */
+.stat-card {
+  background: var(--gym-raised);
+  border: 1px solid var(--gym-line);
+  border-left: 3px solid var(--gym-primary);
+  border-radius: var(--gym-radius);
+  padding: 1rem 1.125rem;
+  height: 100%;
+  box-shadow: var(--gym-shadow);
+}
+
+.stat-label {
+  display: block;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--gym-muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: .375rem;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 650;
+  color: var(--gym-ink);
+  line-height: 1.1;
+}
+
+.stat-note {
+  font-size: .8125rem;
+  color: var(--gym-muted);
+  margin-top: .25rem;
+}
+
+/* Accent variants so a card can carry meaning: expiring memberships amber,
+   equipment down amber, failed payments red. */
+.stat-card.is-hold { border-left-color: var(--gym-hold); }
+.stat-card.is-stop { border-left-color: var(--gym-stop); }
+.stat-card.is-live { border-left-color: var(--gym-live); }
+
+
+/* --------------------------------------------------------------------------
+   8. Class fullness bar
+   Used on the schedule page and in the booking dropdown.
+   -------------------------------------------------------------------------- */
+.fullness {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  min-width: 120px;
+}
+
+.fullness .progress {
+  flex: 1;
+  height: 6px;
+  background: var(--gym-closed-bg);
+}
+
+.fullness .progress-bar { background: var(--gym-live); }
+.fullness.is-nearly .progress-bar { background: var(--gym-hold); }
+.fullness.is-full   .progress-bar { background: var(--gym-stop); }
+
+.fullness .count {
+  font-variant-numeric: tabular-nums;
+  font-size: .8125rem;
+  color: var(--gym-muted);
+  white-space: nowrap;
+}
+
+
+/* --------------------------------------------------------------------------
+   9. Empty and loading states
+   An empty list is not a failure. Say what would fill it and how.
+   -------------------------------------------------------------------------- */
+.empty-state {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--gym-muted);
+}
+
+.empty-state .empty-title {
+  color: var(--gym-ink);
+  font-weight: 600;
+  margin-bottom: .25rem;
+}
+
+.empty-state .empty-hint {
+  font-size: .875rem;
+  margin-bottom: 1rem;
+}
+
+td.empty-state { border-bottom: 0; }
+
+.loading-cell {
+  padding: 2.5rem 1rem;
+  text-align: center;
+}
+
+.spinner-border.text-primary { color: var(--gym-primary) !important; }
+
+
+/* --------------------------------------------------------------------------
+   10. Toasts
+   Fixed bottom-right, above modals. ui.js renders into #toastHost.
+   -------------------------------------------------------------------------- */
+#toastHost {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1090;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  max-width: min(380px, calc(100vw - 2rem));
+}
+
+#toastHost .toast {
+  box-shadow: 0 6px 20px rgba(22,32,42,.16);
+  border: 0;
+}
+
+/* Conflict messages from the API can run long, e.g. "Branch has trainers,
+   reassign them first". Let them wrap rather than truncating the reason. */
+#toastHost .toast-body {
+  white-space: normal;
+  word-break: break-word;
+}
+
+
+/* --------------------------------------------------------------------------
+   11. Navbar
+   -------------------------------------------------------------------------- */
+.gym-navbar {
+  background: var(--gym-ink);
+  box-shadow: var(--gym-shadow);
+}
+
+.gym-navbar .navbar-brand {
+  font-weight: 650;
+  letter-spacing: -.01em;
+  color: #fff;
+}
+
+.gym-navbar .nav-link {
+  color: rgba(255,255,255,.72);
+  font-size: .9375rem;
+  padding: .4rem .7rem;
+  border-radius: var(--gym-radius);
+}
+
+.gym-navbar .nav-link:hover { color: #fff; background: rgba(255,255,255,.08); }
+
+.gym-navbar .nav-link.active {
+  color: #fff;
+  background: rgba(255,255,255,.14);
+  font-weight: 600;
+}
+
+.gym-navbar .user-chip {
+  color: rgba(255,255,255,.85);
+  font-size: .875rem;
+}
+
+.gym-navbar .user-chip .role {
+  font-size: .6875rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  opacity: .7;
+  display: block;
+}
+
+
+/* --------------------------------------------------------------------------
+   12. Auth pages
+   -------------------------------------------------------------------------- */
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: var(--gym-ink);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--gym-raised);
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 12px 40px rgba(0,0,0,.28);
+}
+
+.auth-card h1 {
+  font-size: 1.25rem;
+  margin-bottom: .25rem;
+}
+
+.auth-card .sub {
+  color: var(--gym-muted);
+  font-size: .875rem;
+  margin-bottom: 1.5rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   13. Forms and modals
+   -------------------------------------------------------------------------- */
+.form-label {
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--gym-ink);
+  margin-bottom: .3rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--gym-primary);
+  box-shadow: 0 0 0 3px var(--gym-primary-tint);
+}
+
+/* Hint under an input: the computed end date preview, the previous weight
+   reading, the current booked count next to a capacity field. */
+.form-hint {
+  font-size: .8125rem;
+  color: var(--gym-muted);
+  margin-top: .3rem;
+}
+
+.form-hint strong { color: var(--gym-ink); font-weight: 600; }
+
+.modal-header {
+  border-bottom-color: var(--gym-line);
+  padding-bottom: .875rem;
+}
+
+.modal-title { font-size: 1.0625rem; }
+
+.modal-footer {
+  border-top-color: var(--gym-line);
+  padding-top: .875rem;
+}
+
+/* Inline error inside a modal, for a Conflict the user must read before
+   the toast fades: trainer double-booked, class full, email taken. */
+.modal-error {
+  display: none;
+  padding: .625rem .75rem;
+  margin-bottom: 1rem;
+  border-radius: var(--gym-radius);
+  background: var(--gym-stop-bg);
+  border: 1px solid rgba(165,40,52,.2);
+  color: var(--gym-stop);
+  font-size: .875rem;
+}
+
+.modal-error.show { display: block; }
+
+
+/* --------------------------------------------------------------------------
+   14. Accessibility floor
+   -------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--gym-primary);
+  outline-offset: 2px;
+}
+
+.gym-navbar :focus-visible { outline-color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  .badge-live-session::before { opacity: 1; transform: none; }
+}
+
+
+/* --------------------------------------------------------------------------
+   15. Mobile
+   Tables scroll horizontally rather than crushing. Filters stack.
+   -------------------------------------------------------------------------- */
+@media (max-width: 767.98px) {
+  .page-header { align-items: flex-start; }
+  .page-header .btn { width: 100%; }
+
+  .filter-bar { flex-direction: column; align-items: stretch; }
+  .filter-bar .form-control,
+  .filter-bar .form-select { min-width: 0; width: 100%; }
+
+  .table-wrap { overflow-x: auto; }
+  .table { min-width: 720px; }
+
+  .stat-value { font-size: 1.5rem; }
+
+  #toastHost { left: 1rem; right: 1rem; max-width: none; }
+}
