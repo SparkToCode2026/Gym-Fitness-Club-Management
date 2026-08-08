@@ -36,7 +36,6 @@ namespace GFCM
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    RoleClaimType = "role",
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
