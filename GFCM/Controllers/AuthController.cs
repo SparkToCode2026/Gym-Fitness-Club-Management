@@ -44,7 +44,7 @@ namespace GFCM.Controllers
             return Ok(new
             {
                 Token = token,
-                Name = user.userName,
+                userName = user.userName,
                 Role = user.role.ToString(),
                 ExpiresAt = expiryTime
             });

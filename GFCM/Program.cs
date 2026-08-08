@@ -13,6 +13,17 @@ namespace GFCM
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Add CORS services
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalServer", policy =>
+                {
+                    policy.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             // DB context
             builder.Services.AddDbContext<ProjectContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -83,6 +94,9 @@ namespace GFCM
             });
 
             var app = builder.Build();
+
+            // Enable the CORS middleware (must be placed early in the pipeline)
+            app.UseCors("AllowLocalServer");
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
