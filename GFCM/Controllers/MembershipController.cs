@@ -48,17 +48,7 @@ namespace GFCM.Controllers
             context.SaveChanges();
 
             // activation email fires here 
-
-            string body = $@"
-            <div style='font-family: Arial, sans-serif;'>
-            <h2>Welcome, {user.userName}!</h2>
-            <p>Your <strong>{plan.planName}</strong> membership is now active.</p>
-            <p>Valid until <strong>{membership.endDate:dd MMM yyyy}</strong>.</p>
-            <p style='color:#6c757d;font-size:13px;'>See you at the gym 💪</p>
-            </div>";
-
-            emailService.sendEmail(user.email, "Your membership is active", body);
-
+            emailService.sendMembershipActivation(user, plan, membership.endDate);
 
             return Ok(new
             {
