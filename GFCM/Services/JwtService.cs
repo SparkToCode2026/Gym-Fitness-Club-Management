@@ -29,7 +29,7 @@ namespace GFCM.Services
                 new Claim(JwtRegisteredClaimNames.Sub, user.userId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Role, user.role.ToString())
+                new Claim("role", user.role.ToString())
             };
 
 
