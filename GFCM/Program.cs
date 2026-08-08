@@ -1,6 +1,9 @@
 using GFCM.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace GFCM
 {
@@ -19,7 +22,30 @@ namespace GFCM
             var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
             builder.Services.AddSingleton(emailConfig!);
             builder.Services.AddScoped<EmailService>();
-            
+
+            // Register JWT Token Engine Service
+            builder.Services.AddScoped<IJwtService, JwtService>();
+
+            // Configure Authentication Services and JWT Pipeline Validation Options
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key configuration is missing.")))
+                };
+            });
 
             // Add services to the container.
             builder.Services.AddControllers(options =>
@@ -67,6 +93,8 @@ namespace GFCM
 
             app.UseHttpsRedirection();
 
+            /// ⚠️ CRITICAL MIDDLEWARE SEQUENCE: Authentication must authenticate the token BEFORE Authorization enforces permissions
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
