@@ -1,12 +1,13 @@
 ﻿using GFCM.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static System.Net.WebRequestMethods;
 
 namespace GFCM.Controllers
 {
     [ApiController]
     [Route("payment")]
+    [Authorize]
     public class PaymentController : ControllerBase
     {
         private ProjectContext context;
@@ -87,6 +88,7 @@ namespace GFCM.Controllers
             return Ok($"PaymentStatus Updated successfuly from {oldStatus} to {newStatus}");            
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("remove")]
         public IActionResult RemoveAPayment(int id)
         {

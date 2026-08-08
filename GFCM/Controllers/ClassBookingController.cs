@@ -1,14 +1,13 @@
 using GFCM.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace GFCM.Controllers;
 
-// TODO (self-study): [Authorize]
-
 [ApiController]
 [Route("classbooking")]
-
+[Authorize]
 public class ClassBookingController : ControllerBase
 {
   private readonly ProjectContext context;
@@ -120,6 +119,7 @@ public class ClassBookingController : ControllerBase
   }
 
   //Case 12 — Cancel a Booking
+  [Authorize(Roles = "Admin")]
   [HttpDelete("remove")]
   public IActionResult Remove(int userId, int classScheduleId)
   {

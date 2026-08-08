@@ -1,4 +1,5 @@
 ﻿using GFCM.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,7 @@ namespace GFCM.Controllers
 {
     [ApiController]
     [Route("trainerprofile")]
+    [Authorize]
     public class TrainerProfileController : ControllerBase
     {
         private ProjectContext context;
@@ -87,6 +89,7 @@ namespace GFCM.Controllers
 
 
         //Case 12 — Remove a Trainer Profile
+        [Authorize(Roles = "Admin")]
         [HttpDelete("remove")]
         public IActionResult RemoveTrainerProfile(int trainerProfileId)
         {
