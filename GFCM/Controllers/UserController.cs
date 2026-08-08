@@ -1,4 +1,5 @@
 ﻿using GFCM.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,7 @@ namespace GFCM.Controllers
 {
     [ApiController]
     [Route("user")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private ProjectContext context;
@@ -16,6 +18,7 @@ namespace GFCM.Controllers
 
 
         //Case 01 — Add a User
+        [AllowAnonymous]
         [HttpPost("add")]
         public IActionResult AddUser(UserRegister register)
         {
@@ -83,7 +86,8 @@ namespace GFCM.Controllers
 
 
         //Case 04 — Remove a User
-        [HttpDelete("delete")]
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("remove")]
         public IActionResult DeleteUser(int id) {
             User user = context.users.FirstOrDefault(u => u.userId == id)!;
             if (user == null)

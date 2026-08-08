@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GFCM.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GFCM.Controllers
 {
     [ApiController]
     [Route("attendance")]
+    [Authorize]
     public class AttendanceController : ControllerBase
     {
-        // TODO (self-study): [Authorize]
-
         private readonly ProjectContext context;
 
         public AttendanceController(ProjectContext context)
@@ -88,6 +88,7 @@ namespace GFCM.Controllers
             });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("remove")]
         public IActionResult Remove(int attendanceId)
         {

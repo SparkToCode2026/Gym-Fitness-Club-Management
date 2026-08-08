@@ -1,4 +1,5 @@
 ﻿using GFCM.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,7 @@ namespace GFCM.Controllers
 {
     [ApiController]
     [Route("workoutplan")]
+    [Authorize]
     public class WorkoutPlanController : ControllerBase
     {
         private ProjectContext context;
@@ -110,6 +112,7 @@ namespace GFCM.Controllers
 
 
         //Case 12 — Delete a Workout Plan
+        [Authorize(Roles = "Admin")]
         [HttpDelete("remove")]
         public IActionResult RemoveWorkoutPlan(int workoutPlanId)
         {

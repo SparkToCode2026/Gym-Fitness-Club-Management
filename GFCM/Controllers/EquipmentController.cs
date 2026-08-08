@@ -1,12 +1,13 @@
 ﻿using GFCM.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 
 namespace GFCM.Controllers
 {
     [ApiController]
     [Route("equipment")]
+    [Authorize]
     public class EquipmentController : ControllerBase
 
     {
@@ -88,6 +89,7 @@ namespace GFCM.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("remove")]
         public IActionResult DecommissionEquipment(int id) 
         {

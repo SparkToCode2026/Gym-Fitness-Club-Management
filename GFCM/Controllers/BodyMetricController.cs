@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GFCM.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GFCM.Controllers
 {
     [ApiController]
     [Route("bodymetric")]
+    [Authorize]
     public class BodyMetricController : ControllerBase
     {
-        
-
         private readonly ProjectContext context;
 
         public BodyMetricController(ProjectContext context)
@@ -79,6 +79,7 @@ namespace GFCM.Controllers
             return Ok(new { message = "Weight updated", oldWeight, newWeight = newWeightKg });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("remove")]
         public IActionResult Remove(int bodyMetricId)
         {

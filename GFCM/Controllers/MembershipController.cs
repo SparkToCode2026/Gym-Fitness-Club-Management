@@ -1,13 +1,14 @@
 using GFCM.Models;
+using GFCM.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using GFCM.Services;
 
 namespace GFCM.Controllers
 {
-    // TODO (self-study): [Authorize]
     [ApiController]
     [Route("membership")]
+    [Authorize]
     public class MembershipController : ControllerBase
     {
         private ProjectContext context;
@@ -118,6 +119,7 @@ namespace GFCM.Controllers
         }
 
         // case 12 - remove a membership
+        [Authorize(Roles = "Admin")]
         [HttpDelete("remove")]
         public IActionResult remove(int membershipId)
         {

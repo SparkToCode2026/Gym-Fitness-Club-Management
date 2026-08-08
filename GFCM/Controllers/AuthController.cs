@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace GFCM.Controllers
 {
     [ApiController]
-    [AllowAnonymous]
     [Route("auth")]
     public class AuthController : ControllerBase
     {
@@ -19,6 +18,7 @@ namespace GFCM.Controllers
             this.jwtService = jwtService;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public IActionResult Login(UserLogin userLogin)
         {

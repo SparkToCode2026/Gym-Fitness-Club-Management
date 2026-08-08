@@ -1,12 +1,13 @@
 using GFCM.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace GFCM.Controllers
 {
-    // TODO (self-study): [Authorize]
     [ApiController]
     [Route("membershipplan")]
+    [Authorize]
     public class MembershipPlanController : ControllerBase
     {
         private ProjectContext context;
@@ -77,6 +78,7 @@ namespace GFCM.Controllers
         }
 
         // case 04 - remove a plan (soft delete)
+        [Authorize(Roles = "Admin")]
         [HttpDelete("remove")]
         public IActionResult remove(int membershipPlanId)
         {

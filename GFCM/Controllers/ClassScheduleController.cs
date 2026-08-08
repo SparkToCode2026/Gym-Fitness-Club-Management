@@ -1,16 +1,15 @@
 
 using GFCM.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
 namespace GFCM.Controllers;
 
-    //TODO (self-study): [Authorize]
-
     [ApiController] 
     [Route("classschedule")]
-    
+    [Authorize]
     public class ClassScheduleController : ControllerBase
     {
         private readonly ProjectContext context;
@@ -124,8 +123,9 @@ namespace GFCM.Controllers;
         }
         
         //CASE 04 — Cancel a Class
+        [Authorize(Roles = "Admin")]
         [HttpDelete("remove")]
-        public IActionResult Remove(int classScheduleId)
+    public IActionResult Remove(int classScheduleId)
         {
             var schedule = context.classSchedules
                 .FirstOrDefault(c => c.classScheduleId == classScheduleId);
