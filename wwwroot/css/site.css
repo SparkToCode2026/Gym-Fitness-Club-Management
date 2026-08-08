@@ -449,6 +449,7 @@ td.empty-state { border-bottom: 0; }
   font-size: .9375rem;
   padding: .4rem .7rem;
   border-radius: var(--gym-radius);
+  margin: .2rem;
 }
 
 .gym-navbar .nav-link:hover { color: #fff; background: rgba(255,255,255,.08); }
