@@ -1,6 +1,7 @@
 using GFCM.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using GFCM.Services;
 
 namespace GFCM.Controllers
 {
@@ -10,10 +11,14 @@ namespace GFCM.Controllers
     public class MembershipController : ControllerBase
     {
         private ProjectContext context;
+        private EmailService emailService;
 
-        public MembershipController(ProjectContext context)
+
+        public MembershipController(ProjectContext context, EmailService emailService)
         {
             this.context = context;
+            this.emailService = emailService;
+
         }
 
         // case 09 - enrol a user in a plan
@@ -42,7 +47,18 @@ namespace GFCM.Controllers
             context.memberships.Add(membership);
             context.SaveChanges();
 
-            // TODO (self-study): activation email fires here IF the team chose enrolment over registration
+            // activation email fires here 
+
+            string body = $@"
+            <div style='font-family: Arial, sans-serif;'>
+            <h2>Welcome, {user.userName}!</h2>
+            <p>Your <strong>{plan.planName}</strong> membership is now active.</p>
+            <p>Valid until <strong>{membership.endDate:dd MMM yyyy}</strong>.</p>
+            <p style='color:#6c757d;font-size:13px;'>See you at the gym 💪</p>
+            </div>";
+
+            emailService.sendEmail(user.email, "Your membership is active", body);
+
 
             return Ok(new
             {

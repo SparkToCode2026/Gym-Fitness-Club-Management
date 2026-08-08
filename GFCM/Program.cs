@@ -1,4 +1,4 @@
-
+using GFCM.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -14,6 +14,12 @@ namespace GFCM
             builder.Services.AddDbContext<ProjectContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
             );
+
+            // Email service
+            var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+            builder.Services.AddSingleton(emailConfig!);
+            builder.Services.AddScoped<EmailService>();
+            
 
             // Add services to the container.
             builder.Services.AddControllers(options =>
