@@ -1,4 +1,5 @@
 using GFCM.Models;
+using GFCM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,12 @@ namespace GFCM.Controllers;
 public class ClassBookingController : ControllerBase
 {
   private readonly ProjectContext context;
+  private readonly EmailService emailService;
 
-  public ClassBookingController(ProjectContext context)
+  public ClassBookingController(ProjectContext context, EmailService emailService)
   {
     this.context = context;
+    this.emailService = emailService;
   }
 
   //Case 09 — Book a Member into a Class
@@ -60,7 +63,9 @@ public class ClassBookingController : ControllerBase
     context.classBookings.Add(booking);
     context.SaveChanges();
 
-    // TODO (self-study): booking confirmation email fires here
+    // booking confirmation email fires here
+    emailService.sendClassBookingConfirmation(user, schedule);
+
 
     return Ok("Booking created");
   }

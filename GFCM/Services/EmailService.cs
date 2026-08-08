@@ -65,6 +65,9 @@ namespace GFCM.Services
         {
             string body = $@"
             <div style='font-family: Arial, sans-serif;'>
+            <p>Hi {user.userName},</p>
+            <p>You're booked into <strong>{schedule.className}</strong> on {schedule.startTime:dd MMM yyyy HH:mm}.</p>
+            <p style='color:#6c757d;font-size:13px;'>See you there</p>
             </div>";
 
             sendEmail(user.email, "Your class booking is confirmed", body);
