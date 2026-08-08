@@ -41,7 +41,7 @@ namespace GFCM.Controllers
 
         //Case 02 — Update a User
         [HttpPut("update")]
-        public IActionResult UpdateUser(int id, UserUpdate update)
+        public IActionResult UpdateUser(int id, User update)
         {
             User user = context.users.FirstOrDefault(u => u.userId == id)!;
             if (user == null)

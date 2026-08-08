@@ -45,7 +45,7 @@ namespace GFCM.Controllers
 
         //Case 10 — Update a Trainer Profile
         [HttpPut("update")]
-        public IActionResult UpdateTrainerProfile(int trainerProfileId, TrainerProfileUpdate updatedProfile)
+        public IActionResult UpdateTrainerProfile(int trainerProfileId, TrainerProfile updatedProfile)
         {
             TrainerProfile profile = context.trainerProfiles.FirstOrDefault(p => p.trainerProfileId == trainerProfileId)!;
             if (profile == null)
