@@ -305,3 +305,9 @@ function setPresetRange(days) {
 document.getElementById("presetToday").addEventListener("click", () => setPresetRange(0));
 document.getElementById("presetWeek").addEventListener("click", () => setPresetRange(7));
 document.getElementById("presetMonth").addEventListener("click", () => setPresetRange(30));
+
+// Initialization
+(async function init() {
+    await Promise.all([loadBranchOptions(), loadTrainerOptions()]);
+    await loadSchedules();
+})();
