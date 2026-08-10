@@ -74,5 +74,30 @@
     </div>
 </div>
 
+<div class="d-flex gap-2 mb-4">
+    <button class="btn btn-sm btn-outline-primary" id="presetMonth">This month</button>
+    <button class="btn btn-sm btn-outline-primary" id="presetLastMonth">Last month</button>
+    <button class="btn btn-sm btn-outline-primary" id="presetYear">This year</button>
+    <button class="btn btn-sm btn-outline-secondary" id="btnClearFilter">Clear</button>
+</div>
+
+<!-- Case 13: Payments Table -->
+<div class="table-wrap mb-4" id="paymentTableWrap">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Payer</th>
+            <th>Membership</th>
+            <th class="num">Amount</th>
+            <th class="num">Date</th>
+            <th>Method</th>
+            <th>Status</th>
+            <th class="table-actions">Actions</th>
+        </tr>
+        </thead>
+        <tbody id="paymentTableBody"></tbody>
+    </table>
+</div>
+
 </body>
 </html>
