@@ -114,6 +114,33 @@
 </div>
 
 
+<!-- Case 09: Move Booking Modal -->
+<div class="modal fade" id="moveBookingModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Move Booking</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="moveBookingAlert" class="modal-error"></div>
+                <div id="moveCurrentClassLabel" class="form-hint mb-2"></div>
+                <input type="hidden" id="moveUserId">
+                <input type="hidden" id="moveClassScheduleId">
+                <div class="mb-2">
+                    <label class="form-label">Move to</label>
+                    <select id="moveTargetClass" class="form-select"></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btnSubmitMove">Move</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 
