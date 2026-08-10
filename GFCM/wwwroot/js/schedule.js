@@ -245,3 +245,63 @@ document.getElementById("btnConfirmDelete").addEventListener("click", async () =
     }
 });
 
+//Case 06: Filter and presets
+async function applyFilter() {
+    const from = document.getElementById("filterFrom").value;
+    const to = document.getElementById("filterTo").value;
+    const branchId = document.getElementById("filterBranch").value;
+
+    const params = new URLSearchParams();
+    if (from) params.set("from", from);
+    if (to) params.set("to", to);
+    if (branchId) params.set("branchId", branchId);
+
+    try {
+        const result = await api(`/classschedule/getByDate?${params.toString()}`); // GET /classschedule/getByDate
+        renderFilteredList(result.classes || []);
+        document.getElementById("resultCount").textContent = `${result.count ?? 0} class(es)`;
+    } catch (err) {
+        showToast(err.message, "danger");
+    }
+}
+
+function renderFilteredList(classes) {
+    const wrap = document.getElementById("scheduleTableWrap");
+    if (!classes.length) return showEmptyState(wrap, "No classes match that filter.");
+
+    wrap.innerHTML = `
+    <table class="table table-hover table-striped bg-white">
+      <thead><tr><th>Class</th><th>Start</th><th>End</th><th>Capacity</th></tr></thead>
+      <tbody>
+        ${classes.map(c => `
+          <tr>
+            <td>${c.className}</td>
+            <td>${formatDateTime(c.startTime)}</td>
+            <td>${formatDateTime(c.endTime)}</td>
+            <td>${c.capacity}</td>
+          </tr>`).join("")}
+      </tbody>
+    </table>`;
+}
+
+document.getElementById("btnApplyFilter").addEventListener("click", applyFilter);
+document.getElementById("btnClearFilter").addEventListener("click", () => {
+    document.getElementById("filterFrom").value = "";
+    document.getElementById("filterTo").value = "";
+    document.getElementById("filterBranch").value = "";
+    loadSchedules();
+});
+
+function setPresetRange(days) {
+    const today = new Date();
+    const from = new Date(today);
+    const to = new Date(today);
+    to.setDate(to.getDate() + days);
+    document.getElementById("filterFrom").value = from.toISOString().slice(0, 10);
+    document.getElementById("filterTo").value = to.toISOString().slice(0, 10);
+    applyFilter();
+}
+
+document.getElementById("presetToday").addEventListener("click", () => setPresetRange(0));
+document.getElementById("presetWeek").addEventListener("click", () => setPresetRange(7));
+document.getElementById("presetMonth").addEventListener("click", () => setPresetRange(30));
