@@ -230,3 +230,18 @@ document.getElementById("btnSubmitBulkAttend").addEventListener("click", async (
     }
 });
 
+//Case 11 - Cancel Booking
+async function cancelBooking(userId, classScheduleId) {
+    const confirmed = await confirmModal("Cancel this booking? The member will need to rebook to attend.", "Cancel Booking", "btn-danger");
+    if (!confirmed) return;
+
+    try {
+        await api(`/classbooking/remove?userId=${userId}&classScheduleId=${classScheduleId}`, "DELETE");
+        showToast("Booking cancelled", "success");
+        await loadBookings();
+        await loadScheduleOptionsWithFullness();
+        await loadPopularity();
+    } catch (err) {
+        showToast(err.message, "danger");
+    }
+}
