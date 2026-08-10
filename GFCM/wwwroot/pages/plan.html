@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Membership Plans</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="../css/site.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="navbar"></div>
+
+    <div class="container py-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Membership Plans</h2>
+        <button
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#addPlanModal"
+        >
+          Add Plan
+        </button>
+      </div>
+
+      <!-- Filter row -->
+      <div class="row g-2 mb-3">
+        <div class="col-auto">
+          <div class="form-check form-switch mt-2">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="activeOnlyToggle"
+            />
+            <label class="form-check-label" for="activeOnlyToggle"
+              >Active only</label
+            >
+          </div>
+        </div>
+        <div class="col-auto">
+          <input
+            type="number"
+            class="form-control"
+            id="maxPriceFilter"
+            placeholder="Max price"
+          />
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-outline-secondary" id="applyPriceFilterBtn">
+            Filter
+          </button>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <span id="resultCount" class="text-muted"></span>
+        </div>
+      </div>
+
+      <!-- Most Popular panel -->
+      <div class="card mb-3">
+        <div class="card-header">Most Popular Plans</div>
+        <div class="card-body" id="popularList">
+          <div class="spinner-border spinner-border-sm"></div>
+        </div>
+      </div>
+
+      <!-- Spinner -->
+      <div id="loadingSpinner" class="text-center my-4">
+        <div class="spinner-border"></div>
+      </div>
+
+      <!-- Empty state -->
+      <div id="emptyState" class="alert alert-info d-none">No plans found.</div>
+
+      <!-- Plan cards -->
+      <div class="row g-3" id="planCards"></div>
+    </div>
+
+    <!-- Add Plan Modal -->
+    <div class="modal fade" id="addPlanModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Plan</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-2">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" id="addPlanName" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" id="addPlanDescription"></textarea>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Duration (days)</label>
+              <input
+                type="number"
+                class="form-control"
+                id="addPlanDuration"
+                min="1"
+              />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Price</label>
+              <input
+                type="number"
+                class="form-control"
+                id="addPlanPrice"
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Max Classes Per Month</label>
+              <input
+                type="number"
+                class="form-control"
+                id="addPlanMaxClasses"
+                min="0"
+              />
+            </div>
+            <div id="addPlanError" class="text-danger small d-none"></div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="button" class="btn btn-primary" id="submitAddPlanBtn">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Plan Modal -->
+    <div class="modal fade" id="editPlanModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Plan</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="editPlanId" />
+            <div class="mb-2">
+              <label class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                id="editPlanDescription"
+              ></textarea>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Price</label>
+              <input
+                type="number"
+                class="form-control"
+                id="editPlanPrice"
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="submitEditPlanBtn"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="modal fade" id="deletePlanModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Retire Plan</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to retire this plan? It will remain visible
+            but marked inactive.
+            <input type="hidden" id="deletePlanId" />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="confirmDeletePlanBtn"
+            >
+              Retire
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/plan.js"></script>
+  </body>
+</html>
