@@ -3,7 +3,7 @@ requireAuth();
 let allBranches = [];
 let allTrainers = [];
 let currentSchedules = [];
-
+let scheduleToDeleteId = null;
 
 async function loadBranchOptions() {
     allBranches = await api("/branch/getAll");
@@ -218,3 +218,30 @@ document.getElementById("btnSubmitReassign").addEventListener("click", async () 
         showFieldError(alertBox, err.message);
     }
 });
+
+//Case 05: Cancel/Delete a class
+function promptDeleteSchedule(classScheduleId, bookedCount) {
+    scheduleToDeleteId = classScheduleId;
+    const msgText = bookedCount > 0
+        ? `Are you sure you want to cancel this class? <b>${bookedCount} booking(s)</b> will be cancelled as a result.`
+        : "Are you sure you want to cancel this class?";
+
+    document.getElementById("deleteConfirmMessage").innerHTML = msgText;
+    new bootstrap.Modal(document.getElementById("deleteScheduleModal")).show();
+}
+
+document.getElementById("btnConfirmDelete").addEventListener("click", async () => {
+    if (!scheduleToDeleteId) return;
+
+    try {
+        const res = await api(`/classschedule/remove?classScheduleId=${scheduleToDeleteId}`, "DELETE"); // DELETE /classschedule/remove
+        showToast(res?.message ? `${res.message} (${res.bookingsCancelled ?? 0} bookings cancelled)` : "Class cancelled", "success");
+        bootstrap.Modal.getInstance(document.getElementById("deleteScheduleModal")).hide();
+        await loadSchedules();
+    } catch (err) {
+        showToast(err.message, "danger");
+    } finally {
+        scheduleToDeleteId = null;
+    }
+});
+
