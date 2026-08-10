@@ -55,34 +55,43 @@ async function loadSchedules() {
             const c = counts[i];
             const full = c.booked >= c.capacity;
             const pct = c.capacity > 0 ? Math.min(100, Math.round((c.booked / c.capacity) * 100)) : 0;
+            let fullnessState = "";
+            if (c.booked >= c.capacity) fullnessState = "is-full";
+            else if (pct >= 80) fullnessState = "is-nearly";
             return `
+
         <tr>
-          <td>${s.className}</td>
-          <td>${s.trainerName ?? "-"}</td>
-          <td>${s.branchName ?? "-"}</td>
-          <td>${formatDateTime(s.startTime)}</td>
-          <td>${formatDateTime(s.endTime)}</td>
-          <td style="min-width:140px">
-            <div class="d-flex justify-content-between small mb-1">
-              <span>${c.booked} / ${c.capacity}</span>
-            </div>
-            <div class="progress" style="height:6px;">
-              <div class="progress-bar ${full ? "bg-danger" : "bg-primary"}" style="width:${pct}%"></div>
+          <td class="fw-semibold">${s.className}</td>
+          <td>${s.trainerName ?? '<span class="nil"></span>'}</td>
+          <td>${s.branchName ?? '<span class="nil"></span>'}</td>
+          <td class="num">${formatDateTime(s.startTime)}</td>
+          <td class="num">${formatDateTime(s.endTime)}</td>
+          <td>
+            <div class="fullness ${fullnessState}">
+              <div class="progress">
+                <div class="progress-bar" style="width:${pct}%"></div>
+              </div>
+              <span class="count">${c.booked}/${c.capacity}</span>
             </div>
           </td>
-          <td class="text-nowrap">
-            <button class="btn btn-sm btn-outline-secondary" onclick="openEditModal(${s.classScheduleId})">Edit</button>
-            <button class="btn btn-sm btn-outline-secondary" onclick="openReassignModal(${s.classScheduleId})">Reassign</button>
-            <button class="btn btn-sm btn-outline-danger" onclick="deleteSchedule(${s.classScheduleId}, ${c.booked})">Cancel</button>
+          <td class="table-actions">
+            <button class="btn btn-outline-secondary" onclick="openEditModal(${s.classScheduleId})">Edit</button>
+            <button class="btn btn-outline-secondary" onclick="openReassignModal(${s.classScheduleId})">Reassign</button>
+            <button class="btn btn-outline-danger" onclick="promptDeleteSchedule(${s.classScheduleId}, ${c.booked})">Cancel</button>
           </td>
         </tr>`;
         }).join("");
 
         document.getElementById("scheduleTableBody").innerHTML = rows;
-        document.getElementById("resultCount").textContent = `${schedules.length} class(es)`;
+        document.getElementById("resultCount").textContent = `(${schedules.length})`;
     } catch (err) {
         showToast(err.message, "danger");
     }
+}
+
+function formatDateTime(iso) {
+    const d = new Date(iso);
+    return d.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
 }
 
 function formatDateTime(iso) {
