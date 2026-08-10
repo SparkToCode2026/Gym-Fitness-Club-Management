@@ -135,3 +135,50 @@ document.getElementById("btnSubmitBooking").addEventListener("click", async () =
     }
 });
 
+// Case 09 - Move a Booking to Another Class
+async function openMoveModal(userId, classScheduleId) {
+    const alertBox = document.getElementById("moveBookingAlert");
+    hideFieldError(alertBox);
+
+    document.getElementById("moveUserId").value = userId;
+    document.getElementById("moveClassScheduleId").value = classScheduleId;
+
+    try {
+        const current = await api(`/classbooking/get?userId=${userId}&classScheduleId=${classScheduleId}`);
+        document.getElementById("moveCurrentClassLabel").innerHTML =
+            `Currently booked into: <strong>${current.className}</strong> (${current.bookingStatus})`;
+
+        if (current.bookingStatus !== "Booked") {
+            showFieldError(
+                alertBox,
+                `This booking is currently ${current.bookingStatus}, not Booked — refresh the page.`
+            );
+        }
+    } catch (err) {
+        showFieldError(alertBox, err.message);
+    }
+
+    document.getElementById("moveTargetClass").innerHTML =
+        buildClassOptionsHtml(allSchedules, classScheduleId);
+
+    new bootstrap.Modal(document.getElementById("moveBookingModal")).show();
+}
+
+document.getElementById("btnSubmitMove").addEventListener("click", async () => {
+    const alertBox = document.getElementById("moveBookingAlert");
+    hideFieldError(alertBox);
+
+    const userId = document.getElementById("moveUserId").value;
+    const classScheduleId = document.getElementById("moveClassScheduleId").value;
+    const newClassScheduleId = document.getElementById("moveTargetClass").value;
+
+    try {
+        await api(`/classbooking/update?userId=${userId}&classScheduleId=${classScheduleId}&newClassScheduleId=${newClassScheduleId}`, "PUT");
+        bootstrap.Modal.getInstance(document.getElementById("moveBookingModal")).hide();
+        showToast("Booking moved successfully", "success");
+        await loadBookings();
+        await loadPopularity();
+    } catch (err) {
+        showFieldError(alertBox, err.message);
+    }
+});
