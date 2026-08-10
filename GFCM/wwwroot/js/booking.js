@@ -245,3 +245,54 @@ async function cancelBooking(userId, classScheduleId) {
         showToast(err.message, "danger");
     }
 }
+
+// Case 12 - Member Filter & Popularity Panel
+document.getElementById("btnApplyMemberFilter").addEventListener("click", async () => {
+    const userId = document.getElementById("filterMember").value;
+    const status = document.getElementById("filterStatus").value;
+
+    if (!userId) {
+        return loadBookings();
+    }
+
+    const params = new URLSearchParams({ userId });
+    if (status) params.set("status", status);
+
+    try {
+        const result = await api(`/classbooking/getByUser?${params.toString()}`);
+        loadBookings(result.bookings.map(b => ({ ...b, userId: parseInt(userId) })));
+        document.getElementById("resultCount").textContent = `(${result.count})`;
+    } catch (err) {
+        showToast(err.message, "danger");
+    }
+});
+
+document.getElementById("btnClearMemberFilter").addEventListener("click", () => {
+    document.getElementById("filterMember").value = "";
+    document.getElementById("filterStatus").value = "";
+    loadBookings();
+});
+
+async function loadPopularity() {
+    try {
+        const rows = await api("/classbooking/countByClass");
+        document.getElementById("popularityBody").innerHTML = rows.map(r => {
+            const rate = r.totalBookings > 0 ? Math.round((r.attended / r.totalBookings) * 100) : 0;
+            return `<tr>
+          <td class="fw-semibold">${r.className ?? "Class #" + r.classScheduleId}</td>
+          <td class="num">${r.totalBookings}</td>
+          <td class="num">${r.attended}</td>
+          <td class="num">${rate}%</td>
+        </tr>`;
+        }).join("");
+    } catch (err) {
+        showToast(err.message, "danger");
+    }
+}
+
+
+(async function init() {
+    await Promise.all([loadMemberOptions(), loadScheduleOptionsWithFullness()]);
+    await loadBookings();
+    await loadPopularity();
+})();
