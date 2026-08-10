@@ -109,3 +109,29 @@ async function loadBookings(list = null) {
         showToast(err.message, "danger");
     }
 }
+
+//Case 08 - Book a Member into a Class
+async function openAddBookingModalData() {
+    hideFieldError(document.getElementById("addBookingAlert"));
+    document.getElementById("addBookingClass").innerHTML = await loadScheduleOptionsWithFullness();
+}
+document.getElementById("addBookingModal").addEventListener("show.bs.modal", openAddBookingModalData);
+
+document.getElementById("btnSubmitBooking").addEventListener("click", async () => {
+    const alertBox = document.getElementById("addBookingAlert");
+    hideFieldError(alertBox);
+
+    const userId = parseInt(document.getElementById("addBookingMember").value);
+    const classScheduleId = parseInt(document.getElementById("addBookingClass").value);
+
+    try {
+        await api("/classbooking/add", "POST", { userId, classScheduleId });
+        bootstrap.Modal.getInstance(document.getElementById("addBookingModal")).hide();
+        showToast("Booking created", "success");
+        await loadBookings();
+        await loadPopularity();
+    } catch (err) {
+        showFieldError(alertBox, err.message);
+    }
+});
+
