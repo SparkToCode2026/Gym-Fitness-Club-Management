@@ -89,3 +89,38 @@ function formatDateTime(iso) {
     const d = new Date(iso);
     return d.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
 }
+
+//Case 02: Add a class
+document.getElementById("btnSubmitAdd").addEventListener("click", async () => {
+    const alertBox = document.getElementById("addScheduleAlert");
+    alertBox.classList.add("d-none");
+
+    const className = document.getElementById("addClassName").value.trim();
+    const trainerProfileId = parseInt(document.getElementById("addTrainerId").value);
+    const branchId = parseInt(document.getElementById("addBranchId").value);
+    const startTime = document.getElementById("addStartTime").value;
+    const endTime = document.getElementById("addEndTime").value;
+    const capacity = parseInt(document.getElementById("addCapacity").value);
+
+    if (!className) return showFieldError(alertBox, "Class name is required.");
+    if (!startTime || !endTime) return showFieldError(alertBox, "Start and end time are required.");
+    if (new Date(endTime) <= new Date(startTime)) return showFieldError(alertBox, "End time must be after start time.");
+    if (!capacity || capacity < 1) return showFieldError(alertBox, "Capacity must be at least 1.");
+
+    try {
+        await api("/classschedule/add", "POST", { className, trainerProfileId, branchId, startTime, endTime, capacity }); // POST /classschedule/add
+        bootstrap.Modal.getInstance(document.getElementById("addScheduleModal")).hide();
+        document.getElementById("addClassName").value = "";
+        showToast("Class added successfully", "success");
+        await loadSchedules();
+    } catch (err) {
+        showFieldError(alertBox, err.message);
+    }
+});
+
+function showFieldError(alertBox, message) {
+    alertBox.textContent = message;
+    alertBox.classList.remove("d-none");
+}
+
+
