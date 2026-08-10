@@ -107,6 +107,12 @@ namespace GFCM
 
             app.UseHttpsRedirection();
 
+            // serves the frontend from wwwroot on the same origin as the api
+            // UseDefaultFiles makes "/" load index.html, UseStaticFiles hands out the html css and js
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
+
             /// ⚠️ CRITICAL MIDDLEWARE SEQUENCE: Authentication must authenticate the token BEFORE Authorization enforces permissions
             app.UseAuthentication();
             app.UseAuthorization();
