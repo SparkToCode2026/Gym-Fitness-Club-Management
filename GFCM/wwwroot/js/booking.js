@@ -182,3 +182,51 @@ document.getElementById("btnSubmitMove").addEventListener("click", async () => {
         showFieldError(alertBox, err.message);
     }
 });
+
+//Case 10 - Mark Attendance & Bulk Actions
+
+async function updateBookingStatus(userId, classScheduleId, newStatus) {
+    if (!newStatus) return;
+    try {
+        await api(`/classbooking/updateStatus?userId=${userId}&classScheduleId=${classScheduleId}&newStatus=${newStatus}`, "PATCH");
+        showToast("Status updated", "success");
+        await loadBookings();
+        await loadPopularity();
+    } catch (err) {
+        showToast(err.message, "danger");
+    }
+}
+
+document.getElementById("bulkAttendModal").addEventListener("show.bs.modal", async () => {
+    hideFieldError(document.getElementById("bulkAttendAlert"));
+    document.getElementById("bulkAttendClass").innerHTML =
+        allSchedules.map(s => `<option value="${s.classScheduleId}">${s.className}</option>`).join("");
+});
+
+document.getElementById("btnSubmitBulkAttend").addEventListener("click", async () => {
+    const alertBox = document.getElementById("bulkAttendAlert");
+    hideFieldError(alertBox);
+
+    const classScheduleId = document.getElementById("bulkAttendClass").value;
+    try {
+        const bookings = await api("/classbooking/getAll");
+        const targets = bookings.filter(b => b.classScheduleId == classScheduleId && b.bookingStatus === "Booked");
+
+        if (!targets.length) {
+            showFieldError(alertBox, "No active 'Booked' status rows found for this class.");
+            return;
+        }
+
+        await Promise.all(targets.map(b =>
+            api(`/classbooking/updateStatus?userId=${b.userId}&classScheduleId=${b.classScheduleId}&newStatus=Attended`, "PATCH")
+        ));
+
+        bootstrap.Modal.getInstance(document.getElementById("bulkAttendModal")).hide();
+        showToast(`${targets.length} booking(s) marked as attended`, "success");
+        await loadBookings();
+        await loadPopularity();
+    } catch (err) {
+        showFieldError(alertBox, err.message);
+    }
+});
+
