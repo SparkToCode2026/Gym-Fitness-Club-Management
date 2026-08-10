@@ -121,6 +121,73 @@ document.getElementById("btnSubmitAdd").addEventListener("click", async () => {
 function showFieldError(alertBox, message) {
     alertBox.textContent = message;
     alertBox.classList.remove("d-none");
+    
+    
+
+// Case 03: Edit a class
+    let editingSchedule = null;
+
+    async function openEditModal(classScheduleId) {
+        document.getElementById("editScheduleAlert").classList.add("d-none");
+
+        try {
+            const s = await api(`/classschedule/get?classScheduleId=${classScheduleId}`); // GET /classschedule/get
+            editingSchedule = s;
+
+            document.getElementById("editClassScheduleId").value = classScheduleId;
+            document.getElementById("editClassName").value = s.className;
+            document.getElementById("editStartTime").value = toLocalInputValue(s.startTime);
+            document.getElementById("editEndTime").value = toLocalInputValue(s.endTime);
+            document.getElementById("editCapacity").value = s.capacity;
+
+            const count = await api(`/classschedule/getBookingCount?classScheduleId=${classScheduleId}`); // GET /classschedule/getBookingCount
+            document.getElementById("editBookedHint").textContent = `(currently ${count.booked} booked - can't go below this)`;
+
+            new bootstrap.Modal(document.getElementById("editScheduleModal")).show();
+        } catch (err) {
+            showToast(err.message, "danger");
+        }
+    }
+
+    function toLocalInputValue(iso) {
+        const d = new Date(iso);
+        const pad = n => String(n).padStart(2, "0");
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    document.getElementById("btnSubmitEdit").addEventListener("click", async () => {
+        const alertBox = document.getElementById("editScheduleAlert");
+        alertBox.classList.add("d-none");
+
+        const classScheduleId = document.getElementById("editClassScheduleId").value;
+        const s = editingSchedule;
+
+        const className = document.getElementById("editClassName").value.trim();
+        const startTime = document.getElementById("editStartTime").value;
+        const endTime = document.getElementById("editEndTime").value;
+        const capacity = parseInt(document.getElementById("editCapacity").value);
+
+        if (new Date(endTime) <= new Date(startTime)) return showFieldError(alertBox, "End time must be after start time.");
+
+        try {
+            const trainer = allTrainers.find(t => t.trainerName === s.trainerName);
+            const branch = allBranches.find(b => b.branchName === s.branchName);
+
+            await api(`/classschedule/update?classScheduleId=${classScheduleId}`, "PUT", { // PUT /classschedule/update
+                className,
+                trainerProfileId: trainer ? trainer.trainerProfileId : s.trainerProfileId,
+                branchId: branch ? branch.branchId : s.branchId,
+                startTime,
+                endTime,
+                capacity
+            });
+            bootstrap.Modal.getInstance(document.getElementById("editScheduleModal")).hide();
+            showToast("Class updated successfully", "success");
+            await loadSchedules();
+        } catch (err) {
+            showFieldError(alertBox, err.message);
+        }
+    });
 }
 
 
