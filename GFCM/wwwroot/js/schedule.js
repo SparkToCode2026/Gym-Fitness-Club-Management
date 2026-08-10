@@ -190,4 +190,31 @@ function showFieldError(alertBox, message) {
     });
 }
 
+// Case 04: Reassign trainer
+function openReassignModal(classScheduleId) {
+    document.getElementById("reassignAlert").classList.add("d-none");
+    document.getElementById("reassignClassScheduleId").value = classScheduleId;
 
+    const s = currentSchedules.find(x => x.classScheduleId === classScheduleId);
+    const currentTrainer = allTrainers.find(t => t.trainerName === s?.trainerName);
+    if (currentTrainer) document.getElementById("reassignTrainerId").value = currentTrainer.trainerProfileId;
+
+    new bootstrap.Modal(document.getElementById("reassignModal")).show();
+}
+
+document.getElementById("btnSubmitReassign").addEventListener("click", async () => {
+    const alertBox = document.getElementById("reassignAlert");
+    alertBox.classList.add("d-none");
+
+    const classScheduleId = document.getElementById("reassignClassScheduleId").value;
+    const newTrainerProfileId = document.getElementById("reassignTrainerId").value;
+
+    try {
+        await api(`/classschedule/updateTrainer?classScheduleId=${classScheduleId}&newTrainerProfileId=${newTrainerProfileId}`, "PATCH"); // PATCH /classschedule/updateTrainer
+        bootstrap.Modal.getInstance(document.getElementById("reassignModal")).hide();
+        showToast("Trainer reassigned successfully", "success");
+        await loadSchedules();
+    } catch (err) {
+        showFieldError(alertBox, err.message);
+    }
+});
