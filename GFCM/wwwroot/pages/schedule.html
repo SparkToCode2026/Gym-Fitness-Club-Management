@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Classes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/site.css" rel="stylesheet">
+</head>
+<body>
+<div id="navbar"></div>
+
+<div class="container py-4">
+    <!-- Standardized Page Header -->
+    <div class="page-header">
+        <div class="d-flex align-items-baseline">
+            <h2>Classes</h2>
+            <span class="count" id="resultCount"></span>
+        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addScheduleModal">
+            Add Class
+        </button>
+    </div>
+
+    <!-- Case 06: filter row -->
+    <div class="card p-3 mb-3">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">From</label>
+                <input type="date" id="filterFrom" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">To</label>
+                <input type="date" id="filterTo" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Branch</label>
+                <select id="filterBranch" class="form-select">
+                    <option value="">All branches</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button class="btn btn-outline-secondary flex-fill" id="btnApplyFilter">Filter</button>
+                <button class="btn btn-outline-secondary flex-fill" id="btnClearFilter">Clear</button>
+            </div>
+        </div>
+        <div class="mt-2 d-flex gap-2">
+            <button class="btn btn-sm btn-outline-primary" id="presetToday">Today</button>
+            <button class="btn btn-sm btn-outline-primary" id="presetWeek">This week</button>
+            <button class="btn btn-sm btn-outline-primary" id="presetMonth">This month</button>
+        </div>
+       
+    </div>
+
+    <!-- Case 01: table -->
+    <div id="scheduleTableWrap">
+        <table class="table table-hover table-striped bg-white">
+            <thead>
+            <tr>
+                <th>Class</th>
+                <th>Trainer</th>
+                <th>Branch</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Fullness</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="scheduleTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Case 02: Add modal -->
+<div class="modal fade" id="addScheduleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Class</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="addScheduleAlert" class="alert alert-danger d-none"></div>
+                <div class="mb-2">
+                    <label class="form-label">Class name</label>
+                    <input type="text" id="addClassName" class="form-control">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Trainer</label>
+                    <select id="addTrainerId" class="form-select"></select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Branch</label>
+                    <select id="addBranchId" class="form-select"></select>
+                </div>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <label class="form-label">Start</label>
+                        <input type="datetime-local" id="addStartTime" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">End</label>
+                        <input type="datetime-local" id="addEndTime" class="form-control">
+                    </div>
+                </div>
+                <div class="mb-2 mt-2">
+                    <label class="form-label">Capacity</label>
+                    <input type="number" id="addCapacity" class="form-control" min="1" value="10">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btnSubmitAdd">Add Class</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Case 03: Edit modal -->
+<div class="modal fade" id="editScheduleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Class</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="editScheduleAlert" class="alert alert-danger d-none"></div>
+                <input type="hidden" id="editClassScheduleId">
+                <div class="mb-2">
+                    <label class="form-label">Class name</label>
+                    <input type="text" id="editClassName" class="form-control">
+                </div>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <label class="form-label">Start</label>
+                        <input type="datetime-local" id="editStartTime" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">End</label>
+                        <input type="datetime-local" id="editEndTime" class="form-control">
+                    </div>
+                </div>
+                <div class="mb-2 mt-2">
+                    <label class="form-label">Capacity <span class="text-muted small" id="editBookedHint"></span></label>
+                    <input type="number" id="editCapacity" class="form-control" min="1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btnSubmitEdit">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Case 04: Reassign trainer modal -->
+<div class="modal fade" id="reassignModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reassign Trainer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="reassignAlert" class="alert alert-danger d-none"></div>
+                <input type="hidden" id="reassignClassScheduleId">
+                <label class="form-label">New trainer</label>
+                <select id="reassignTrainerId" class="form-select"></select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btnSubmitReassign">Reassign</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Case 05: Delete/Cancel Class Modal -->
+<div class="modal fade" id="deleteScheduleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cancel Class Schedule</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel this class? All associated bookings will be marked as cancelled.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmDelete">Confirm Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/ui.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/schedule.js"></script>
+   
+</div>  
+</body>
+</html>
