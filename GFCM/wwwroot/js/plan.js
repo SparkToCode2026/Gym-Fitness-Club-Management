@@ -28,9 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", confirmDeletePlan);
 });
 
-function formatMoney(value) {
-  return Number(value).toFixed(2);
-}
+// formatMoney removed — already exists in ui.js
 
 // Case 01 — List
 async function loadPlans() {
@@ -47,7 +45,8 @@ async function loadPlans() {
     const url = activeOnly
       ? "/membershipplan/getAll?activeOnly=true"
       : "/membershipplan/getAll";
-    const plans = await api(url);
+    const result = await api(url);
+    const plans = result.plans;
 
     spinner.classList.add("d-none");
 
@@ -72,14 +71,14 @@ function renderPlanCards(plans) {
       <div class="card h-100 ${p.isActive ? "" : "border-secondary"}">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
-            <h5 class="card-title">${p.name}</h5>
+            <h5 class="card-title">${p.planName}</h5>
             <span class="badge ${p.isActive ? "bg-success" : "bg-secondary"}">
               ${p.isActive ? "Active" : "Retired"}
             </span>
           </div>
-          <p class="card-text">${p.description ?? ""}</p>
+          <p class="card-text">${p.planDescription ?? ""}</p>
           <p class="mb-1"><strong>Duration:</strong> ${p.durationInDays} days</p>
-          <p class="mb-1"><strong>Price:</strong> $${formatMoney(p.price)}</p>
+          <p class="mb-1"><strong>Price:</strong> $${formatMoney(p.planPrice)}</p>
           <p class="mb-1"><strong>Max Classes/Month:</strong> ${p.maxClassesPerMonth}</p>
           <p class="mb-2"><strong>Subscribers:</strong> ${p.subscriberCount ?? 0}</p>
 
@@ -91,7 +90,7 @@ function renderPlanCards(plans) {
 
           <div class="d-flex gap-2">
             <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${p.membershipPlanId}"
-                    data-description="${p.description ?? ""}" data-price="${p.price}">Edit</button>
+                    data-description="${p.planDescription ?? ""}" data-price="${p.planPrice}">Edit</button>
             <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${p.membershipPlanId}">Retire</button>
           </div>
         </div>
@@ -147,10 +146,10 @@ async function submitAddPlan() {
   errorBox.classList.add("d-none");
 
   const body = {
-    name: document.getElementById("addPlanName").value.trim(),
-    description: document.getElementById("addPlanDescription").value.trim(),
+    planName: document.getElementById("addPlanName").value.trim(),
+    planDescription: document.getElementById("addPlanDescription").value.trim(),
     durationInDays: Number(document.getElementById("addPlanDuration").value),
-    price: Number(document.getElementById("addPlanPrice").value),
+    planPrice: Number(document.getElementById("addPlanPrice").value),
     maxClassesPerMonth: Number(
       document.getElementById("addPlanMaxClasses").value,
     ),
@@ -171,8 +170,10 @@ async function submitAddPlan() {
 async function submitEditPlan() {
   const id = document.getElementById("editPlanId").value;
   const body = {
-    description: document.getElementById("editPlanDescription").value.trim(),
-    price: Number(document.getElementById("editPlanPrice").value),
+    planDescription: document
+      .getElementById("editPlanDescription")
+      .value.trim(),
+    planPrice: Number(document.getElementById("editPlanPrice").value),
   };
 
   try {
@@ -200,16 +201,17 @@ async function confirmDeletePlan() {
   }
 }
 
-// Case 06 — Price filter
+// Case 06 — Price filter (shown as a plain list, since getByPrice returns fewer fields)
 async function applyPriceFilter() {
   const maxPrice = document.getElementById("maxPriceFilter").value;
   if (!maxPrice) return loadPlans();
 
   try {
-    const plans = await api(
+    const result = await api(
       `/membershipplan/getByPrice?maxPrice=${encodeURIComponent(maxPrice)}`,
     );
-    renderPlanCards(plans);
+    const plans = result.plans;
+    renderFilteredList(plans);
     document.getElementById("resultCount").textContent =
       `${plans.length} result(s)`;
   } catch (err) {
@@ -217,18 +219,44 @@ async function applyPriceFilter() {
   }
 }
 
+function renderFilteredList(plans) {
+  const container = document.getElementById("planCards");
+  if (!plans || plans.length === 0) {
+    container.innerHTML = `<p class="text-muted">No plans found under that price.</p>`;
+    return;
+  }
+  container.innerHTML = `
+    <div class="col-12">
+      <ul class="list-group">
+        ${plans
+          .map(
+            (p) => `
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>${p.planName} — ${p.durationInDays} days</span>
+            <span class="badge bg-primary rounded-pill">$${formatMoney(p.planPrice)}</span>
+          </li>
+        `,
+          )
+          .join("")}
+      </ul>
+    </div>
+  `;
+}
+
 // Case 06 — Popular plans
 async function loadPopularPlans() {
   const container = document.getElementById("popularList");
   try {
-    const popular = await api("/membershipplan/getPopular");
+    const result = await api("/membershipplan/getPopular");
+    const popular = result.plans;
+
     if (!popular || popular.length === 0) {
       container.innerHTML = `<span class="text-muted">No data yet.</span>`;
       return;
     }
     container.innerHTML = `
       <ol class="mb-0">
-        ${popular.map((p) => `<li>${p.name} — ${p.subscriberCount ?? 0} subscribers</li>`).join("")}
+        ${popular.map((p) => `<li>${p.planName} — ${p.subscribers ?? 0} subscribers</li>`).join("")}
       </ol>
     `;
   } catch (err) {
