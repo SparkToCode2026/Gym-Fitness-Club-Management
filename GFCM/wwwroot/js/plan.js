@@ -78,7 +78,7 @@ function renderPlanCards(plans) {
           </div>
           <p class="card-text">${p.planDescription ?? ""}</p>
           <p class="mb-1"><strong>Duration:</strong> ${p.durationInDays} days</p>
-          <p class="mb-1"><strong>Price:</strong> $${formatMoney(p.planPrice)}</p>
+          <p class="mb-1"><strong>Price:</strong> ${formatMoney(p.planPrice)}</p>
           <p class="mb-1"><strong>Max Classes/Month:</strong> ${p.maxClassesPerMonth}</p>
           <p class="mb-2"><strong>Subscribers:</strong> ${p.subscriberCount ?? 0}</p>
 
@@ -233,7 +233,7 @@ function renderFilteredList(plans) {
             (p) => `
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <span>${p.planName} — ${p.durationInDays} days</span>
-            <span class="badge bg-primary rounded-pill">$${formatMoney(p.planPrice)}</span>
+            <span class="badge bg-primary rounded-pill">${formatMoney(p.planPrice)}</span>
           </li>
         `,
           )
