@@ -721,3 +721,41 @@ function toInputDate(value) {
 
     return `${year}-${month}-${day}`;
 }
+//load empty state
+function showLoading() {
+
+    document
+        .getElementById("loadingSpinner")
+        .classList.remove("d-none");
+
+
+    document
+        .getElementById("tableContainer")
+        .classList.add("d-none");
+
+
+    document
+        .getElementById("emptyState")
+        .classList.add("d-none");
+}
+
+
+function showEmptyState(message) {
+
+    document
+        .getElementById("loadingSpinner")
+        .classList.add("d-none");
+
+
+    document
+        .getElementById("tableContainer")
+        .classList.add("d-none");
+
+
+    const emptyState =
+        document.getElementById("emptyState");
+
+
+    emptyState.textContent = message;
+    emptyState.classList.remove("d-none");
+}
