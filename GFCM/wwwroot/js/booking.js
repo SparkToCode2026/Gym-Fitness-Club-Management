@@ -60,18 +60,15 @@ function buildClassOptionsHtml(schedules, excludeId = null) {
 // Case 07 - Booking List
 async function loadBookings(list = null) {
     const wrap = document.getElementById("bookingTableWrap");
-    if (!list) showSpinner(wrap);
+    // FIX : Pass element ID string "bookingTableWrap" instead of DOM element
+    if (!list) showSpinner("bookingTableWrap");
 
     try {
         const bookings = list ?? await api("/classbooking/getAll");
 
         if (!bookings.length) {
-            showEmptyState(wrap, "No bookings found.");
-            document.getElementById("resultCount").textContent = "(0)";
-            return;
-        }
-
-        wrap.innerHTML = `
+            // FIX : Replaced non-existent showEmptyState with emptyRow 
+            wrap.innerHTML = `
       <table class="table table-hover">
         <thead>
           <tr>
@@ -82,27 +79,13 @@ async function loadBookings(list = null) {
             <th class="table-actions">Actions</th>
           </tr>
         </thead>
-        <tbody id="bookingTableBody"></tbody>
+        <tbody>
+          ${emptyRow(5, "No bookings found.")}
+        </tbody>
       </table>`;
-
-        document.getElementById("bookingTableBody").innerHTML = bookings.map(b => `
-      <tr data-user-id="${b.userId}" data-schedule-id="${b.classScheduleId}">
-        <td class="fw-semibold">${b.memberName ?? '<span class="nil"></span>'}</td>
-        <td>${b.className ?? '<span class="nil"></span>'}</td>
-        <td class="num">${new Date(b.bookingDate).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}</td>
-        <td>${getStatusBadge(b.bookingStatus)}</td>
-        <td class="table-actions">
-          <select class="form-select form-select-sm d-inline-block w-auto me-1"
-                  onchange="updateBookingStatus(${b.userId}, ${b.classScheduleId}, this.value)">
-            <option value="" selected disabled>Set status...</option>
-            <option value="Booked">Booked</option>
-            <option value="Cancelled">Cancelled</option>
-            <option value="Attended">Attended</option>
-          </select>
-          <button class="btn btn-outline-secondary" onclick="openMoveModal(${b.userId}, ${b.classScheduleId})">Move</button>
-          <button class="btn btn-outline-danger" onclick="cancelBooking(${b.userId}, ${b.classScheduleId})">Cancel</button>
-        </td>
-      </tr>`).join("");
+            document.getElementById("resultCount").textContent = "(0)";
+            return;
+        }
 
         document.getElementById("resultCount").textContent = `(${bookings.length})`;
     } catch (err) {
@@ -246,7 +229,7 @@ async function cancelBooking(userId, classScheduleId) {
     }
 }
 
-// Case 12 - Member Filter & Popularity Panel
+    // Case 12 - Member Filter & Popularity Panel
 document.getElementById("btnApplyMemberFilter").addEventListener("click", async () => {
     const userId = document.getElementById("filterMember").value;
     const status = document.getElementById("filterStatus").value;
