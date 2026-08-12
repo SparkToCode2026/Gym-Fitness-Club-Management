@@ -215,10 +215,16 @@ function openReassignModal(classScheduleId) {
     document.getElementById("reassignClassScheduleId").value = classScheduleId;
 
     const s = currentSchedules.find(x => x.classScheduleId === classScheduleId);
+    
     const currentTrainer = allTrainers.find(t => t.trainerName === s?.trainerName);
-    if (currentTrainer) document.getElementById("reassignTrainerId").value = currentTrainer.trainerProfileId;
+    
+    // FIX: Preselect trainer directly using s.trainerProfileId
+    if (s?.trainerProfileId) {
+        document.getElementById("reassignTrainerId").value = s.trainerProfileId;
+    }
 
     new bootstrap.Modal(document.getElementById("reassignModal")).show();
+
 }
 
 document.getElementById("btnSubmitReassign").addEventListener("click", async () => {
