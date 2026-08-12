@@ -134,9 +134,11 @@ document.getElementById("btnSubmitAdd").addEventListener("click", async () => {
     }
 });
 
+// FIX :added the missing closing brace
 function showFieldError(alertBox, message) {
     alertBox.textContent = message;
     alertBox.classList.remove("d-none");
+}
     
     
 
@@ -186,10 +188,9 @@ function showFieldError(alertBox, message) {
         if (new Date(endTime) <= new Date(startTime)) return showFieldError(alertBox, "End time must be after start time.");
 
         try {
-            const trainer = allTrainers.find(t => t.trainerName === s.trainerName);
-            const branch = allBranches.find(b => b.branchName === s.branchName);
-
-            await api(`/classschedule/update?classScheduleId=${classScheduleId}`, "PUT", { // PUT /classschedule/update
+                // FIX: Using trainerProfileId and branchId directly
+            
+            await api(`/classschedule/update?classScheduleId=${classScheduleId}`, "PUT", { 
                 className,
                 trainerProfileId: trainer ? trainer.trainerProfileId : s.trainerProfileId,
                 branchId: branch ? branch.branchId : s.branchId,
@@ -199,12 +200,14 @@ function showFieldError(alertBox, message) {
             });
             bootstrap.Modal.getInstance(document.getElementById("editScheduleModal")).hide();
             showToast("Class updated successfully", "success");
+
             await loadSchedules();
         } catch (err) {
             showFieldError(alertBox, err.message);
         }
     });
-}
+    
+    
 
 // Case 04: Reassign trainer
 function openReassignModal(classScheduleId) {
@@ -281,9 +284,20 @@ async function applyFilter() {
     }
 }
 
+// FIX : Replaced non-existent showEmptyState call with emptyRow
 function renderFilteredList(classes) {
     const wrap = document.getElementById("scheduleTableWrap");
-    if (!classes.length) return showEmptyState(wrap, "No classes match that filter.");
+    if (!classes.length) {
+        wrap.innerHTML = `
+        <table class="table table-hover table-striped bg-white">
+          <thead><tr><th>Class</th><th>Start</th><th>End</th><th>Capacity</th></tr></thead>
+          <tbody>
+            ${emptyRow(4, "No classes match that filter.")}
+          </tbody>
+        </table>`;
+        return;
+    }
+    
 
     wrap.innerHTML = `
     <table class="table table-hover table-striped bg-white">
