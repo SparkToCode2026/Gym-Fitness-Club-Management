@@ -1198,24 +1198,62 @@ async function loadMemberOptions() {
 }
 
 async function loadBranchOptions() {
-    const response = await api("/branch/getAll");
+    try {
+        const response = await api("/branch/getAll");
 
-    const branches = Array.isArray(response)
-        ? response
-        : response.records || response.data || response.items || [];
+        const branches = Array.isArray(response)
+            ? response
+            : response?.records ||
+            response?.data ||
+            response?.items ||
+            [];
 
-    const select = document.getElementById("addBranchId");
+        const addSelect = document.getElementById("addBranchId");
+        const filterSelect = document.getElementById("filterBranchId");
+        const editSelect = document.getElementById("editBranchId");
 
-    select.innerHTML = `
-        <option value="">Select branch</option>
-        ${branches.map(branch => `
+        const branchOptions = branches.map(branch => `
             <option value="${branch.branchId}">
                 ${escapeHtml(branch.branchName)}
             </option>
-        `).join("")}
-    `;
-}
+        `).join("");
 
+        // Check IN modal
+        if (addSelect) {
+            addSelect.innerHTML = `
+                <option value="">Select branch</option>
+                ${branchOptions}
+            `;
+        }
+
+        // Filter
+        if (filterSelect) {
+            filterSelect.innerHTML = `
+                <option value="">All branches</option>
+                ${branchOptions}
+            `;
+        }
+
+        // Edit modal
+        if (editSelect) {
+            editSelect.innerHTML = `
+                <option value="">Select branch</option>
+                ${branchOptions}
+            `;
+        }
+
+    } catch (error) {
+        console.error("Failed to load branches:", error);
+
+        showToast(
+            getErrorMessage(
+                error,
+                "Failed to load branches."
+            ),
+            "danger"
+        );
+    }
+}
 
 function showToast(
     message,
