@@ -93,12 +93,18 @@ function renderCurrentlyInGym(records) {
     records.forEach(attendance => {
 
         const memberName =
-            typeof attendance.memberName === "string"
-                ? attendance.memberName
-                : attendance.memberName?.userName ?? "-";
+            getMemberName(
+                attendance.memberName ||
+                attendance.userName ||
+                attendance.user
+            );
 
         const branchName =
-            attendance.branchName ?? "-";
+            attendance.branchName ||
+            attendance.branch?.branchName ||
+            attendance.branch?.name ||
+            getBranchNameById(attendance.branchId) ||
+            "-";
 
 
         const card = document.createElement("div");
@@ -1174,7 +1180,11 @@ async function loadMemberOptions() {
 }
 
 async function loadBranchOptions() {
-    const branches = await api("/branch/getAll");
+    const response = await api("/branch/getAll");
+
+    const branches = Array.isArray(response)
+        ? response
+        : response.records || response.data || response.items || [];
 
     const select = document.getElementById("addBranchId");
 
