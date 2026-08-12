@@ -7,6 +7,8 @@ let elapsedTimer = null;
 document.addEventListener("DOMContentLoaded", async () => {
     await loadAttendance();
 
+    await loadMemberOptions();
+    await loadBranchOptions();
     // Updating "In gym" durations every minute
     elapsedTimer = setInterval(() => {
         updateLiveDurations();
