@@ -60,7 +60,8 @@ function buildClassOptionsHtml(schedules, excludeId = null) {
 // Case 07 - Booking List
 async function loadBookings(list = null) {
     const wrap = document.getElementById("bookingTableWrap");
-    // FIX : Pass element ID string "bookingTableWrap" instead of DOM element
+    
+    // FIX : Pass element ID string "bookingTableWrap" 
     if (!list) showSpinner("bookingTableWrap");
 
     try {
@@ -236,21 +237,40 @@ document.getElementById("btnApplyMemberFilter").addEventListener("click", async 
     const userId = document.getElementById("filterMember").value;
     const status = document.getElementById("filterStatus").value;
 
-    if (!userId) {
-        return loadBookings();
-    }
-
-    const params = new URLSearchParams({ userId });
-    if (status) params.set("status", status);
-
     try {
+        // FIX : Support filtering by Status alone 
+        if (!userId && status) {
+            const bookings = await api(`/classbooking/getByStatus?status=${status}`);
+            loadBookings(bookings);
+            return;
+        }
+        if (!userId && !status) {
+            return loadBookings();
+        }
+
+        const params = new URLSearchParams({userId});
+        if (status) params.set("status", status);
+
         const result = await api(`/classbooking/getByUser?${params.toString()}`);
-        loadBookings(result.bookings.map(b => ({ ...b, userId: parseInt(userId) })));
-        document.getElementById("resultCount").textContent = `(${result.count})`;
-    } catch (err) {
-        showToast(err.message, "danger");
-    }
-});
+        //FIX : Map memberName from allMembers array
+        const selectedMember = allMembers.find(m => m.userId === parseInt(userId));
+        const memberName = selectedMember ? selectedMember.userName : null;
+
+        const mappedBookings = result.bookings.map(b => ({
+            ...b,
+            userId: parseInt(userId),
+            memberName: memberName
+        }));
+        
+            loadBookings(mappedBookings);
+            document.getElementById("resultCount").textContent = `(${result.count})`;
+
+        } catch (err) {
+            showToast(err.message, "danger");
+        }
+      });
+     
+  
 
 document.getElementById("btnClearMemberFilter").addEventListener("click", () => {
     document.getElementById("filterMember").value = "";
