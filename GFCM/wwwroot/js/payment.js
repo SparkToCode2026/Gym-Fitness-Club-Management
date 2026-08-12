@@ -131,11 +131,11 @@ async function loadPayments(list = null) {
           <td>${getStatusBadge(status)}</td>
           <td class="table-actions">
             <button class="btn btn-sm btn-outline-secondary" ${locked ? "disabled" : ""}
-                    onclick="openEditModal(${p.paymentId})">Edit</button>
-            ${renderStatusActions(p.paymentId, status)}
+                    onclick="openEditModal(${p.id})">Edit</button>
+            ${renderStatusActions(p.id, status)}
             <button class="btn btn-sm btn-outline-danger" ${canDelete ? "" : "disabled"}
                     title="${isAdmin() ? "" : "Admin only"}"
-                    onclick="deletePayment(${p.paymentId})">Delete</button>
+                    onclick="deletePayment(${p.id})">Delete</button>
           </td>
         </tr>`;
         }).join("");
