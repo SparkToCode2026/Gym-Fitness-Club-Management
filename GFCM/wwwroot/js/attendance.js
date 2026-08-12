@@ -631,3 +631,17 @@ function pad(number) {
 
     return String(number).padStart(2, "0");
 }
+
+//fetch member name 
+function getMemberName(member) {
+
+    if (!member) {
+        return "-";
+    }
+
+    if (typeof member === "string") {
+        return member;
+    }
+
+    return member.userName ?? "-";
+}
