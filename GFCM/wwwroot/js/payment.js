@@ -83,8 +83,20 @@ async function loadPayments(list = null) {
         const payments = list ?? await api("/payment/getAll");
         currentPayments = payments;
 
+        // FIX: Replaced non-existent showEmptyState with emptyRow template
+        
         if (!payments.length) {
-            showEmptyState(wrap, "No payments recorded yet.");
+            wrap.innerHTML = `
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Payer</th><th>Membership</th><th class="num">Amount</th>
+            <th class="num">Date</th><th>Method</th><th>Status</th>
+            <th class="table-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>${emptyRow(7, "No payments recorded yet.")}</tbody>
+      </table>`;
             document.getElementById("resultCount").textContent = "(0)";
             return;
         }
