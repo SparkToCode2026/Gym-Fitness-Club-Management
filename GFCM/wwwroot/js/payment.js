@@ -255,10 +255,7 @@ async function deletePayment(paymentId) {
     // FIX : Replaced confirmModal with confirmDialog from ui.js
     const confirmed = await confirmDialog("Delete this payment? Only Pending or Failed payments can be removed.");
     if (!confirmed) return;
-}
-
     
-
     try {
         await api(`/payment/remove?id=${paymentId}`, "DELETE");
         showToast("Payment deleted", "success");
@@ -266,6 +263,9 @@ async function deletePayment(paymentId) {
     } catch (err) {
         showToast(err.message, "danger");
     }
+}
+
+   
 
 
 // Case 18 - Revenue Reports & Filtering
@@ -339,6 +339,11 @@ document.getElementById("presetYear").addEventListener("click", () => {
 
 // Initialization
 (async function init() {
+    // FIX: Enforce auth before making any initial API calls
+    if (typeof requireAuth === "function") {
+        requireAuth();
+    }
+
     await loadMemberOptions();
     await loadPayments();
     await loadRevenue();
