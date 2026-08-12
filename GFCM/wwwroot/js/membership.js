@@ -6,15 +6,9 @@ let selectedPlanDuration = null;
 let currentRenewEndDate = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-  renewModal = new bootstrap.Modal(
-    document.getElementById("renewMembershipModal"),
-  );
-  statusModal = new bootstrap.Modal(
-    document.getElementById("statusMembershipModal"),
-  );
-  deleteModal = new bootstrap.Modal(
-    document.getElementById("deleteMembershipModal"),
-  );
+  renewModal = new bootstrap.Modal(document.getElementById("renewMembershipModal"));
+  statusModal = new bootstrap.Modal(document.getElementById("statusMembershipModal"));
+  deleteModal = new bootstrap.Modal(document.getElementById("deleteMembershipModal"));
   addModal = new bootstrap.Modal(document.getElementById("addMembershipModal"));
 
   loadMemberships();
@@ -22,38 +16,23 @@ document.addEventListener("DOMContentLoaded", () => {
   loadPlanBreakdown();
   loadDropdowns();
 
-  document
-    .getElementById("expiringDays")
-    .addEventListener("change", loadExpiring);
-  document
-    .getElementById("addMembershipPlan")
-    .addEventListener("change", updateEndDatePreview);
-  document
-    .getElementById("submitAddMembershipBtn")
-    .addEventListener("click", submitAddMembership);
-  document
-    .getElementById("submitRenewBtn")
-    .addEventListener("click", submitRenew);
-  document
-    .getElementById("submitStatusBtn")
-    .addEventListener("click", submitStatus);
-  document
-    .getElementById("confirmDeleteMembershipBtn")
-    .addEventListener("click", confirmDeleteMembership);
+  document.getElementById("expiringDays").addEventListener("change", loadExpiring);
+  document.getElementById("addMembershipPlan").addEventListener("change", updateEndDatePreview);
+  document.getElementById("submitAddMembershipBtn").addEventListener("click", submitAddMembership);
+  document.getElementById("submitRenewBtn").addEventListener("click", submitRenew);
+  document.getElementById("submitStatusBtn").addEventListener("click", submitStatus);
+  document.getElementById("confirmDeleteMembershipBtn").addEventListener("click", confirmDeleteMembership);
 
-  document.querySelectorAll(".quick-pick").forEach((btn) => {
+  document.querySelectorAll(".quick-pick").forEach(btn => {
     btn.addEventListener("click", () => {
       document.getElementById("renewAdditionalDays").value = btn.dataset.days;
       updateRenewPreview();
     });
   });
 
-  document
-    .getElementById("renewAdditionalDays")
-    .addEventListener("input", updateRenewPreview);
+  document.getElementById("renewAdditionalDays").addEventListener("input", updateRenewPreview);
 });
 
-// Case 07 — List
 async function loadMemberships() {
   const spinner = document.getElementById("loadingSpinner");
   const emptyState = document.getElementById("emptyState");
@@ -102,17 +81,21 @@ function statusBadgeClass(status) {
 
 function renderMembershipRows(memberships) {
   const tbody = document.getElementById("membershipTableBody");
-  tbody.innerHTML = memberships
-    .map((m) => {
-      const { diffDays, colorClass } = daysRemainingInfo(m.endDate);
-      return `
+  tbody.innerHTML = memberships.map(m => {
+    const isActive = m.membershipStatus === "Active";
+    const { diffDays, colorClass } = daysRemainingInfo(m.endDate);
+    const remainingCell = isActive
+      ? `<td class="${colorClass}">${diffDays}</td>`
+      : `<td class="text-muted">—</td>`;
+
+    return `
       <tr>
         <td>${m.memberName}</td>
         <td>${m.planName}</td>
         <td>${new Date(m.startDate).toLocaleDateString()}</td>
         <td>${new Date(m.endDate).toLocaleDateString()}</td>
         <td><span class="badge ${statusBadgeClass(m.membershipStatus)}">${m.membershipStatus}</span></td>
-        <td class="${colorClass}">${diffDays}</td>
+        ${remainingCell}
         <td>
           <div class="d-flex gap-1">
             <button class="btn btn-sm btn-outline-primary renew-btn" data-id="${m.membershipId}" data-enddate="${m.endDate}">Renew</button>
@@ -122,14 +105,13 @@ function renderMembershipRows(memberships) {
         </td>
       </tr>
     `;
-    })
-    .join("");
+  }).join("");
 
   attachRowEvents();
 }
 
 function attachRowEvents() {
-  document.querySelectorAll(".renew-btn").forEach((btn) => {
+  document.querySelectorAll(".renew-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       document.getElementById("renewMembershipId").value = e.target.dataset.id;
       currentRenewEndDate = e.target.dataset.enddate;
@@ -140,7 +122,7 @@ function attachRowEvents() {
     });
   });
 
-  document.querySelectorAll(".status-btn").forEach((btn) => {
+  document.querySelectorAll(".status-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       document.getElementById("statusMembershipId").value = e.target.dataset.id;
       document.getElementById("statusSelect").value = e.target.dataset.status;
@@ -148,41 +130,44 @@ function attachRowEvents() {
     });
   });
 
-  document.querySelectorAll(".delete-btn").forEach((btn) => {
+  document.querySelectorAll(".delete-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       membershipToDeleteId = e.target.dataset.id;
-      document.getElementById("deleteMembershipId").value =
-        membershipToDeleteId;
+      document.getElementById("deleteMembershipId").value = membershipToDeleteId;
       document.getElementById("deleteConflictBox").classList.add("d-none");
       deleteModal.show();
     });
   });
 }
 
-// Dropdowns for the Enrol modal
 async function loadDropdowns() {
   try {
     const usersResult = await api("/user/getAll");
-    const users = Array.isArray(usersResult)
-      ? usersResult
-      : usersResult.users || [];
+    const users = Array.isArray(usersResult) ? usersResult : (usersResult.users || []);
     const userSel = document.getElementById("addMembershipUser");
     userSel.innerHTML = users
-      .map((u) => `<option value="${u.userId}">${u.userName}</option>`)
+      .map(u => `<option value="${u.userId}">${u.userName}</option>`)
       .join("");
   } catch (err) {
     showToast("Could not load users: " + err.message, "danger");
   }
 
+  const planSel = document.getElementById("addMembershipPlan");
+  const enrolBtn = document.getElementById("submitAddMembershipBtn");
+
   try {
     const plansResult = await api("/membershipplan/getAll?activeOnly=true");
     const plans = plansResult.plans;
-    const planSel = document.getElementById("addMembershipPlan");
+
+    if (!plans || plans.length === 0) {
+      planSel.innerHTML = `<option value="">No active plans, create one first</option>`;
+      enrolBtn.disabled = true;
+      return;
+    }
+
+    enrolBtn.disabled = false;
     planSel.innerHTML = plans
-      .map(
-        (p) =>
-          `<option value="${p.membershipPlanId}" data-duration="${p.durationInDays}">${p.planName}</option>`,
-      )
+      .map(p => `<option value="${p.membershipPlanId}" data-duration="${p.durationInDays}">${p.planName}</option>`)
       .join("");
     updateEndDatePreview();
   } catch (err) {
@@ -193,7 +178,7 @@ async function loadDropdowns() {
 function updateEndDatePreview() {
   const select = document.getElementById("addMembershipPlan");
   const selectedOption = select.options[select.selectedIndex];
-  if (!selectedOption) return;
+  if (!selectedOption || !selectedOption.dataset.duration) return;
 
   const duration = Number(selectedOption.dataset.duration);
   const endDate = new Date();
@@ -203,16 +188,13 @@ function updateEndDatePreview() {
     `Membership will end on ${endDate.toLocaleDateString()}`;
 }
 
-// Case 08 — Enrol
 async function submitAddMembership() {
   const errorBox = document.getElementById("addMembershipError");
   errorBox.classList.add("d-none");
 
   const body = {
     userId: Number(document.getElementById("addMembershipUser").value),
-    membershipPlanId: Number(
-      document.getElementById("addMembershipPlan").value,
-    ),
+    membershipPlanId: Number(document.getElementById("addMembershipPlan").value)
   };
 
   try {
@@ -227,11 +209,8 @@ async function submitAddMembership() {
   }
 }
 
-// Case 09 — Renew
 function updateRenewPreview() {
-  const additionalDays = Number(
-    document.getElementById("renewAdditionalDays").value,
-  );
+  const additionalDays = Number(document.getElementById("renewAdditionalDays").value);
   if (!additionalDays || !currentRenewEndDate) {
     document.getElementById("renewEndDatePreview").textContent = "";
     return;
@@ -250,10 +229,7 @@ async function submitRenew() {
   const additionalDays = document.getElementById("renewAdditionalDays").value;
 
   try {
-    await api(
-      `/membership/update?membershipId=${id}&additionalDays=${additionalDays}`,
-      "PUT",
-    );
+    await api(`/membership/update?membershipId=${id}&additionalDays=${additionalDays}`, "PUT");
     renewModal.hide();
     showToast("Membership renewed", "success");
     loadMemberships();
@@ -263,21 +239,17 @@ async function submitRenew() {
   }
 }
 
-// Case 10 — Status
 async function submitStatus() {
   const id = document.getElementById("statusMembershipId").value;
   const newStatus = document.getElementById("statusSelect").value;
 
   if (newStatus === "Cancelled") {
-    const confirmed = await showConfirm("Move this membership to Cancelled?");
+    const confirmed = await confirmDialog("Move this membership to Cancelled?");
     if (!confirmed) return;
   }
 
   try {
-    await api(
-      `/membership/updateStatus?membershipId=${id}&newStatus=${newStatus}`,
-      "PATCH",
-    );
+    await api(`/membership/updateStatus?membershipId=${id}&newStatus=${newStatus}`, "PATCH");
     statusModal.hide();
     showToast("Status updated", "success");
     loadMemberships();
@@ -286,27 +258,21 @@ async function submitStatus() {
   }
 }
 
-// Case 11 — Delete
 async function confirmDeleteMembership() {
   const conflictBox = document.getElementById("deleteConflictBox");
   conflictBox.classList.add("d-none");
 
   try {
-    await api(
-      `/membership/remove?membershipId=${membershipToDeleteId}`,
-      "DELETE",
-    );
+    await api(`/membership/remove?membershipId=${membershipToDeleteId}`, "DELETE");
     deleteModal.hide();
     showToast("Membership deleted", "success");
     loadMemberships();
   } catch (err) {
-    conflictBox.textContent =
-      err.message + " — try cancelling it instead via Status.";
+    conflictBox.textContent = err.message + " — try cancelling it instead via Status.";
     conflictBox.classList.remove("d-none");
   }
 }
 
-// Case 12 — Expiring soon
 async function loadExpiring() {
   const container = document.getElementById("expiringList");
   const panel = document.getElementById("expiringPanel");
@@ -329,7 +295,7 @@ async function loadExpiring() {
 
     container.innerHTML = `
       <ul class="mb-0">
-        ${expiring.map((e) => `<li>${e.memberName} — ends ${new Date(e.endDate).toLocaleDateString()}</li>`).join("")}
+        ${expiring.map(e => `<li>${e.memberName} — ends ${new Date(e.endDate).toLocaleDateString()}</li>`).join("")}
       </ul>
     `;
   } catch (err) {
@@ -337,7 +303,6 @@ async function loadExpiring() {
   }
 }
 
-// Case 12 — Plan breakdown
 async function loadPlanBreakdown() {
   const container = document.getElementById("planBreakdown");
   try {
@@ -349,21 +314,17 @@ async function loadPlanBreakdown() {
       return;
     }
 
-    container.innerHTML = counts
-      .map(
-        (c) => `
+    container.innerHTML = counts.map(c => `
       <div class="col-md-3">
         <div class="card text-center">
           <div class="card-body">
-            <div class="small text-muted">Plan #${c.membershipPlanId}</div>
+            <div class="small text-muted">${c.planName}</div>
             <div class="fs-4">${c.total}</div>
             <div class="small text-success">${c.active} active</div>
           </div>
         </div>
       </div>
-    `,
-      )
-      .join("");
+    `).join("");
   } catch (err) {
     container.innerHTML = `<span class="text-danger">${err.message}</span>`;
   }
