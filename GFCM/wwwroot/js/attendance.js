@@ -411,3 +411,41 @@ async function updateAttendance() {
         );
     }
 }
+
+//delete attendance
+async function deleteAttendance(attendanceId) {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this attendance record?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        await api(
+            `/attendance/remove?attendanceId=${attendanceId}`,
+            "DELETE"
+        );
+
+
+        await loadAttendance();
+
+
+    } catch (error) {
+
+        console.error("Delete failed:", error);
+
+        alert(
+            getErrorMessage(
+                error,
+                "Failed to delete attendance."
+            )
+        );
+    }
+}
