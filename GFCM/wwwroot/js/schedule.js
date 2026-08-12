@@ -189,11 +189,11 @@ function showFieldError(alertBox, message) {
 
         try {
                 // FIX: Using trainerProfileId and branchId directly
-            
+
             await api(`/classschedule/update?classScheduleId=${classScheduleId}`, "PUT", { 
                 className,
-                trainerProfileId: trainer ? trainer.trainerProfileId : s.trainerProfileId,
-                branchId: branch ? branch.branchId : s.branchId,
+                trainerProfileId: s.trainerProfileId,
+                branchId: s.branchId,
                 startTime,
                 endTime,
                 capacity
