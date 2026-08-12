@@ -236,10 +236,8 @@ document.getElementById("btnSubmitEditPayment").addEventListener("click", async 
 
 async function setPaymentStatus(paymentId, newStatus) {
     if (newStatus === "Completed") {
-        const confirmed = await confirmModal(
-            "Mark this payment as Completed? This action is irreversible.",
-            "Confirm Payment", "btn-success"
-        );
+        // FIX : Replaced confirmModal with confirmDialog
+        const confirmed = await confirmDialog("Mark this payment as Completed? This action is irreversible.");
         if (!confirmed) return;
     }
 
