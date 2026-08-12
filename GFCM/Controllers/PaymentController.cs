@@ -44,7 +44,7 @@ namespace GFCM.Controllers
             context.SaveChanges();
             return Ok(new
             {
-                paymentId = p.paymentId
+                id = p.paymentId
             });
         }
 
@@ -116,7 +116,7 @@ namespace GFCM.Controllers
             OrderByDescending(p => p.paymentDate).
             Select(p => new
             {
-                p.paymentId,
+                id = p.paymentId,
                 p.amount,
                 p.paymentDate,
                 p.paymentStatus,
@@ -131,25 +131,26 @@ namespace GFCM.Controllers
         [HttpGet("get")]
         public IActionResult GetAPayment(int id)
         {
-            var p = context.payments.
-            Include(p => p.user).Include(p => p.membership).
-            Select(p => new
+            var p = context.payments
+            .Include(p => p.user).Include(p => p.membership)
+            .Where(p => p.paymentId == id)
+            .Select(p => new
             {
-                p.paymentId,
+                id = p.paymentId,
                 p.amount,
                 p.paymentDate,
                 p.paymentStatus,
                 p.paymentMethod,
                 payerName = p.user.userName
-            }).FirstOrDefault(p => p.paymentId == id);
+            }).FirstOrDefault();
+
             if (p == null)
             {
                 return NotFound("Payment not found");
             }
             return Ok(p);
-
         }
-
+        
         [HttpGet("getByDate")]
         public IActionResult FilterPayments(DateTime? from,DateTime? to,PaymentStatus? status,PaymentMethod? method)
         {
@@ -175,7 +176,7 @@ namespace GFCM.Controllers
             var p = query.OrderByDescending(p=> p.paymentDate).
                 Select(p => new
                 {
-                    p.paymentId,
+                    id = p.paymentId,
                     p.amount,
                     p.paymentDate,
                     p.paymentStatus,
@@ -184,9 +185,9 @@ namespace GFCM.Controllers
                 }).ToList();
             return Ok(new
             {
-                Count = p.Count,
-                Sum = p.Sum(l => l.amount),
-                Data = p
+                count = p.Count,
+                sum = p.Sum(l => l.amount),
+                data = p
             });
         }
 
@@ -212,12 +213,12 @@ namespace GFCM.Controllers
                 .ToList();
             return Ok(new
             {
-                TotalRevenue = Total.ToString("F2"),
-                MonthlyRevenue = byMonth.Select(x => new
+                totalRevenue = Total.ToString("F2"),
+                monthlyRevenue = byMonth.Select(x => new
                 {
-                    x.Year,
-                    x.Month,
-                    Total = x.total.ToString("F2")
+                    year = x.Year,
+                    month = x.Month,
+                    total = x.total.ToString("F2")
                 })
             });
         }
