@@ -279,4 +279,52 @@ async function checkOut(attendanceId) {
     }
 }
 
+//edit model
+async function openEditModal(attendanceId) {
 
+    try {
+
+        const record =
+            await api(
+                `/attendance/get?attendanceId=${attendanceId}`
+            );
+
+
+        document.getElementById("editAttendanceId").value =
+            record.attendanceId;
+
+
+        document.getElementById("editDate").value =
+            toInputDate(record.attendanceDate);
+
+
+        document.getElementById("editBranchId").value =
+            record.branchId;
+
+
+        document.getElementById("editMessage").classList.add("d-none");
+
+
+        const modalElement =
+            document.getElementById("editModal");
+
+
+        const modal =
+            new bootstrap.Modal(modalElement);
+
+
+        modal.show();
+
+
+    } catch (error) {
+
+        console.error("Failed to load attendance:", error);
+
+        alert(
+            getErrorMessage(
+                error,
+                "Failed to load attendance record."
+            )
+        );
+    }
+}
