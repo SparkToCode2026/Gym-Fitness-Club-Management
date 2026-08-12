@@ -28,7 +28,12 @@ async function loadSchedules() {
     
     //FIX : Changed showSpinner parameter from element to ID string
     showSpinner("scheduleTableWrap");
-
+    
+    //counts variable added
+    const counts = await Promise.all(
+        schedules.map(s => api(`/classschedule/getBookingCount?classScheduleId=${s.classScheduleId}`))
+    );
+    
     try {
         const schedules = await api("/classschedule/getAll"); 
         currentSchedules = schedules;
