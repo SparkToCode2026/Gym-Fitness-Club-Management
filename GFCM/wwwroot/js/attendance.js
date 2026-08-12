@@ -6,11 +6,11 @@ let elapsedTimer = null;
 //load attendance
 document.addEventListener("DOMContentLoaded", async () => {
     await loadAttendance();
+    await loadCurrentlyInGym();
 
     await loadMemberOptions();
     await loadBranchOptions();
 
-    await loadCurrentlyInGym();
 
     // Updating "In gym" durations every minute
     elapsedTimer = setInterval(() => {
@@ -239,12 +239,12 @@ function createActionButtons(attendance) {
 
     const id = attendance.attendanceId;
 
-    let buttons = 
+    let buttons = `
         <button
             class="btn btn-sm btn-outline-primary me-1"
             onclick="openEditModal(${id})">
             Edit
-        </button> ;
+        </button> `;
 
 
     if (attendance.checkOutTime === null) {
