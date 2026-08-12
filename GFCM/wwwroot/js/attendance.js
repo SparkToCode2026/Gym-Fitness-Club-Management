@@ -546,3 +546,88 @@ async function clearFilters() {
 
     await loadAttendance();
 }
+//live duration
+function updateLiveDurations() {
+
+    document
+        .querySelectorAll("[id^='duration-']")
+        .forEach(element => {
+
+            const checkIn =
+                element.dataset.checkin;
+
+
+            const checkOut =
+                element.dataset.checkout;
+
+
+            if (!checkIn) {
+                return;
+            }
+
+
+            element.textContent =
+                calculateDuration(
+                    checkIn,
+                    checkOut || null
+                );
+        });
+}
+
+
+function calculateDuration(
+    checkInTime,
+    checkOutTime,
+    attendanceId = null
+) {
+
+    if (!checkInTime) {
+        return "-";
+    }
+
+
+    const start =
+        new Date(checkInTime);
+
+
+    const end =
+        checkOutTime
+            ? new Date(checkOutTime)
+            : new Date();
+
+
+    let difference =
+        end - start;
+
+
+    if (difference < 0) {
+        difference = 0;
+    }
+
+
+    const totalSeconds =
+        Math.floor(difference / 1000);
+
+
+    const hours =
+        Math.floor(totalSeconds / 3600);
+
+
+    const minutes =
+        Math.floor(
+            (totalSeconds % 3600) / 60
+        );
+
+
+    const seconds =
+        totalSeconds % 60;
+
+
+    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
+
+function pad(number) {
+
+    return String(number).padStart(2, "0");
+}
