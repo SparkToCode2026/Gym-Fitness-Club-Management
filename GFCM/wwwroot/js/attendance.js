@@ -759,3 +759,20 @@ function showEmptyState(message) {
     emptyState.textContent = message;
     emptyState.classList.remove("d-none");
 }
+//display model message
+function showModalMessage(
+    elementId,
+    message,
+    type
+) {
+
+    const element =
+        document.getElementById(elementId);
+
+
+    element.textContent = message;
+
+
+    element.className =
+        `alert alert-${type}`;
+}
