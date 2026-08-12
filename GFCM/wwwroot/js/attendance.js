@@ -17,23 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         updateLiveDurations();
     }, 60000);
 
-    document
-        .querySelectorAll(".currently-in-duration")
-        .forEach(element => {
 
-            const checkIn =
-                element.dataset.checkin;
-
-            if (!checkIn) {
-                return;
-            }
-
-            element.textContent =
-                calculateDuration(
-                    checkIn,
-                    null
-                );
-        });
 });
 
 //getAll 
@@ -116,11 +100,6 @@ function renderCurrentlyInGym(records) {
         const branchName =
             attendance.branchName ?? "-";
 
-        const elapsedTime =
-            calculateDuration(
-                attendance.checkInTime,
-                null
-            );
 
         const card = document.createElement("div");
 
@@ -705,6 +684,23 @@ function updateLiveDurations() {
                 calculateDuration(
                     checkIn,
                     checkOut || null
+                );
+        });
+
+    document
+        .forEach(element => {
+
+            const checkIn =
+                element.dataset.checkin;
+
+            if (!checkIn) {
+                return;
+            }
+
+            element.textContent =
+                calculateDuration(
+                    checkIn,
+                    null
                 );
         });
 }
