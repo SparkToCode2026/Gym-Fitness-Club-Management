@@ -79,6 +79,72 @@ async function loadCurrentlyInGym() {
     }
 }
 
+function renderCurrentlyInGym(records) {
+    const container =
+        document.getElementById("currentlyInGym");
+
+    container.innerHTML = "";
+
+    records.forEach(attendance => {
+
+        const memberName =
+            typeof attendance.memberName === "string"
+                ? attendance.memberName
+                : attendance.memberName?.userName ?? "-";
+
+        const branchName =
+            attendance.branchName ?? "-";
+
+        const elapsedTime =
+            calculateDuration(
+                attendance.checkInTime,
+                null
+            );
+
+        const card = document.createElement("div");
+
+        card.className = "col-md-4";
+
+        card.innerHTML = `
+            <div class="card h-100 border-success">
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+
+                        <h6 class="card-title mb-0">
+                            ${escapeHtml(memberName)}
+                        </h6>
+
+                        <span class="badge bg-success">
+                            In gym
+                        </span>
+
+                    </div>
+
+                    <p class="mb-1">
+                        <strong>Branch:</strong>
+                        ${escapeHtml(branchName)}
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Elapsed:</strong>
+                        <span
+                            class="currently-in-duration"
+                            data-checkin="${attendance.checkInTime}">
+                            ${elapsedTime}
+                        </span>
+                    </p>
+
+                </div>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+
+    container.classList.remove("d-none");
+}
+
 //rendering attendance table
 function renderAttendance(records) {
 
