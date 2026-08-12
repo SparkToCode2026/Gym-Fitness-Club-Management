@@ -87,7 +87,42 @@ async function loadBookings(list = null) {
             document.getElementById("resultCount").textContent = "(0)";
             return;
         }
+// added the deleted table rendering
+        
+        wrap.innerHTML = `
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Member</th>
+        <th>Class</th>
+        <th>Booking Date</th>
+        <th>Status</th>
+        <th class="table-actions">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="bookingTableBody"></tbody>
+  </table>`;
 
+        document.getElementById("bookingTableBody").innerHTML = bookings.map(b => `
+  <tr data-user-id="${b.userId}" data-schedule-id="${b.classScheduleId}">
+    <td class="fw-semibold">${b.memberName ?? '<span class="nil"></span>'}</td>
+    <td>${b.className ?? '<span class="nil"></span>'}</td>
+    <td class="num">${new Date(b.bookingDate).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}</td>
+    <td>${getStatusBadge(b.bookingStatus)}</td>
+    <td class="table-actions">
+      <select class="form-select form-select-sm d-inline-block w-auto me-1"
+              onchange="updateBookingStatus(${b.userId}, ${b.classScheduleId}, this.value)">
+        <option value="" selected disabled>Set status...</option>
+        <option value="Booked">Booked</option>
+        <option value="Cancelled">Cancelled</option>
+        <option value="Attended">Attended</option>
+      </select>
+      <button class="btn btn-outline-secondary" onclick="openMoveModal(${b.userId}, ${b.classScheduleId})">Move</button>
+      <button class="btn btn-outline-danger" onclick="cancelBooking(${b.userId}, ${b.classScheduleId})">Cancel</button>
+    </td>
+  </tr>`).join("");
+        
+        
         document.getElementById("resultCount").textContent = `(${bookings.length})`;
     } catch (err) {
         showToast(err.message, "danger");
