@@ -236,3 +236,47 @@ async function addAttendance() {
     }
 }
 
+//check out member 
+async function checkOut(attendanceId) {
+
+    const confirmed =
+        confirm("Are you sure you want to check out this member?");
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        const result =
+            await api(
+                `/attendance/updateCheckOut?attendanceId=${attendanceId}`,
+                "PATCH"
+            );
+
+
+        alert(
+            result?.message ||
+            "Member checked out successfully."
+        );
+
+
+        await loadAttendance();
+
+
+    } catch (error) {
+
+        console.error("Check-out failed:", error);
+
+        alert(
+            getErrorMessage(
+                error,
+                "Failed to check out member."
+            )
+        );
+    }
+}
+
+
