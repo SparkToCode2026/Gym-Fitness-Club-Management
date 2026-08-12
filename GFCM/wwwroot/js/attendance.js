@@ -150,6 +150,84 @@ function renderCurrentlyInGym(records) {
     container.classList.remove("d-none");
 }
 
+async function loadAveragePerBranch() {
+
+    const loading =
+        document.getElementById(
+            "averagePerBranchLoading"
+        );
+
+    const emptyState =
+        document.getElementById(
+            "averagePerBranchEmpty"
+        );
+
+    const container =
+        document.getElementById(
+            "averagePerBranch"
+        );
+
+    loading.classList.remove("d-none");
+    emptyState.classList.add("d-none");
+    container.classList.add("d-none");
+
+    container.innerHTML = "";
+
+    try {
+
+        const result =
+            await api(
+                "/attendance/averagePerBranch"
+            );
+
+        const records =
+            Array.isArray(result)
+                ? result
+                : (
+                    result?.records ??
+                    result?.data ??
+                    result?.averages ??
+                    []
+                );
+
+        loading.classList.add("d-none");
+
+        if (
+            !Array.isArray(records) ||
+            records.length === 0
+        ) {
+
+            emptyState.classList.remove(
+                "d-none"
+            );
+
+            return;
+        }
+
+        renderAveragePerBranch(records);
+
+    } catch (error) {
+
+        console.error(
+            "Failed to load branch averages:",
+            error
+        );
+
+        loading.classList.add("d-none");
+
+        emptyState.textContent =
+            getErrorMessage(
+                error,
+                "Failed to load branch averages."
+            );
+
+        emptyState.classList.remove(
+            "d-none"
+        );
+    }
+}
+
+
 //rendering attendance table
 function renderAttendance(records) {
 
