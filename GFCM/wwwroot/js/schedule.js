@@ -29,15 +29,10 @@ async function loadSchedules() {
     //FIX : Changed showSpinner parameter from element to ID string
     showSpinner("scheduleTableWrap");
     
-    //counts variable added
-    const counts = await Promise.all(
-        schedules.map(s => api(`/classschedule/getBookingCount?classScheduleId=${s.classScheduleId}`))
-    );
+
     
     try {
-        const schedules = await api("/classschedule/getAll"); 
-        currentSchedules = schedules;
-
+        
         //FIX: Replaced non-existent showEmptyState with emptyRow
         if (!schedules.length) {
             document.getElementById("scheduleTableWrap").innerHTML = `
@@ -55,7 +50,10 @@ async function loadSchedules() {
             return;
         }
         
-
+        //fix 
+        const counts = await Promise.all(
+            schedules.map(s => api(`/classschedule/getBookingCount?classScheduleId=${s.classScheduleId}`))
+        );
         const rows = schedules.map((s, i) => {
             const c = counts[i];
             const full = c.booked >= c.capacity;
