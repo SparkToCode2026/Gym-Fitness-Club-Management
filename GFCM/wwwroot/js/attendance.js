@@ -535,3 +535,14 @@ async function applyFilters() {
         );
     }
 }
+//clear the filter 
+async function clearFilters() {
+
+    document.getElementById("filterDate").value = "";
+    document.getElementById("filterBranchId").value = "";
+    document.getElementById("filterUserId").value = "";
+    document.getElementById("currentlyInFilter").checked = false;
+
+
+    await loadAttendance();
+}
