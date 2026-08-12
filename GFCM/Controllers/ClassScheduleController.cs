@@ -160,6 +160,8 @@ namespace GFCM.Controllers;
                 {
                     c.classScheduleId,
                     c.className,
+                    c.trainerProfileId,
+                    c.branchId,
                     c.startTime,
                     c.endTime,
                     c.capacity,
@@ -184,6 +186,8 @@ namespace GFCM.Controllers;
                 {
                     c.classScheduleId,
                     c.className,
+                    c.trainerProfileId,
+                    c.branchId,
                     c.startTime,
                     c.endTime,
                     c.capacity,
