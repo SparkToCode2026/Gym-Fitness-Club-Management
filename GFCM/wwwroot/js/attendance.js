@@ -528,6 +528,75 @@ async function checkOut(attendanceId) {
     }
 }
 
+
+function renderAveragePerBranch(records) {
+
+    const container =
+        document.getElementById(
+            "averagePerBranch"
+        );
+
+    container.innerHTML = "";
+
+    records.forEach(item => {
+
+        const branchName =
+            item.branchName ??
+            item.branch?.branchName ??
+            item.name ??
+            "Branch";
+
+        const average =
+            item.averageAttendance ??
+            item.averageDailyAttendance ??
+            item.averagePerDay ??
+            item.average ??
+            item.avgAttendance ??
+            item.value ??
+            "-";
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "col-md-4";
+
+        card.innerHTML = `
+            <div class="card h-100">
+
+                <div class="card-body">
+
+                    <h6 class="card-title mb-2">
+                        ${escapeHtml(
+            String(branchName)
+        )}
+                    </h6>
+
+                    <div class="fs-4 fw-bold">
+                        ${escapeHtml(
+            String(average)
+        )}
+                    </div>
+
+                    <small class="text-muted">
+                        Average daily attendance
+                    </small>
+
+                </div>
+
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+
+    container.classList.remove(
+        "d-none"
+    );
+}
+
+
+
 //edit model
 async function openEditModal(attendanceId) {
 
