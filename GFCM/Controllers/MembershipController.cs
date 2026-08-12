@@ -228,7 +228,21 @@ namespace GFCM.Controllers
                 })
                 .ToList();
 
-            return Ok(new { count = counts.Count, counts });
+            List<MembershipPlan> plans = context.membershipPlans.ToList();
+
+            // joined back to the plans so the cards can show names, not bare ids
+            var result = counts
+                .Select(c => new
+                {
+                    c.membershipPlanId,
+                    planName = plans.FirstOrDefault(p => p.membershipPlanId == c.membershipPlanId)?.planName,
+                    c.total,
+                    c.active
+                })
+                .ToList();
+
+
+            return Ok(new { count = result.Count, counts = result });
         }
     }
 }
