@@ -156,3 +156,83 @@ function createActionButtons(attendance) {
 
     return buttons;
 }
+
+//add attendance function
+async function addAttendance() {
+
+    const userId =
+        Number(
+            document.getElementById("addUserId").value
+        );
+
+    const branchId =
+        Number(
+            document.getElementById("addBranchId").value
+        );
+
+
+    if (!userId || !branchId) {
+
+        showModalMessage(
+            "addMessage",
+            "Please enter both Member ID and Branch ID.",
+            "danger"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        await api(
+            "/attendance/add",
+            "POST",
+            {
+                userId: userId,
+                branchId: branchId
+            }
+        );
+
+
+        showModalMessage(
+            "addMessage",
+            "Member checked in successfully.",
+            "success"
+        );
+
+
+        document.getElementById("addUserId").value = "";
+        document.getElementById("addBranchId").value = "";
+
+
+        await loadAttendance();
+
+
+        setTimeout(() => {
+
+            const modalElement =
+                document.getElementById("addModal");
+
+            const modal =
+                bootstrap.Modal.getInstance(modalElement);
+
+            if (modal) {
+                modal.hide();
+            }
+
+        }, 700);
+
+
+    } catch (error) {
+
+        console.error("Check-in failed:", error);
+
+        showModalMessage(
+            "addMessage",
+            getErrorMessage(error, "Failed to check in member."),
+            "danger"
+        );
+    }
+}
+
