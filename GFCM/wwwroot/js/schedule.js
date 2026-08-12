@@ -32,6 +32,9 @@ async function loadSchedules() {
 
     
     try {
+
+        const schedules = await api("/classschedule/getAll"); //add
+        currentSchedules = schedules; //add
         
         //FIX: Replaced non-existent showEmptyState with emptyRow
         if (!schedules.length) {
