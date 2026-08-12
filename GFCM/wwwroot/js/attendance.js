@@ -33,6 +33,52 @@ async function loadAttendance() {
 
     }
 }
+
+
+async function loadCurrentlyInGym() {
+    const loading = document.getElementById("currentlyInGymLoading");
+    const emptyState = document.getElementById("currentlyInGymEmpty");
+    const container = document.getElementById("currentlyInGym");
+
+    loading.classList.remove("d-none");
+    emptyState.classList.add("d-none");
+    container.classList.add("d-none");
+    container.innerHTML = "";
+
+    try {
+        const result = await api(
+            "/attendance/getByDate?currentlyIn=true"
+        );
+
+        const records = result?.records || [];
+
+        loading.classList.add("d-none");
+
+        if (records.length === 0) {
+            emptyState.classList.remove("d-none");
+            return;
+        }
+
+        renderCurrentlyInGym(records);
+
+    } catch (error) {
+        console.error(
+            "Failed to load currently in gym:",
+            error
+        );
+
+        loading.classList.add("d-none");
+
+        emptyState.textContent =
+            getErrorMessage(
+                error,
+                "Failed to load current gym members."
+            );
+
+        emptyState.classList.remove("d-none");
+    }
+}
+
 //rendering attendance table
 function renderAttendance(records) {
 
