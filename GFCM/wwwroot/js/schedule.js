@@ -33,13 +33,9 @@ async function loadSchedules() {
         const schedules = await api("/classschedule/getAll"); 
         currentSchedules = schedules;
 
+        //FIX: Replaced non-existent showEmptyState with emptyRow
         if (!schedules.length) {
-            showEmptyState(document.getElementById("scheduleTableWrap"), "No classes scheduled yet.");
-            return;
-        }
-
-     
-        document.getElementById("scheduleTableWrap").innerHTML = `
+            document.getElementById("scheduleTableWrap").innerHTML = `
       <table class="table table-hover table-striped bg-white">
         <thead>
           <tr>
@@ -47,11 +43,15 @@ async function loadSchedules() {
             <th>Fullness</th><th>Actions</th>
           </tr>
         </thead>
-        <tbody id="scheduleTableBody"></tbody>
+        <tbody id="scheduleTableBody">
+          ${emptyRow(7, "No classes scheduled yet.")}
+        </tbody>
       </table>`;
-        const counts = await Promise.all(
-            schedules.map(s => api(`/classschedule/getBookingCount?classScheduleId=${s.classScheduleId}`))
-        );
+            return;
+        }
+
+     
+        
 
         const rows = schedules.map((s, i) => {
             const c = counts[i];
