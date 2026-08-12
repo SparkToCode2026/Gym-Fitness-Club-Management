@@ -85,22 +85,28 @@ async function loadCurrentlyInGym() {
 }
 
 function getBranchNameById(branchId) {
-    if (!branchId) {
+    if (branchId === null || branchId === undefined || branchId === "") {
         return null;
     }
 
-    const select = document.getElementById("addBranchId");
+    const selects = [
+        document.getElementById("addBranchId"),
+        document.getElementById("filterBranchId"),
+        document.getElementById("editBranchId")
+    ].filter(Boolean);
 
-    if (!select) {
-        return null;
-    }
-
-    const option = Array.from(select.options)
-        .find(option =>
-            String(option.value) === String(branchId)
+    for (const select of selects) {
+        const option = Array.from(select.options).find(
+            option =>
+                String(option.value) === String(branchId)
         );
 
-    return option ? option.textContent.trim() : null;
+        if (option) {
+            return option.textContent.trim();
+        }
+    }
+
+    return null;
 }
 function renderCurrentlyInGym(records) {
     const container =
