@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await loadMemberOptions();
     await loadBranchOptions();
-
     await loadAttendance();
     await loadCurrentlyInGym();
+    await loadAveragePerBranch();
 
     // Updating "In gym" durations every minute
     elapsedTimer = setInterval(() => {
