@@ -31,8 +31,8 @@
                         <label for="filterDate" class="form-label">
                             Branch ID
                         </label>
-                        <!--<input type="number" id="filterBranchID" class="form-control" placeholder="Enter Branch ID">-->
-                        <select id="filterBranchID" class="form-select" required></select>
+                        <!--<input type="number" id="filterBranchId" class="form-control" placeholder="Enter Branch ID">-->
+                        <select id="filterBranchId" class="form-select" required></select>
                     </div>
                     <div class="col-md-4">
                         <label for="filterMemberID" class="form-label">
@@ -114,6 +114,32 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal">
                         </button>
                     </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Currently in the gym</h5>
+                        </div>
+
+                        <div class="card-body">
+
+                            <div id="currentlyInGymLoading" class="text-center py-3">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                                <span class="ms-2">Loading...</span>
+                            </div>
+
+                            <div id="currentlyInGymEmpty"
+                                 class="text-center text-muted py-3 d-none">
+                                No members are currently in the gym.
+                            </div>
+
+                            <div id="currentlyInGym"
+                                 class="row g-3 d-none">
+                            </div>
+
+                        </div>
+                    </div>
+
+
                     <div class="modal-body">
                         <div id="addMessage" class="alert d-none">
                         </div>
