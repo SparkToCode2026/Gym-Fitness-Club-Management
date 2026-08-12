@@ -355,6 +355,58 @@ async function addAttendance() {
     }
 }
 
+function updateCheckInMemberOptions() {
+
+    const select =
+        document.getElementById("addUserId");
+
+    if (!select) {
+        return;
+    }
+
+    const checkedInUserIds =
+        new Set(
+            attendanceRecords
+                .filter(
+                    record =>
+                        record.checkOutTime == null
+                )
+                .map(
+                    record =>
+                        String(record.userId)
+                )
+                .filter(Boolean)
+        );
+
+    Array.from(select.options)
+        .forEach(option => {
+
+            if (!option.value) {
+                return;
+            }
+
+            const alreadyIn =
+                checkedInUserIds.has(
+                    String(option.value)
+                );
+
+            option.disabled = alreadyIn;
+
+            const originalText =
+                option.dataset.originalText ||
+                option.textContent;
+
+            option.dataset.originalText =
+                originalText;
+
+            option.textContent =
+                alreadyIn
+                    ? `${originalText} — Already in gym`
+                    : originalText;
+        });
+}
+
+
 //check out member 
 async function checkOut(attendanceId) {
 
