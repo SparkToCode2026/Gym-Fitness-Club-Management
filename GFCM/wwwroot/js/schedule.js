@@ -25,10 +25,12 @@ async function loadTrainerOptions() {
 //Case 01 - Timetable list
 async function loadSchedules() {
     const body = document.getElementById("scheduleTableBody");
-    showSpinner(document.getElementById("scheduleTableWrap"));
+    
+    //FIX : Changed showSpinner parameter from element to ID string
+    showSpinner("scheduleTableWrap");
 
     try {
-        const schedules = await api("/classschedule/getAll"); // already sorted by startTime by the backend
+        const schedules = await api("/classschedule/getAll"); 
         currentSchedules = schedules;
 
         if (!schedules.length) {
