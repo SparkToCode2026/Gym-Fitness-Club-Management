@@ -1265,3 +1265,8 @@ function escapeHtml(value) {
             "&#039;"
         );
 }
+
+function escapeAttribute(value) {
+
+    return escapeHtml(value);
+}
