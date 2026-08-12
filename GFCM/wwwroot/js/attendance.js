@@ -328,3 +328,86 @@ async function openEditModal(attendanceId) {
         );
     }
 }
+
+//update attendance
+async function updateAttendance() {
+
+    const attendanceId =
+        Number(
+            document.getElementById("editAttendanceId").value
+        );
+
+
+    const attendanceDate =
+        document.getElementById("editDate").value;
+
+
+    const branchId =
+        Number(
+            document.getElementById("editBranchId").value
+        );
+
+
+    if (!attendanceId || !attendanceDate || !branchId) {
+
+        showModalMessage(
+            "editMessage",
+            "Please fill in all required fields.",
+            "danger"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        await api(
+            `/attendance/update?attendanceId=${attendanceId}`,
+            "PUT",
+            {
+                attendanceDate: attendanceDate,
+                branchId: branchId
+            }
+        );
+
+
+        showModalMessage(
+            "editMessage",
+            "Attendance updated successfully.",
+            "success"
+        );
+
+
+        await loadAttendance();
+
+
+        setTimeout(() => {
+
+            const modalElement =
+                document.getElementById("editModal");
+
+            const modal =
+                bootstrap.Modal.getInstance(modalElement);
+
+            if (modal) {
+                modal.hide();
+            }
+
+        }, 700);
+
+
+    } catch (error) {
+
+        console.error("Update failed:", error);
+
+        showModalMessage(
+            "editMessage",
+            getErrorMessage(
+                error,
+                "Failed to update attendance."
+            ),
+            "danger"
+        );
+    }
+}
