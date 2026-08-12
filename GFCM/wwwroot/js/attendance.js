@@ -799,3 +799,33 @@ function getErrorMessage(
         fallback
     );
 }
+
+async function loadMemberOptions() {
+    const members = await api("/user/getByRole?role=Member");
+
+    const select = document.getElementById("addUserId");
+
+    select.innerHTML = `
+        <option value="">Select member</option>
+        ${members.map(member => `
+            <option value="${member.userId}">
+                ${escapeHtml(member.userName)}
+            </option>
+        `).join("")}
+    `;
+}
+
+async function loadBranchOptions() {
+    const branches = await api("/branch/getAll");
+
+    const select = document.getElementById("addBranchId");
+
+    select.innerHTML = `
+        <option value="">Select branch</option>
+        ${branches.map(branch => `
+            <option value="${branch.branchId}">
+                ${escapeHtml(branch.branchName)}
+            </option>
+        `).join("")}
+    `;
+}
