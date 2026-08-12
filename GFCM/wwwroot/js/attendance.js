@@ -938,18 +938,40 @@ function getErrorMessage(
 }
 
 async function loadMemberOptions() {
-    const members = await api("/user/getByRole?role=Member");
 
-    const select = document.getElementById("addUserId");
+    try {
+        const members = await api("/user/getByRole?role=Member");
 
-    select.innerHTML = `
-        <option value="">Select member</option>
+        const addSelect = document.getElementById("addUserId");
+
+        const filterSelect = document.getElementById("filterUserId");
+
+        const options = `
+            <option value="">Select member</option>
+            ${members.map(member => `
+                <option value="${member.userId}">
+                    ${escapeHtml(member.userName)}
+                </option>
+            `).join("")}
+        `;
+
+        addSelect.innerHTML = options;
+
+        filterSelect.innerHTML = `
+        <option value="">All member</option>
         ${members.map(member => `
             <option value="${member.userId}">
                 ${escapeHtml(member.userName)}
             </option>
         `).join("")}
     `;
+    }
+    catch (error) {
+        console.error(
+            "Failed to load members:",
+            error
+        );
+    }
 }
 
 async function loadBranchOptions() {
