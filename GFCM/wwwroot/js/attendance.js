@@ -13,6 +13,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     elapsedTimer = setInterval(() => {
         updateLiveDurations();
     }, 60000);
+
+    document
+        .querySelectorAll(".currently-in-duration")
+        .forEach(element => {
+
+            const checkIn =
+                element.dataset.checkin;
+
+            if (!checkIn) {
+                return;
+            }
+
+            element.textContent =
+                calculateDuration(
+                    checkIn,
+                    null
+                );
+        });
 });
 
 //getAll 
