@@ -103,6 +103,11 @@ function renderCurrentlyInGym(records) {
 
         const card = document.createElement("div");
 
+        const elapsedTime = calculateDuration(
+            attendance.checkInTime,
+            null
+        );
+
         card.className = "col-md-4";
 
         card.innerHTML = `
