@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await loadMemberOptions();
     await loadBranchOptions();
+
+    await loadCurrentlyInGym();
+
     // Updating "In gym" durations every minute
     elapsedTimer = setInterval(() => {
         updateLiveDurations();
