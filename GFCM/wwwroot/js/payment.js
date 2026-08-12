@@ -17,6 +17,11 @@ function paymentMethodLabel(raw) {
     return PAYMENT_METHOD_ORDER[raw] ?? String(raw);
 }
 
+// FIX : Define local isAdmin helper using getCurrentUser 
+function isAdmin() {
+    const user = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+    return user?.role === "Admin";
+}
 
 function getStatusBadge(status) {
     switch (status) {
