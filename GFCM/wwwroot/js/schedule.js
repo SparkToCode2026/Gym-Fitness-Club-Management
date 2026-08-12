@@ -113,13 +113,23 @@ document.getElementById("btnSubmitAdd").addEventListener("click", async () => {
     if (new Date(endTime) <= new Date(startTime)) return showFieldError(alertBox, "End time must be after start time.");
     if (!capacity || capacity < 1) return showFieldError(alertBox, "Capacity must be at least 1.");
 
+
+    // FIX : Added input resets for times and capacity along with className on successful add
+    
     try {
         await api("/classschedule/add", "POST", { className, trainerProfileId, branchId, startTime, endTime, capacity }); // POST /classschedule/add
         bootstrap.Modal.getInstance(document.getElementById("addScheduleModal")).hide();
+        
         document.getElementById("addClassName").value = "";
+        document.getElementById("addStartTime").value = "";
+        document.getElementById("addEndTime").value = "";
+        document.getElementById("addCapacity").value = "10";
+
         showToast("Class added successfully", "success");
         await loadSchedules();
-    } catch (err) {
+    }
+
+    catch (err) {
         showFieldError(alertBox, err.message);
     }
 });
