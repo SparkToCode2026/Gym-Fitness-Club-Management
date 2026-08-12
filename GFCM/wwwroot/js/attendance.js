@@ -449,3 +449,89 @@ async function deleteAttendance(attendanceId) {
         );
     }
 }
+
+//filter button get by date
+async function applyFilters() {
+
+    const date =
+        document.getElementById("filterDate").value;
+
+
+    const branchId =
+        document.getElementById("filterBranchId").value;
+
+
+    const userId =
+        document.getElementById("filterUserId").value;
+
+
+    const currentlyIn =
+        document.getElementById("currentlyInFilter").checked;
+
+
+    const params = new URLSearchParams();
+
+
+    if (date) {
+        params.append("date", date);
+    }
+
+
+    if (branchId) {
+        params.append("branchId", branchId);
+    }
+
+
+    if (userId) {
+        params.append("userId", userId);
+    }
+
+
+    if (currentlyIn) {
+        params.append("currentlyIn", "true");
+    }
+
+
+    try {
+
+        showLoading();
+
+
+        if (
+            !date &&
+            !branchId &&
+            !userId &&
+            !currentlyIn
+        ) {
+
+            await loadAttendance();
+
+            return;
+        }
+
+
+        const result =
+            await api(
+                `/attendance/getByDate?${params.toString()}`
+            );
+
+
+        attendanceRecords =
+            result?.records || [];
+
+
+        renderAttendance(attendanceRecords);
+
+
+    } catch (error) {
+
+        console.error("Filter failed:", error);
+
+        showEmptyState(
+            getErrorMessage(
+                error,
+                "Failed to filter attendance."
+            )
+        );
+    }
+}
