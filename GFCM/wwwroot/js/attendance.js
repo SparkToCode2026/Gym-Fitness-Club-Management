@@ -688,6 +688,7 @@ function updateLiveDurations() {
         });
 
     document
+        .querySelectorAll(".currently-in-duration")
         .forEach(element => {
 
             const checkIn =
