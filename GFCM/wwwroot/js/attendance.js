@@ -776,3 +776,26 @@ function showModalMessage(
     element.className =
         `alert alert-${type}`;
 }
+//error message
+function getErrorMessage(
+    error,
+    fallback
+) {
+
+    if (!error) {
+        return fallback;
+    }
+
+
+    if (typeof error === "string") {
+        return error;
+    }
+
+
+    return (
+        error.message ||
+        error.error ||
+        error.title ||
+        fallback
+    );
+}
