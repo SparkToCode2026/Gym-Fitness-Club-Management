@@ -49,8 +49,6 @@ async function loadSchedules() {
       </table>`;
             return;
         }
-
-     
         
 
         const rows = schedules.map((s, i) => {
@@ -91,11 +89,8 @@ async function loadSchedules() {
     }
 }
 
-function formatDateTime(iso) {
-    const d = new Date(iso);
-    return d.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
-}
 
+// FIX:  Deleted duplicate formatDateTime function definition
 function formatDateTime(iso) {
     const d = new Date(iso);
     return d.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
