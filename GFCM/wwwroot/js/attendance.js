@@ -5,12 +5,12 @@ let elapsedTimer = null;
 
 //load attendance
 document.addEventListener("DOMContentLoaded", async () => {
-    await loadAttendance();
-    await loadCurrentlyInGym();
 
     await loadMemberOptions();
     await loadBranchOptions();
 
+    await loadAttendance();
+    await loadCurrentlyInGym();
 
     // Updating "In gym" durations every minute
     elapsedTimer = setInterval(() => {
