@@ -28,7 +28,8 @@ function getStatusBadge(status) {
         case "Completed":
             return `<span class="badge-status badge-live">Completed</span>`;
         case "Pending":
-            return `<span class="badge-status badge-warn">Pending</span>`;
+            // FIX: Changed badge-warn to badge-hold matching site.css
+            return `<span class="badge-status badge-hold">Pending</span>`;
         case "Failed":
             return `<span class="badge-status badge-closed">Failed</span>`;
         case "Refunded":
