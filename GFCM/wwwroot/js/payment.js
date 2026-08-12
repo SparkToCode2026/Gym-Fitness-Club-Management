@@ -75,7 +75,9 @@ document.getElementById("addPaymentMember").addEventListener("change", (e) => {
 
 async function loadPayments(list = null) {
     const wrap = document.getElementById("paymentTableWrap");
-    if (!list) showSpinner(wrap);
+    
+    // FIX: Pass ID string to showSpinner instead of element reference
+    if (!list) showSpinner("paymentTableWrap");
 
     try {
         const payments = list ?? await api("/payment/getAll");
