@@ -12,3 +12,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         updateLiveDurations();
     }, 60000);
 });
+
+//getAll 
+async function loadAttendance() {
+
+    showLoading();
+
+    try {
+
+        const records = await api("/attendance/getAll");
+        attendanceRecords = Array.isArray(records) ? records : [];
+        renderAttendance(attendanceRecords);
+
+    } catch (error) {
+
+        console.error("Failed to load attendance:", error);//developer notify
+        showEmptyState("Failed to load attendance records.");//user notify
+
+    }
+}
