@@ -1187,3 +1187,55 @@ async function loadBranchOptions() {
         `).join("")}
     `;
 }
+
+
+function showToast(
+    message,
+    type = "success"
+) {
+
+    const toastElement =
+        document.getElementById(
+            "attendanceToast"
+        );
+
+    const body =
+        document.getElementById(
+            "attendanceToastBody"
+        );
+
+    if (!toastElement || !body) {
+        // Fallback if toast HTML was not added
+        alert(message);
+        return;
+    }
+
+    body.textContent =
+        message;
+
+    toastElement.classList.remove(
+        "text-bg-success",
+        "text-bg-danger",
+        "text-bg-warning",
+        "text-bg-info"
+    );
+
+    const toastType =
+        type === "danger"
+            ? "danger"
+            : type;
+
+    toastElement.classList.add(
+        `text-bg-${toastType}`
+    );
+
+    const toast =
+        bootstrap.Toast.getOrCreateInstance(
+            toastElement,
+            {
+                delay: 3000
+            }
+        );
+
+    toast.show();
+}
