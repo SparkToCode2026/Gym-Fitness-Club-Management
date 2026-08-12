@@ -84,6 +84,24 @@ async function loadCurrentlyInGym() {
     }
 }
 
+function getBranchNameById(branchId) {
+    if (!branchId) {
+        return null;
+    }
+
+    const select = document.getElementById("addBranchId");
+
+    if (!select) {
+        return null;
+    }
+
+    const option = Array.from(select.options)
+        .find(option =>
+            String(option.value) === String(branchId)
+        );
+
+    return option ? option.textContent.trim() : null;
+}
 function renderCurrentlyInGym(records) {
     const container =
         document.getElementById("currentlyInGym");
@@ -1280,3 +1298,4 @@ function escapeAttribute(value) {
 
     return escapeHtml(value);
 }
+
