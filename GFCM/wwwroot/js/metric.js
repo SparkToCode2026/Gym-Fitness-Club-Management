@@ -1418,3 +1418,56 @@ async function updateWeight() {
     }
 
 }
+async function deleteMetric(
+    bodyMetricId
+) {
+
+    const confirmed =
+        confirm(
+            "This will permanently delete this measurement. Are you sure?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        await window.apiFetch(
+            `/bodymetric/remove?bodyMetricId=${bodyMetricId}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+
+        showToast(
+            "Body metric deleted",
+            "success"
+        );
+
+
+        await loadMetrics();
+
+
+    } catch (error) {
+
+        console.error(
+            "Failed to delete metric:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Failed to delete body metric",
+            "danger"
+        );
+
+    }
+
+}
+
+
