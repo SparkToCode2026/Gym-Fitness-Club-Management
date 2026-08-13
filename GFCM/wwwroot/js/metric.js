@@ -1624,3 +1624,92 @@ async function loadSummary(
 
 }
 
+function renderHistory(history) {
+
+    const tbody =
+        document.getElementById(
+            "historyTableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (!history.length) {
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td colspan="5"
+                    class="text-center text-muted">
+
+                    No measurements have been recorded yet.
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        calculateNetChange([]);
+
+        return;
+
+    }
+
+
+    history.forEach(metric => {
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${formatDate(
+            metric.metricDate
+        )}
+            </td>
+
+            <td>
+                ${formatOptional(
+            metric.weightKg,
+            " kg"
+        )}
+            </td>
+
+            <td>
+                ${formatOptional(
+            metric.heightCm,
+            " cm"
+        )}
+            </td>
+
+            <td>
+                ${formatOptional(
+            metric.bodyFatPercentage,
+            "%"
+        )}
+            </td>
+
+            <td>
+                ${formatOptional(
+            metric.muscleMassKg,
+            " kg"
+        )}
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+
+    calculateNetChange(history);
+
+}
