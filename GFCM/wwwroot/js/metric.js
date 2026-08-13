@@ -1066,3 +1066,79 @@ async function loadPreviousReading(
 
 }
 
+async function openEditMetric(
+    bodyMetricId
+) {
+
+    try {
+
+        const metric =
+            await window.apiFetch(
+                `/bodymetric/get?bodyMetricId=${bodyMetricId}`
+            );
+
+
+        document.getElementById(
+            "editBodyMetricId"
+        ).value =
+            metric.bodyMetricId;
+
+
+        document.getElementById(
+            "editMemberName"
+        ).value =
+            getMetricMemberName(metric);
+
+
+        document.getElementById(
+            "editWeightKg"
+        ).value =
+            metric.weightKg;
+
+
+        document.getElementById(
+            "editHeightCm"
+        ).value =
+            metric.heightCm;
+
+
+        document.getElementById(
+            "editBodyFatPercentage"
+        ).value =
+            metric.bodyFatPercentage ?? "";
+
+
+        document.getElementById(
+            "editMuscleMassKg"
+        ).value =
+            metric.muscleMassKg ?? "";
+
+
+        const modal =
+            new bootstrap.Modal(
+                document.getElementById(
+                    "editMetricModal"
+                )
+            );
+
+
+        modal.show();
+
+
+    } catch (error) {
+
+        console.error(
+            "Failed to open metric:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Failed to load measurement",
+            "danger"
+        );
+
+    }
+
+}
