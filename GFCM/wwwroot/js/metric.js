@@ -748,4 +748,189 @@ function formatOptional(
 }
 
 
+async function addMetric() {
+
+    const userId =
+        document.getElementById(
+            "addUserId"
+        ).value;
+
+    const weightKg =
+        document.getElementById(
+            "addWeightKg"
+        ).value;
+
+    const heightCm =
+        document.getElementById(
+            "addHeightCm"
+        ).value;
+
+    const bodyFatValue =
+        document.getElementById(
+            "addBodyFatPercentage"
+        ).value;
+
+    const muscleMassValue =
+        document.getElementById(
+            "addMuscleMassKg"
+        ).value;
+
+
+    if (!userId) {
+
+        showToast(
+            "Please select a member",
+            "warning"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !weightKg ||
+        Number(weightKg) <= 0
+    ) {
+
+        showToast(
+            "Weight must be greater than zero",
+            "warning"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !heightCm ||
+        Number(heightCm) <= 0
+    ) {
+
+        showToast(
+            "Height must be greater than zero",
+            "warning"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        bodyFatValue !== "" &&
+        (
+            Number(bodyFatValue) < 0 ||
+            Number(bodyFatValue) > 100
+        )
+    ) {
+
+        showToast(
+            "Body fat must be between 0 and 100",
+            "warning"
+        );
+
+        return;
+
+    }
+
+
+    const newMetric = {
+
+        userId: Number(userId),
+
+        weightKg: Number(weightKg),
+
+        heightCm: Number(heightCm)
+
+    };
+
+
+    if (bodyFatValue !== "") {
+
+        newMetric.bodyFatPercentage =
+            Number(bodyFatValue);
+
+    }
+
+
+    if (muscleMassValue !== "") {
+
+        newMetric.muscleMassKg =
+            Number(muscleMassValue);
+
+    }
+
+
+    try {
+
+        await window.apiFetch(
+            "/bodymetric/add",
+            {
+                method: "POST",
+                body: JSON.stringify(
+                    newMetric
+                )
+            }
+        );
+
+
+        showToast(
+            "Body metric logged",
+            "success"
+        );
+
+
+        const modalElement =
+            document.getElementById(
+                "addMetricModal"
+            );
+
+        const modal =
+            bootstrap.Modal.getInstance(
+                modalElement
+            );
+
+        if (modal) {
+            modal.hide();
+        }
+
+
+        document
+            .getElementById(
+                "addMetricForm"
+            )
+            .reset();
+
+
+        document
+            .getElementById(
+                "previousReading"
+            )
+            .classList.add(
+                "d-none"
+            );
+
+
+        await loadMetrics();
+
+
+    } catch (error) {
+
+        console.error(
+            "Failed to add metric:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Failed to log body metric",
+            "danger"
+        );
+
+    }
+
+}
 
