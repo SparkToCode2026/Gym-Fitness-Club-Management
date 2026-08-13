@@ -1914,3 +1914,42 @@ function showProgressSections() {
 
 }
 
+function hideProgressSections() {
+
+    document
+        .getElementById(
+            "summarySection"
+        )
+        .classList.add(
+            "d-none"
+        );
+
+
+    document
+        .getElementById(
+            "chartSection"
+        )
+        .classList.add(
+            "d-none"
+        );
+
+
+    document
+        .getElementById(
+            "historySection"
+        )
+        .classList.add(
+            "d-none"
+        );
+
+
+    if (weightChart) {
+
+        weightChart.destroy();
+
+        weightChart = null;
+
+    }
+
+}
+
