@@ -430,4 +430,55 @@ function findMemberByUserId(userId) {
     }) || null;
 
 }
+function getMetricMemberName(metric) {
+
+    if (!metric) {
+        return "-";
+    }
+
+    if (metric.memberName) {
+        return metric.memberName;
+    }
+
+    if (metric.user) {
+
+        const name =
+            getMemberName(metric.user);
+
+        if (name !== "-") {
+            return name;
+        }
+
+    }
+
+    if (metric.member) {
+
+        const name =
+            getMemberName(metric.member);
+
+        if (name !== "-") {
+            return name;
+        }
+
+    }
+
+
+    const member =
+        findMemberByUserId(
+            metric.userId
+        );
+
+
+    if (member) {
+
+        return getMemberName(member);
+
+    }
+
+
+    return "-";
+
+}
+
+
 
