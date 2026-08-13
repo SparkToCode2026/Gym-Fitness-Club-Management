@@ -21,99 +21,99 @@
             Record Payment
         </button>
     </div>
-</div>
 
-<!-- Case 18: Stat Cards -->
-<div class="row g-3 mb-4">
-    <div class="col-md-4">
-        <div class="stat-card">
-            <div class="stat-label">Confirmed Revenue (Overall)</div>
-            <div class="stat-value" id="totalRevenueFigure">-</div>
+    <!-- Case 18: Stat Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-label">Confirmed Revenue (Overall)</div>
+                <div class="stat-value" id="totalRevenueFigure">-</div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="stat-card">
+                <div class="stat-label">Filtered Revenue</div>
+                <div class="stat-value" id="filteredRevenueFigure">-</div>
+                <div class="form-hint" id="filteredRevenueLabel"></div>
+            </div>
         </div>
     </div>
-    <div class="col-md-8">
-        <div class="stat-card">
-            <div class="stat-label">Filtered Revenue</div>
-            <div class="stat-value" id="filteredRevenueFigure">-</div>
-            <div class="form-hint" id="filteredRevenueLabel"></div>
+
+    <!-- Case 18: Filter Bar -->
+    <div class="filter-bar mb-3">
+        <div>
+            <label class="form-label">From</label>
+            <input type="date" id="filterFrom" class="form-control form-control-sm">
+        </div>
+        <div>
+            <label class="form-label">To</label>
+            <input type="date" id="filterTo" class="form-control form-control-sm">
+        </div>
+        <div>
+            <label class="form-label">Method</label>
+            <select id="filterMethod" class="form-select form-select-sm">
+                <option value="">Any</option>
+                <option value="Card">Card</option>
+                <option value="Cash">Cash</option>
+                <option value="Transfer">Transfer</option>
+            </select>
+        </div>
+        <div>
+            <label class="form-label">Status</label>
+            <select id="filterStatus" class="form-select form-select-sm">
+                <option value="">Any</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+                <option value="Failed">Failed</option>
+                <option value="Refunded">Refunded</option>
+            </select>
+        </div>
+        <div class="d-flex gap-2 align-self-end">
+            <button class="btn btn-sm btn-outline-secondary" id="btnApplyFilter">Filter</button>
         </div>
     </div>
-</div>
 
-<!-- Case 18: Filter Bar -->
-<div class="filter-bar mb-3">
-    <div>
-        <label class="form-label">From</label>
-        <input type="date" id="filterFrom" class="form-control form-control-sm">
+    <div class="d-flex gap-2 mb-4">
+        <button class="btn btn-sm btn-outline-primary" id="presetMonth">This month</button>
+        <button class="btn btn-sm btn-outline-primary" id="presetLastMonth">Last month</button>
+        <button class="btn btn-sm btn-outline-primary" id="presetYear">This year</button>
+        <button class="btn btn-sm btn-outline-secondary" id="btnClearFilter">Clear</button>
     </div>
-    <div>
-        <label class="form-label">To</label>
-        <input type="date" id="filterTo" class="form-control form-control-sm">
-    </div>
-    <div>
-        <label class="form-label">Method</label>
-        <select id="filterMethod" class="form-select form-select-sm">
-            <option value="">Any</option>
-            <option value="Card">Card</option>
-            <option value="Cash">Cash</option>
-            <option value="Transfer">Transfer</option>
-        </select>
-    </div>
-    <div>
-        <label class="form-label">Status</label>
-        <select id="filterStatus" class="form-select form-select-sm">
-            <option value="">Any</option>
-            <option value="Pending">Pending</option>
-            <option value="Completed">Completed</option>
-            <option value="Failed">Failed</option>
-            <option value="Refunded">Refunded</option>
-        </select>
-    </div>
-    <div class="d-flex gap-2 align-self-end">
-        <button class="btn btn-sm btn-outline-secondary" id="btnApplyFilter">Filter</button>
-    </div>
-</div>
 
-<div class="d-flex gap-2 mb-4">
-    <button class="btn btn-sm btn-outline-primary" id="presetMonth">This month</button>
-    <button class="btn btn-sm btn-outline-primary" id="presetLastMonth">Last month</button>
-    <button class="btn btn-sm btn-outline-primary" id="presetYear">This year</button>
-    <button class="btn btn-sm btn-outline-secondary" id="btnClearFilter">Clear</button>
-</div>
-
-<!-- Case 13: Payments Table -->
-<div class="table-wrap mb-4" id="paymentTableWrap">
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>Payer</th>
-            <th>Membership</th>
-            <th class="num">Amount</th>
-            <th class="num">Date</th>
-            <th>Method</th>
-            <th>Status</th>
-            <th class="table-actions">Actions</th>
-        </tr>
-        </thead>
-        <tbody id="paymentTableBody"></tbody>
-    </table>
-</div>
-
-<!-- Case 18: Monthly Breakdown Panel -->
-<div class="card p-3">
-    <h5 class="mb-3">Monthly Breakdown (All-Time Completed)</h5>
-    <div class="table-wrap">
-        <table class="table table-sm mb-0">
+    <!-- Case 13: Payments Table -->
+    <div class="table-wrap mb-4" id="paymentTableWrap">
+        <table class="table table-hover">
             <thead>
             <tr>
-                <th>Month</th>
-                <th class="num">Total</th>
+                <th>Payer</th>
+                <th>Membership</th>
+                <th class="num">Amount</th>
+                <th class="num">Date</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th class="table-actions">Actions</th>
             </tr>
             </thead>
-            <tbody id="monthlyBreakdownBody"></tbody>
+            <tbody id="paymentTableBody"></tbody>
         </table>
     </div>
-</div>
+
+    <!-- Case 18: Monthly Breakdown Panel -->
+    <div class="card p-3">
+        <h5 class="mb-3">Monthly Breakdown (All-Time Completed)</h5>
+        <div class="table-wrap">
+            <table class="table table-sm mb-0">
+                <thead>
+                <tr>
+                    <th>Month</th>
+                    <th class="num">Total</th>
+                </tr>
+                </thead>
+                <tbody id="monthlyBreakdownBody"></tbody>
+            </table>
+        </div>
+    </div>
+    </div>
 </div>
 
 <!-- Case 14: Add Payment Modal -->
