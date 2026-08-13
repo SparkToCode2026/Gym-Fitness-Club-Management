@@ -89,3 +89,125 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 });
 
+
+function setupEvents() {
+
+    const saveMetricButton =
+        document.getElementById("saveMetricButton");
+
+    if (saveMetricButton) {
+        saveMetricButton.addEventListener(
+            "click",
+            addMetric
+        );
+    }
+
+
+    const updateMetricButton =
+        document.getElementById("updateMetricButton");
+
+    if (updateMetricButton) {
+        updateMetricButton.addEventListener(
+            "click",
+            updateMetric
+        );
+    }
+
+
+    const saveWeightButton =
+        document.getElementById("saveWeightButton");
+
+    if (saveWeightButton) {
+        saveWeightButton.addEventListener(
+            "click",
+            updateWeight
+        );
+    }
+
+
+    const addUserId =
+        document.getElementById("addUserId");
+
+    if (addUserId) {
+
+        addUserId.addEventListener(
+            "change",
+            async function () {
+
+                await loadPreviousReading(
+                    this.value
+                );
+
+            }
+        );
+
+    }
+
+
+    const progressUserId =
+        document.getElementById("progressUserId");
+
+    if (progressUserId) {
+
+        progressUserId.addEventListener(
+            "change",
+            loadProgress
+        );
+
+    }
+
+
+    const progressFrom =
+        document.getElementById("progressFrom");
+
+    if (progressFrom) {
+
+        progressFrom.addEventListener(
+            "change",
+            loadProgress
+        );
+
+    }
+
+
+    const progressTo =
+        document.getElementById("progressTo");
+
+    if (progressTo) {
+
+        progressTo.addEventListener(
+            "change",
+            loadProgress
+        );
+
+    }
+
+
+    const clearProgressFilter =
+        document.getElementById(
+            "clearProgressFilter"
+        );
+
+    if (clearProgressFilter) {
+
+        clearProgressFilter.addEventListener(
+            "click",
+            async function () {
+
+                document.getElementById(
+                    "progressFrom"
+                ).value = "";
+
+                document.getElementById(
+                    "progressTo"
+                ).value = "";
+
+                await loadProgress();
+
+            }
+        );
+
+    }
+
+}
+
