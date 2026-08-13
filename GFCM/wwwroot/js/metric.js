@@ -1336,3 +1336,85 @@ function openWeightModal(
     modal.show();
 
 }
+
+async function updateWeight() {
+
+    const bodyMetricId =
+        document.getElementById(
+            "weightBodyMetricId"
+        ).value;
+
+
+    const newWeightKg =
+        document.getElementById(
+            "newWeightKg"
+        ).value;
+
+
+    if (
+        !newWeightKg ||
+        Number(newWeightKg) <= 0
+    ) {
+
+        showToast(
+            "Weight must be greater than zero",
+            "warning"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await window.apiFetch(
+                `/bodymetric/updateWeight?bodyMetricId=${bodyMetricId}&newWeightKg=${Number(newWeightKg)}`,
+                {
+                    method: "PATCH"
+                }
+            );
+
+
+        showToast(
+            `Weight updated: ${response.oldWeight} kg → ${response.newWeight} kg`,
+            "success"
+        );
+
+
+        const modalElement =
+            document.getElementById(
+                "weightModal"
+            );
+
+        const modal =
+            bootstrap.Modal.getInstance(
+                modalElement
+            );
+
+        if (modal) {
+            modal.hide();
+        }
+
+
+        await loadMetrics();
+
+
+    } catch (error) {
+
+        console.error(
+            "Failed to update weight:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Failed to update weight",
+            "danger"
+        );
+
+    }
+
+}
