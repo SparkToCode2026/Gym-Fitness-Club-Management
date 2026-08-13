@@ -934,3 +934,135 @@ async function addMetric() {
 
 }
 
+async function loadPreviousReading(
+    userId
+) {
+
+    const box =
+        document.getElementById(
+            "previousReading"
+        );
+
+    const text =
+        document.getElementById(
+            "previousReadingText"
+        );
+
+
+    if (!userId) {
+
+        box.classList.add(
+            "d-none"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await window.apiFetch(
+                `/bodymetric/getByUser?userId=${userId}`
+            );
+
+
+        const userMetrics =
+            Array.isArray(response)
+                ? response
+                : response?.metrics ?? [];
+
+
+        if (!userMetrics.length) {
+
+            text.textContent =
+                "No previous measurement recorded.";
+
+            box.classList.remove(
+                "d-none"
+            );
+
+            return;
+
+        }
+
+
+        const previous =
+            userMetrics[
+            userMetrics.length - 1
+            ];
+
+
+        text.innerHTML = `
+
+            Date:
+            <strong>
+                ${formatDate(
+            previous.metricDate
+        )}
+            </strong>
+
+            <br>
+
+            Weight:
+            <strong>
+                ${formatOptional(
+            previous.weightKg,
+            " kg"
+        )}
+            </strong>
+
+            <br>
+
+            Height:
+            <strong>
+                ${formatOptional(
+            previous.heightCm,
+            " cm"
+        )}
+            </strong>
+
+            <br>
+
+            Body Fat:
+            <strong>
+                ${formatOptional(
+            previous.bodyFatPercentage,
+            "%"
+        )}
+            </strong>
+
+            <br>
+
+            Muscle Mass:
+            <strong>
+                ${formatOptional(
+            previous.muscleMassKg,
+            " kg"
+        )}
+            </strong>
+
+        `;
+
+
+        box.classList.remove(
+            "d-none"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Failed to load previous reading:",
+            error
+        );
+
+        box.classList.add(
+            "d-none"
+        );
+
+    }
+
+}
+
