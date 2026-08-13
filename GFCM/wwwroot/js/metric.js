@@ -382,4 +382,31 @@ function getUserId(member) {
 
 }
 
+function getMemberName(member) {
+
+    if (!member) {
+        return "-";
+    }
+
+
+    if (typeof member === "string") {
+        return member;
+    }
+
+
+    return (
+        member.userName ??
+        member.username ??
+        member.name ??
+        member.fullName ??
+        member.memberName ??
+        member.user?.userName ??
+        member.user?.username ??
+        member.user?.name ??
+        member.user?.fullName ??
+        "-"
+    );
+
+}
+
 
