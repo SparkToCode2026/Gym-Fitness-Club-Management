@@ -1142,3 +1142,169 @@ async function openEditMetric(
     }
 
 }
+
+async function updateMetric() {
+
+    const bodyMetricId =
+        document.getElementById(
+            "editBodyMetricId"
+        ).value;
+
+
+    const weightKg =
+        document.getElementById(
+            "editWeightKg"
+        ).value;
+
+
+    const heightCm =
+        document.getElementById(
+            "editHeightCm"
+        ).value;
+
+
+    const bodyFatValue =
+        document.getElementById(
+            "editBodyFatPercentage"
+        ).value;
+
+
+    const muscleMassValue =
+        document.getElementById(
+            "editMuscleMassKg"
+        ).value;
+
+
+    if (
+        !weightKg ||
+        Number(weightKg) <= 0
+    ) {
+
+        showToast(
+            "Weight must be greater than zero",
+            "warning"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !heightCm ||
+        Number(heightCm) <= 0
+    ) {
+
+        showToast(
+            "Height must be greater than zero",
+            "warning"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        bodyFatValue !== "" &&
+        (
+            Number(bodyFatValue) < 0 ||
+            Number(bodyFatValue) > 100
+        )
+    ) {
+
+        showToast(
+            "Body fat must be between 0 and 100",
+            "warning"
+        );
+
+        return;
+
+    }
+
+
+    const updated = {
+
+        weightKg: Number(weightKg),
+
+        heightCm: Number(heightCm),
+
+        bodyFatPercentage:
+            bodyFatValue !== ""
+                ? Number(bodyFatValue)
+                : null,
+
+        muscleMassKg:
+            muscleMassValue !== ""
+                ? Number(muscleMassValue)
+                : null
+
+    };
+
+
+    try {
+
+        await window.apiFetch(
+            `/bodymetric/update?bodyMetricId=${bodyMetricId}`,
+            {
+                method: "PUT",
+                body: JSON.stringify(
+                    updated
+                )
+            }
+        );
+
+
+        showToast(
+            "Body metric updated",
+            "success"
+        );
+
+
+        const modalElement =
+            document.getElementById(
+                "editMetricModal"
+            );
+
+        const modal =
+            bootstrap.Modal.getInstance(
+                modalElement
+            );
+
+        if (modal) {
+            modal.hide();
+        }
+
+
+        await loadMetrics();
+
+
+        if (
+            document.getElementById(
+                "progressUserId"
+            ).value
+        ) {
+
+            await loadProgress();
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Failed to update metric:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Failed to update body metric",
+            "danger"
+        );
+
+    }
+
+}
+
