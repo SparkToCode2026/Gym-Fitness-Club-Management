@@ -1884,3 +1884,33 @@ function renderChart(history) {
         );
 
 }
+function showProgressSections() {
+
+    document
+        .getElementById(
+            "summarySection"
+        )
+        .classList.remove(
+            "d-none"
+        );
+
+
+    document
+        .getElementById(
+            "chartSection"
+        )
+        .classList.remove(
+            "d-none"
+        );
+
+
+    document
+        .getElementById(
+            "historySection"
+        )
+        .classList.remove(
+            "d-none"
+        );
+
+}
+
