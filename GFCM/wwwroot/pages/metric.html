@@ -4,7 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Body Metrics</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
     <link href="../css/site.css" rel="stylesheet">
 </head>
 <body>
@@ -13,45 +16,75 @@
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Body Metrics</h2>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMetricModel">
+
+            <button class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addMetricModal">
                 Log Measurement
             </button>
         </div>
         <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title">Progress History</h5>
+
+                <h5 class="card-title">
+                    Progress History
+                </h5>
+
                 <div class="row g-3 align-items-end">
                     <div class="col-md-5">
-                        <label for="progressUserId" class="form-label">
+
+                        <label for="progressUserId"
+                               class="form-label">
                             Member
                         </label>
-                        <select id="progressUserId" class="form-select">
+
+                        <select id="progressUserId"
+                                class="form-select">
+
                             <option value="">
-                                Select Member
+                                Select member
                             </option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label for="progressFrom" class="form-label">
-                            Form
+
+                        <label for="progressFrom"
+                               class="form-label">
+                            From
                         </label>
-                        <input type="date" id="progressFrom" class="form-control" />
+
+                        <input type="date"
+                               id="progressFrom"
+                               class="form-control">
+
                     </div>
                     <div class="col-md-3">
-                        <label for="progressTo" class="form-label">
+
+                        <label for="progressTo"
+                               class="form-label">
                             To
                         </label>
-                        <input type="date" id="progressTo" class="form-control" />
+
+                        <input type="date"
+                               id="progressTo"
+                               class="form-control">
+
                     </div>
                     <div class="col-md-1">
-                        <button id="clearProgressFilter" class="btn btn-secondary w-100">
+
+                        <button id="clearProgressFilter"
+                                class="btn btn-secondary w-100">
                             Clear
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="summarySection" class="mb-4 d-none">
+
+
+        <div id="summarySection"
+             class="mb-4 d-none">
+
             <div class="row g-3">
 
                 <div class="col-md-3">
@@ -59,7 +92,9 @@
                     <div class="card text-center">
 
                         <div class="card-body">
-                            <h6> Entries </h6>
+
+                            <h6>Entries</h6>
+
                             <h3 id="summaryEntries">
                                 -
                             </h3>
@@ -70,9 +105,9 @@
                 <div class="col-md-3">
                     <div class="card text-center">
                         <div class="card-body">
-                            <h6>
-                                Average Weight
-                            </h6>
+
+                            <h6>Average Weight</h6>
+
                             <h3 id="summaryAverageWeight">
                                 -
                             </h3>
@@ -82,9 +117,9 @@
                 <div class="col-md-3">
                     <div class="card text-center">
                         <div class="card-body">
-                            <h6>
-                                Lightest
-                            </h6>
+
+                            <h6>Lightest</h6>
+
                             <h3 id="summaryLightest">
                                 -
                             </h3>
@@ -94,9 +129,9 @@
                 <div class="col-md-3">
                     <div class="card text-center">
                         <div class="card-body">
-                            <h6>
-                                Heaviest
-                            </h6>
+
+                            <h6>Heaviest</h6>
+
                             <h3 id="summaryHeaviest">
                                 -
                             </h3>
@@ -117,7 +152,11 @@
 
         </div>
 
-        <div id="chartSection" class="card mb-4 d-none">
+
+
+        <div id="chartSection"
+             class="card mb-4 d-none">
+
             <div class="card-body">
                 <h5 class="card-title">
                     Weight Progress
@@ -128,7 +167,10 @@
             </div>
         </div>
 
-        <div id="historySection" class="card mb-4 d-none">
+
+        <div id="historySection"
+             class="card mb-4 d-none">
+
             <div class="card-body">
                 <h5 class="card-title">
                     Measurement History
@@ -155,19 +197,30 @@
                 <h5 class="card-title">
                     All Measurements
                 </h5>
-                <div id="metricSpinner" class="text-center py-4 d-none">
-                    <div class="spinner-border" role="status">
+
+                <div id="metricSpinner"
+                     class="text-center py-4 d-none">
+
+                    <div class="spinner-border"
+                         role="status">
+
                         <span class="visually-hidden">
                             Loading...
                         </span>
                     </div>
                 </div>
-                <div id="metricEmpty" class="alert alert-info d-none">
+
+
+                <div id="metricEmpty"
+                     class="alert alert-info d-none">
+
                     No body measurements have been recorded.
                 </div>
                 <div class="table-responsive">
 
-                    <table id="metricTable" class="table table-striped table-hover">
+                    <table id="metricTable"
+                           class="table table-striped table-hover">
+
                         <thead>
                             <tr>
                                 <th>Member Name</th>
@@ -186,29 +239,49 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="addMetricModal" tabindex="-1">
+
+
+
+    <div class="modal fade"
+         id="addMetricModal"
+         tabindex="-1">
+
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
                         Log Body Measurement
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
                     </button>
                 </div>
                 <div class="modal-body">
                     <form id="addMetricForm">
                         <div class="mb-3">
-                            <label for="addUserId" class="form-label">
+
+                            <label for="addUserId"
+                                   class="form-label">
                                 Member
                             </label>
-                            <select id="addUserId" class="form-select" required>
+
+                            <select id="addUserId"
+                                    class="form-select"
+                                    required>
+
                                 <option value="">
                                     Select member
                                 </option>
                             </select>
                         </div>
-                        <div id="previousReading" class="alert alert-secondary d-none">
+
+
+
+                        <div id="previousReading"
+                             class="alert alert-secondary d-none">
+
                             <strong>
                                 Previous Reading
                             </strong>
@@ -216,118 +289,243 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="addWeightKg" class="form-label">
-                                Weight (Kg)
+
+                            <label for="addWeightKg"
+                                   class="form-label">
+                                Weight (kg)
                             </label>
-                            <input type="number" id="addWeightKg" class="form-control" min="1" step="0.1" required>
+
+                            <input type="number"
+                                   id="addWeightKg"
+                                   class="form-control"
+                                   min="1"
+                                   step="0.1"
+                                   required>
+
                         </div>
                         <div class="mb-3">
-                            <label for="addHeightCm" class="form-label">
-                                Height (Cm)
+
+                            <label for="addHeightCm"
+                                   class="form-label">
+                                Height (cm)
                             </label>
-                            <input type="number" id="addHeightCm" class="form-control" min="1" step="0.1" required>
+
+                            <input type="number"
+                                   id="addHeightCm"
+                                   class="form-control"
+                                   min="1"
+                                   step="0.1"
+                                   required>
+
                         </div>
                         <div class="mb-3">
-                            <label for="addBodyFatPercentage" class="form-label">
+
+                            <label for="addBodyFatPercentage"
+                                   class="form-label">
                                 Body Fat (%)
                             </label>
-                            <input type="number" id="addBodyFatPercentage" class="form-control" min="0" max="100" step="0.1">
+
+                            <input type="number"
+                                   id="addBodyFatPercentage"
+                                   class="form-control"
+                                   min="0"
+                                   max="100"
+                                   step="0.1">
+
                         </div>
                         <div class="mb-3">
-                            <label for="addMuscleMassKg" class="form-label">
+
+                            <label for="addMuscleMassKg"
+                                   class="form-label">
                                 Muscle Mass (kg)
                             </label>
-                            <input type="number" id="addMuscleMassKg" class="form-control" min="0" step="0.1">
+
+                            <input type="number"
+                                   id="addMuscleMassKg"
+                                   class="form-control"
+                                   min="0"
+                                   step="0.1">
+
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
-                    <button type="button" id="saveMetricButton" class="btn btn-primary">
+
+                    <button type="button"
+                            id="saveMetricButton"
+                            class="btn btn-primary">
                         Save Measurement
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="editMetricModal" tabindex="-1">
+
+
+
+    <div class="modal fade"
+         id="editMetricModal"
+         tabindex="-1">
+
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
                         Edit Body Measurement
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="editBodyMetricId">
+
+                    <input type="hidden"
+                           id="editBodyMetricId">
+
+
                     <div class="mb-3">
                         <label class="form-label">
                             Member
                         </label>
-                        <input type="text" id="editMemberName" class="form-control" disabled>
+
+                        <input type="text"
+                               id="editMemberName"
+                               class="form-control"
+                               disabled>
+
                     </div>
                     <div class="mb-3">
-                        <label for="editWeightKg" class="form-label">
+
+                        <label for="editWeightKg"
+                               class="form-label">
                             Weight (kg)
                         </label>
-                        <input type="number" id="editWeightKg" class="form-control" min="1" step="0.1" required>
+
+                        <input type="number"
+                               id="editWeightKg"
+                               class="form-control"
+                               min="1"
+                               step="0.1"
+                               required>
+
                     </div>
                     <div class="mb-3">
-                        <label for="editHeightCm" class="form-label">
+
+                        <label for="editHeightCm"
+                               class="form-label">
                             Height (cm)
                         </label>
-                        <input type="number" id="editHeightCm" class="form-control" min="1" step="0.1" required>
+
+                        <input type="number"
+                               id="editHeightCm"
+                               class="form-control"
+                               min="1"
+                               step="0.1"
+                               required>
+
                     </div>
                     <div class="mb-3">
-                        <label for="editBodyFatPercentage" class="form-label">
+
+                        <label for="editBodyFatPercentage"
+                               class="form-label">
                             Body Fat (%)
                         </label>
-                        <input type="number" id="editBodyFatPercentage" class="form-control" min="0" max="100" step="0.1">
+
+                        <input type="number"
+                               id="editBodyFatPercentage"
+                               class="form-control"
+                               min="0"
+                               max="100"
+                               step="0.1">
+
                     </div>
                     <div class="mb-3">
-                        <label for="editMuscleMassKg" class="form-label">
+
+                        <label for="editMuscleMassKg"
+                               class="form-label">
                             Muscle Mass (kg)
                         </label>
-                        <input type="number" id="editMuscleMassKg" class="form-control" min="0" step="0.1">
+
+                        <input type="number"
+                               id="editMuscleMassKg"
+                               class="form-control"
+                               min="0"
+                               step="0.1">
+
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
-                    <button type="button" id="updateMetricButton" class="btn btn-primary">
+
+                    <button type="button"
+                            id="updateMetricButton"
+                            class="btn btn-primary">
                         Update
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="weightModal" tabindex="-1">
+
+
+    <div class="modal fade"
+         id="weightModal"
+         tabindex="-1">
+
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
                         Correct Weight
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="weightBodyMetricId">
-                    <label for="newWeightKg" class="form-label">
+
+                    <input type="hidden"
+                           id="weightBodyMetricId">
+
+                    <label for="newWeightKg"
+                           class="form-label">
                         New Weight (kg)
                     </label>
-                    <input type="number" id="newWeightKg" class="form-control" min="1" step="0.1" required>
+
+                    <input type="number"
+                           id="newWeightKg"
+                           class="form-control"
+                           min="1"
+                           step="0.1"
+                           required>
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
-                    <button type="button" id="saveWeightButton" class="btn btn-primary">
+
+                    <button type="button"
+                            id="saveWeightButton"
+                            class="btn btn-primary">
                         Update Weight
                     </button>
                 </div>
@@ -335,9 +533,11 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/api.js"></script>
     <script src="../js/ui.js"></script>
     <script src="../js/nav.js"></script>
-    <script src="../js/branch.js"></script>
+    <script src="../js/metric.js"></script>
+
 </body>
 </html>
