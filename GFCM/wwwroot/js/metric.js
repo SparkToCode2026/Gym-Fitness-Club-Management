@@ -1308,3 +1308,31 @@ async function updateMetric() {
 
 }
 
+function openWeightModal(
+    bodyMetricId,
+    currentWeight
+) {
+
+    document.getElementById(
+        "weightBodyMetricId"
+    ).value =
+        bodyMetricId;
+
+
+    document.getElementById(
+        "newWeightKg"
+    ).value =
+        currentWeight;
+
+
+    const modal =
+        new bootstrap.Modal(
+            document.getElementById(
+                "weightModal"
+            )
+        );
+
+
+    modal.show();
+
+}
