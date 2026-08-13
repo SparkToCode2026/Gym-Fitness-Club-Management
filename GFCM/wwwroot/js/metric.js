@@ -727,5 +727,25 @@ function renderMetrics() {
 }
 
 
+function formatOptional(
+    value,
+    suffix = ""
+) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+
+        return "—";
+
+    }
+
+
+    return `${value}${suffix}`;
+
+}
+
 
 
