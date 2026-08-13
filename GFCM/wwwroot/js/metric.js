@@ -409,4 +409,25 @@ function getMemberName(member) {
 
 }
 
+function findMemberByUserId(userId) {
+
+    if (
+        userId === null ||
+        userId === undefined
+    ) {
+        return null;
+    }
+
+
+    return members.find(member => {
+
+        const memberId =
+            getUserId(member);
+
+        return String(memberId) ===
+            String(userId);
+
+    }) || null;
+
+}
 
