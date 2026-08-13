@@ -29,7 +29,10 @@ async function loadAttendance() {
 
         const records = await api("/attendance/getAll");
         attendanceRecords = Array.isArray(records) ? records : [];
+
         renderAttendance(attendanceRecords);
+
+        updateCheckInMemberOptions();
 
     } catch (error) {
 
@@ -287,6 +290,8 @@ function renderAttendance(records) {
     records.forEach(attendance => {
         const row = document.createElement("tr");
 
+        row.id = `attendance-row-${attendance.attendanceId}`;
+
         const isCurrentlyIn = attendance.checkOutTime === null;
 
         const memberName = getMemberName(attendance.memberName);
@@ -390,34 +395,31 @@ async function addAttendance() {
     const userSelect = document.getElementById("addUserId");
     const branchSelect = document.getElementById("addBranchId");
 
-    if (!userSelect || !branchSelect) {
-        console.error("Check-in elements not found:", {
-            addUserId: userSelect,
-            addBranchId: branchSelect
-        });
-    showModalMessage(
-        "addMessage",
-        "Check-in form could not be loaded correctly.",
-        "danger"
-        );
-
-        return;
-    }
     const userValue = userSelect.value;
     const branchValue = branchSelect.value;
 
-    console.log("Check-in values:", {
-        userValue,
-        branchValue,
-        selectedMember: userSelect.options[userSelect.selectedIndex]?.text,
-        selectedBranch: branchSelect.options[branchSelect.selectedIndex]?.text
-    });
+    console.log("========== CHECK IN ==========");
+    console.log("Member value:", userValue);
+    console.log("Member value type:", typeof userValue);
+    console.log(
+        "Member selected text:",
+        userSelect.options[userSelect.selectedIndex]?.textContent.trim()
+    );
+
+    console.log("Branch value:", branchValue);
+    console.log("Branch value type:", typeof branchValue);
+    console.log(
+        "Branch selected text:",
+        branchSelect.options[branchSelect.selectedIndex]?.textContent.trim()
+    );
+
+    console.log("================================");
 
     if (!userValue || !branchValue) {
-        showModalMessage(
-            "addMessage",
-            "Please select both a Member and a Branch.",
-            "danger"
+
+        showToast(
+            "Member checked in successfully.",
+            "success"
         );
 
         return;
@@ -426,17 +428,16 @@ async function addAttendance() {
     const userId = Number(userValue);
     const branchId = Number(branchValue);
 
-    if (!Number.isInteger(userId) || !Number.isInteger(branchId)) {
-        console.error("Invalid IDs:", {
-            userValue,
-            branchValue,
-            userId,
-            branchId
-        });
+    console.log("Converted userId:", userId);
+    console.log("Converted branchId:", branchId);
+    console.log("Is userId valid:", Number.isInteger(userId));
+    console.log("Is branchId valid:", Number.isInteger(branchId));
+
+    if (Number.isNaN(userId) || Number.isNaN(branchId)) {
 
         showModalMessage(
             "addMessage",
-            "Invalid Member or Branch selection.",
+            "The selected Member or Branch has an invalid ID.",
             "danger"
         );
 
@@ -445,7 +446,7 @@ async function addAttendance() {
 
     try {
 
-        await api(
+        const result = await api(
             "/attendance/add",
             "POST",
             {
@@ -453,6 +454,8 @@ async function addAttendance() {
                 branchId: branchId
             }
         );
+
+        console.log("Check-in API response:", result);
 
         showModalMessage(
             "addMessage",
@@ -551,13 +554,11 @@ function updateCheckInMemberOptions() {
 async function checkOut(attendanceId) {
 
     const confirmed =
-        confirm("Are you sure you want to check out this member?");
-
+        confirm("Are you sure you want to permanently delete this attendance record?");
 
     if (!confirmed) {
         return;
     }
-
 
     try {
 
@@ -567,30 +568,88 @@ async function checkOut(attendanceId) {
                 "PATCH"
             );
 
+        const row =
+            document.getElementById(
+                `attendance-row-${attendanceId}`
+            );
 
-        alert(
+        if (row) {
+
+            const cells = row.querySelectorAll("td");
+
+            // Check-out column
+            cells[4].textContent =
+                result?.checkOutTime
+                    ? formatDateTime(result.checkOutTime)
+                    : formatDateTime(new Date());
+
+            // Duration column
+            const durationElement =
+                document.getElementById(
+                    `duration-${attendanceId}`
+                );
+
+            if (durationElement) {
+
+                durationElement.dataset.checkout =
+                    result?.checkOutTime ||
+                    new Date().toISOString();
+
+                durationElement.textContent =
+                    result?.duration ||
+                    calculateDuration(
+                        durationElement.dataset.checkin,
+                        durationElement.dataset.checkout
+                    );
+            }
+
+            // Status column
+            cells[6].innerHTML =
+                `<span class="badge bg-secondary">
+                    Checked out
+                </span>`;
+
+            // Actions column
+            cells[7].innerHTML = `
+                <button
+                    class="btn btn-sm btn-outline-primary me-1"
+                    onclick="openEditModal(${attendanceId})">
+                    Edit
+                </button>
+
+                <button
+                    class="btn btn-sm btn-outline-danger"
+                    onclick="deleteAttendance(${attendanceId})">
+                    Delete
+                </button>
+            `;
+        }
+
+        showToast(
             result?.message ||
-            "Member checked out successfully."
+            "Member checked out successfully.",
+            "success"
         );
 
+        // Update the currently-in-gym panel
+        await loadCurrentlyInGym();
 
-        await loadAttendance();
-
+        // Update disabled member options
+        updateCheckInMemberOptions();
 
     } catch (error) {
 
         console.error("Check-out failed:", error);
 
-        alert(
+        showToast(
             getErrorMessage(
                 error,
                 "Failed to check out member."
-            )
+            ),
+            "danger"
         );
     }
 }
-
-
 function renderAveragePerBranch(records) {
 
     const container =
@@ -813,9 +872,12 @@ async function deleteAttendance(attendanceId) {
             "DELETE"
         );
 
-
         await loadAttendance();
 
+        showToast(
+            "Attendance record deleted successfully.",
+            "success"
+        );
 
     } catch (error) {
 
@@ -1375,3 +1437,24 @@ function escapeAttribute(value) {
     return escapeHtml(value);
 }
 
+function setTodayFilter() {
+
+    const today =
+        new Date();
+
+    const year =
+        today.getFullYear();
+
+    const month =
+        String(today.getMonth() + 1)
+            .padStart(2, "0");
+
+    const day =
+        String(today.getDate())
+            .padStart(2, "0");
+
+    document.getElementById("filterDate").value =
+        `${year}-${month}-${day}`;
+
+    applyFilters();
+}
