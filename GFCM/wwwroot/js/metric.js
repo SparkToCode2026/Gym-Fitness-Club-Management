@@ -1563,3 +1563,64 @@ async function loadProgress() {
 
 }
 
+async function loadSummary(
+    userId
+) {
+
+    try {
+
+        const summary =
+            await window.apiFetch(
+                `/bodymetric/getSummary?userId=${userId}`
+            );
+
+
+        document.getElementById(
+            "summaryEntries"
+        ).textContent =
+            summary.entries;
+
+
+        document.getElementById(
+            "summaryAverageWeight"
+        ).textContent =
+            `${summary.averageWeight} kg`;
+
+
+        document.getElementById(
+            "summaryLightest"
+        ).textContent =
+            `${summary.lightestKg} kg`;
+
+
+        document.getElementById(
+            "summaryHeaviest"
+        ).textContent =
+            `${summary.heaviestKg} kg`;
+
+
+    } catch (error) {
+
+        if (
+            error.status === 404 ||
+            error.message?.includes(
+                "No measurements found"
+            )
+        ) {
+
+            clearSummary();
+
+            return;
+
+        }
+
+
+        console.error(
+            "Failed to load summary:",
+            error
+        );
+
+    }
+
+}
+
