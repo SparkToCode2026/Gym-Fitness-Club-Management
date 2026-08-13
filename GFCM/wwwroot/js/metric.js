@@ -359,3 +359,27 @@ function populateMemberSelects() {
 
 }
 
+function getUserId(member) {
+
+    if (!member) {
+        return null;
+    }
+
+
+    if (typeof member === "number") {
+        return member;
+    }
+
+
+    return (
+        member.userId ??
+        member.id ??
+        member.memberId ??
+        member.user?.userId ??
+        member.user?.id ??
+        null
+    );
+
+}
+
+
