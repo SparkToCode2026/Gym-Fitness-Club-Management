@@ -480,5 +480,124 @@ function getMetricMemberName(metric) {
 
 }
 
+async function loadMetrics() {
+
+    const spinner =
+        document.getElementById(
+            "metricSpinner"
+        );
+
+    const empty =
+        document.getElementById(
+            "metricEmpty"
+        );
+
+    const table =
+        document.getElementById(
+            "metricTable"
+        );
+
+
+    if (spinner) {
+        spinner.classList.remove(
+            "d-none"
+        );
+    }
+
+    if (empty) {
+        empty.classList.add(
+            "d-none"
+        );
+    }
+
+    if (table) {
+        table.classList.remove(
+            "d-none"
+        );
+    }
+
+
+    try {
+
+        console.log(
+            "Loading body metrics from /bodymetric/getAll..."
+        );
+
+
+        const response =
+            await window.apiFetch(
+                "/bodymetric/getAll"
+            );
+
+
+        console.log(
+            "Body metrics API response:",
+            response
+        );
+
+
+        if (Array.isArray(response)) {
+
+            metrics = response;
+
+        } else if (
+            Array.isArray(response?.metrics)
+        ) {
+
+            metrics = response.metrics;
+
+        } else if (
+            Array.isArray(response?.data)
+        ) {
+
+            metrics = response.data;
+
+        } else {
+
+            metrics = [];
+
+        }
+
+
+        console.log(
+            "Metrics loaded:",
+            metrics
+        );
+
+
+        renderMetrics();
+
+
+    } catch (error) {
+
+        console.error(
+            "Failed to load body metrics:",
+            error
+        );
+
+        metrics = [];
+
+        renderMetrics();
+
+        showToast(
+            error.message ||
+            "Failed to load body metrics",
+            "danger"
+        );
+
+    } finally {
+
+        if (spinner) {
+
+            spinner.classList.add(
+                "d-none"
+            );
+
+        }
+
+    }
+
+}
+
 
 
