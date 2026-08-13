@@ -1953,3 +1953,31 @@ function hideProgressSections() {
 
 }
 
+function clearSummary() {
+
+    document.getElementById(
+        "summaryEntries"
+    ).textContent = "-";
+
+
+    document.getElementById(
+        "summaryAverageWeight"
+    ).textContent = "-";
+
+
+    document.getElementById(
+        "summaryLightest"
+    ).textContent = "-";
+
+
+    document.getElementById(
+        "summaryHeaviest"
+    ).textContent = "-";
+
+
+    document.getElementById(
+        "netWeightChange"
+    ).textContent = "-";
+
+}
+
