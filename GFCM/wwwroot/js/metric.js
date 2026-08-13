@@ -1781,3 +1781,106 @@ function calculateNetChange(
     }
 
 }
+
+function renderChart(history) {
+
+    const canvas =
+        document.getElementById(
+            "weightChart"
+        );
+
+
+    if (!canvas) {
+        return;
+    }
+
+
+    if (weightChart) {
+
+        weightChart.destroy();
+
+        weightChart = null;
+
+    }
+
+
+    if (!history.length) {
+        return;
+    }
+
+
+    const labels =
+        history.map(
+            metric =>
+                formatDate(
+                    metric.metricDate
+                )
+        );
+
+
+    const weights =
+        history.map(
+            metric =>
+                Number(
+                    metric.weightKg
+                )
+        );
+
+
+    weightChart =
+        new Chart(
+            canvas,
+            {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+
+                            label:
+                                "Weight (kg)",
+
+                            data:
+                                weights,
+
+                            tension:
+                                0.3,
+
+                            fill:
+                                false
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio:
+                        false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero:
+                                false
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+}
