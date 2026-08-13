@@ -1713,3 +1713,71 @@ function renderHistory(history) {
     calculateNetChange(history);
 
 }
+function calculateNetChange(
+    history
+) {
+
+    const element =
+        document.getElementById(
+            "netWeightChange"
+        );
+
+
+    if (!history || history.length < 2) {
+
+        element.textContent = "-";
+
+        return;
+
+    }
+
+
+    const first =
+        Number(
+            history[0].weightKg
+        );
+
+
+    const last =
+        Number(
+            history[
+                history.length - 1
+            ].weightKg
+        );
+
+
+    const change =
+        last - first;
+
+
+    const sign =
+        change > 0
+            ? "+"
+            : "";
+
+
+    element.textContent =
+        `${sign}${change.toFixed(1)} kg`;
+
+
+    element.classList.remove(
+        "text-success",
+        "text-danger"
+    );
+
+
+    if (change > 0) {
+
+        element.classList.add(
+            "text-danger"
+        );
+
+    } else if (change < 0) {
+
+        element.classList.add(
+            "text-success"
+        );
+
+    }
+
+}
