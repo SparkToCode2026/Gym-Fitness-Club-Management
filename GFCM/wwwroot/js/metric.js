@@ -1470,4 +1470,96 @@ async function deleteMetric(
 
 }
 
+async function loadProgress() {
+
+    const userId =
+        document.getElementById(
+            "progressUserId"
+        ).value;
+
+
+    if (!userId) {
+
+        hideProgressSections();
+
+        return;
+
+    }
+
+
+    const from =
+        document.getElementById(
+            "progressFrom"
+        ).value;
+
+
+    const to =
+        document.getElementById(
+            "progressTo"
+        ).value;
+
+
+    try {
+
+        let url =
+            `/bodymetric/getByUser?userId=${userId}`;
+
+
+        if (from) {
+
+            url +=
+                `&from=${encodeURIComponent(from)}`;
+
+        }
+
+
+        if (to) {
+
+            url +=
+                `&to=${encodeURIComponent(
+                    `${to}T23:59:59`
+                )}`;
+
+        }
+
+
+        const response =
+            await window.apiFetch(url);
+
+
+        const history =
+            Array.isArray(response)
+                ? response
+                : response?.metrics ?? [];
+
+
+        renderHistory(history);
+
+        renderChart(history);
+
+        await loadSummary(userId);
+
+        showProgressSections();
+
+
+    } catch (error) {
+
+        console.error(
+            "Failed to load progress:",
+            error
+        );
+
+
+        hideProgressSections();
+
+
+        showToast(
+            error.message ||
+            "Failed to load progress",
+            "danger"
+        );
+
+    }
+
+}
 
