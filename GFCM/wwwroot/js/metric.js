@@ -599,5 +599,133 @@ async function loadMetrics() {
 
 }
 
+function renderMetrics() {
+
+    const tbody =
+        document.getElementById(
+            "metricTableBody"
+        );
+
+    const empty =
+        document.getElementById(
+            "metricEmpty"
+        );
+
+
+    if (!tbody) {
+        return;
+    }
+
+
+    tbody.innerHTML = "";
+
+
+    if (!metrics.length) {
+
+        if (empty) {
+
+            empty.classList.remove(
+                "d-none"
+            );
+
+        }
+
+        return;
+
+    }
+
+
+    if (empty) {
+
+        empty.classList.add(
+            "d-none"
+        );
+
+    }
+
+
+    metrics.forEach(metric => {
+
+        const row =
+            document.createElement("tr");
+
+
+        const memberName =
+            getMetricMemberName(metric);
+
+
+        row.innerHTML = `
+
+            <td>
+                ${escapeHtml(memberName)}
+            </td>
+
+            <td>
+                ${formatDate(metric.metricDate)}
+            </td>
+
+            <td>
+                ${formatOptional(
+            metric.weightKg,
+            " kg"
+        )}
+            </td>
+
+            <td>
+                ${formatOptional(
+            metric.heightCm,
+            " cm"
+        )}
+            </td>
+
+            <td>
+                ${formatOptional(
+            metric.bodyFatPercentage,
+            "%"
+        )}
+            </td>
+
+            <td>
+                ${formatOptional(
+            metric.muscleMassKg,
+            " kg"
+        )}
+            </td>
+
+            <td>
+
+                <button
+                    class="btn btn-sm btn-outline-primary me-1"
+                    onclick="openEditMetric(${metric.bodyMetricId})">
+                    Edit
+                </button>
+
+                <button
+                    class="btn btn-sm btn-outline-warning me-1"
+                    onclick="openWeightModal(
+                        ${metric.bodyMetricId},
+                        ${metric.weightKg}
+                    )">
+                    Weight
+                </button>
+
+                <button
+                    class="btn btn-sm btn-outline-danger"
+                    onclick="deleteMetric(${metric.bodyMetricId})">
+                    Delete
+                </button>
+
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+
 
 
