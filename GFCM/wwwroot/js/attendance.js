@@ -387,28 +387,61 @@ function createActionButtons(attendance) {
 //add attendance function
 async function addAttendance() {
 
-    const userId =
-        Number(
-            document.getElementById("addUserId").value
+    const userSelect = document.getElementById("addUserId");
+    const branchSelect = document.getElementById("addBranchId");
+
+    if (!userSelect || !branchSelect) {
+        console.error("Check-in elements not found:", {
+            addUserId: userSelect,
+            addBranchId: branchSelect
+        });
+    showModalMessage(
+        "addMessage",
+        "Check-in form could not be loaded correctly.",
+        "danger"
         );
 
-    const branchId =
-        Number(
-            document.getElementById("addBranchId").value
-        );
+        return;
+    }
+    const userValue = userSelect.value;
+    const branchValue = branchSelect.value;
 
+    console.log("Check-in values:", {
+        userValue,
+        branchValue,
+        selectedMember: userSelect.options[userSelect.selectedIndex]?.text,
+        selectedBranch: branchSelect.options[branchSelect.selectedIndex]?.text
+    });
 
-    if (!userId || !branchId) {
-
+    if (!userValue || !branchValue) {
         showModalMessage(
             "addMessage",
-            "Please enter both Member ID and Branch ID.",
+            "Please select both a Member and a Branch.",
             "danger"
         );
 
         return;
     }
 
+    const userId = Number(userValue);
+    const branchId = Number(branchValue);
+
+    if (!Number.isInteger(userId) || !Number.isInteger(branchId)) {
+        console.error("Invalid IDs:", {
+            userValue,
+            branchValue,
+            userId,
+            branchId
+        });
+
+        showModalMessage(
+            "addMessage",
+            "Invalid Member or Branch selection.",
+            "danger"
+        );
+
+        return;
+    }
 
     try {
 
@@ -421,20 +454,18 @@ async function addAttendance() {
             }
         );
 
-
         showModalMessage(
             "addMessage",
             "Member checked in successfully.",
             "success"
         );
 
-
-        document.getElementById("addUserId").value = "";
-        document.getElementById("addBranchId").value = "";
-
+        userSelect.value = "";
+        branchSelect.value = "";
 
         await loadAttendance();
-
+        await loadCurrentlyInGym();
+        await loadAveragePerBranch();
 
         setTimeout(() => {
 
@@ -450,19 +481,20 @@ async function addAttendance() {
 
         }, 700);
 
-
     } catch (error) {
 
         console.error("Check-in failed:", error);
 
         showModalMessage(
             "addMessage",
-            getErrorMessage(error, "Failed to check in member."),
+            getErrorMessage(
+                error,
+                "Failed to check in member."
+            ),
             "danger"
         );
     }
 }
-
 function updateCheckInMemberOptions() {
 
     const select =
