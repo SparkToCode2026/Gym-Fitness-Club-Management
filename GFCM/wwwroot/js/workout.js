@@ -42,3 +42,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadWorkoutPlans();
 
 });
+
+//load members 
+
+async function loadMemberOptions() {
+    try {
+        const users = await api("/user/getAll");
+        members = Array.isArray(users)
+            ? users.filter(user => {
+                const role = user.role;
+
+                return role === "Member" ||  role === 2 || String(role).toLowerCase() === "member";
+            }) : [];
+        populateMemberSelect(
+            document.getElementById("addUserId"),
+            "Select member"
+        );
+        populateMemberSelect(
+            document.getElementById("filterUserId"),
+            "All members"
+        );
+    } catch (err) {
+        showToast(
+            err.message || "Unable to load members",
+            "danger"
+        );
+    }
+}
