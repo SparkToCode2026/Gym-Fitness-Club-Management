@@ -1,4 +1,6 @@
-﻿let metrics = [];
+﻿requireAuth();
+
+let metrics = [];
 let members = [];
 let weightChart = null;
 
