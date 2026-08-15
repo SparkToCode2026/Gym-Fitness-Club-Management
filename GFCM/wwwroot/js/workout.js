@@ -396,3 +396,48 @@ if (endDate) {
     }
 }
 
+const trainerProfileId =
+    trainerValue
+        ? Number(trainerValue)
+        : null;
+const requestBody = {
+    planTitle: title,
+    userId: Number(userId),
+    trainerProfileId: trainerProfileId,
+    planDescription: description,
+    startDate: new Date(startDate).toISOString(),
+    endDate:
+        endDate
+            ? new Date(endDate).toISOString()
+            : null
+};
+
+try {
+    await api(
+        "/workoutplan/add",
+        "POST",
+        requestBody
+    );
+    document
+        .getElementById("addWorkoutForm")
+        .reset();
+    const modal =
+        bootstrap.Modal.getInstance(
+            document.getElementById("addModal")
+        );
+    if (modal) {
+        modal.hide();
+    }
+    showToast(
+        "Workout plan created successfully",
+        "success"
+    );
+    await loadWorkoutPlans();
+} catch (err) {
+    showToast(
+        err.message || "Unable to create workout plan",
+        "danger"
+    );
+}
+
+
