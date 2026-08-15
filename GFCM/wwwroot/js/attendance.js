@@ -398,28 +398,12 @@ async function addAttendance() {
     const userValue = userSelect.value;
     const branchValue = branchSelect.value;
 
-    console.log("========== CHECK IN ==========");
-    console.log("Member value:", userValue);
-    console.log("Member value type:", typeof userValue);
-    console.log(
-        "Member selected text:",
-        userSelect.options[userSelect.selectedIndex]?.textContent.trim()
-    );
-
-    console.log("Branch value:", branchValue);
-    console.log("Branch value type:", typeof branchValue);
-    console.log(
-        "Branch selected text:",
-        branchSelect.options[branchSelect.selectedIndex]?.textContent.trim()
-    );
-
-    console.log("================================");
-
     if (!userValue || !branchValue) {
 
-        showToast(
-            "Member checked in successfully.",
-            "success"
+        showModalMessage(
+            "addMessage",
+            "Please select a member and branch.",
+            "danger"
         );
 
         return;
@@ -554,7 +538,9 @@ function updateCheckInMemberOptions() {
 async function checkOut(attendanceId) {
 
     const confirmed =
-        confirm("Are you sure you want to permanently delete this attendance record?");
+        confirm(
+            "Are you sure you want to check out this member?"
+        );
 
     if (!confirmed) {
         return;
