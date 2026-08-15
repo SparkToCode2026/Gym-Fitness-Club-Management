@@ -380,66 +380,64 @@ async function createWorkoutPlan(event) {
         );
         return;
     }
-}
+    if (endDate) {
+        if (
+            new Date(endDate) <
+            new Date(startDate)
+        ) {
+            showToast(
+                "End date cannot be earlier than start date",
+                "danger"
+            );
 
-if (endDate) {
-    if (
-        new Date(endDate) <
-        new Date(startDate)
-    ) {
+            return;
+        }
+    }
+
+    const trainerProfileId =
+        trainerValue
+            ? Number(trainerValue)
+            : null;
+    const requestBody = {
+        planTitle: title,
+        userId: Number(userId),
+        trainerProfileId: trainerProfileId,
+        planDescription: description,
+        startDate: new Date(startDate).toISOString(),
+        endDate:
+            endDate
+                ? new Date(endDate).toISOString()
+                : null
+    };
+
+    try {
+        await api(
+            "/workoutplan/add",
+            "POST",
+            requestBody
+        );
+        document
+            .getElementById("addWorkoutForm")
+            .reset();
+        const modal =
+            bootstrap.Modal.getInstance(
+                document.getElementById("addModal")
+            );
+        if (modal) {
+            modal.hide();
+        }
         showToast(
-            "End date cannot be earlier than start date",
+            "Workout plan created successfully",
+            "success"
+        );
+        await loadWorkoutPlans();
+    } catch (err) {
+        showToast(
+            err.message || "Unable to create workout plan",
             "danger"
         );
-
-        return;
     }
 }
-
-const trainerProfileId =
-    trainerValue
-        ? Number(trainerValue)
-        : null;
-const requestBody = {
-    planTitle: title,
-    userId: Number(userId),
-    trainerProfileId: trainerProfileId,
-    planDescription: description,
-    startDate: new Date(startDate).toISOString(),
-    endDate:
-        endDate
-            ? new Date(endDate).toISOString()
-            : null
-};
-
-try {
-    await api(
-        "/workoutplan/add",
-        "POST",
-        requestBody
-    );
-    document
-        .getElementById("addWorkoutForm")
-        .reset();
-    const modal =
-        bootstrap.Modal.getInstance(
-            document.getElementById("addModal")
-        );
-    if (modal) {
-        modal.hide();
-    }
-    showToast(
-        "Workout plan created successfully",
-        "success"
-    );
-    await loadWorkoutPlans();
-} catch (err) {
-    showToast(
-        err.message || "Unable to create workout plan",
-        "danger"
-    );
-}
-
 
 function openEditModal(id) {
     const plan =
@@ -512,4 +510,45 @@ async function updateWorkoutPlan(event) {
         );
         return;
     }
+
+
+    if (endDate) {
+        if (
+            new Date(endDate) <
+            new Date(plan.startDate)
+        ) {
+            showToast(
+                "End date cannot be earlier than start date",
+                "danger"
+            );
+            return;
+        }
+    }
+    const requestBody = {
+        planTitle: title,
+        planDescription: description,
+        endDate:
+            endDate
+                ? new Date(endDate).toISOString()
+                : null
+    };
+    try {
+        await api(
+            `/workoutplan/update?workoutPlanId=${encodeURIComponent(id)}`,
+            "PUT",
+            requestBody
+        );
+        editModal.hide();
+        showToast(
+            "Workout plan updated successfully",
+            "success"
+        );
+        await loadWorkoutPlans();
+    } catch (err) {
+        showToast(
+            err.message || "Unable to update workout plan",
+            "danger"
+        );
+    }
 }
+
