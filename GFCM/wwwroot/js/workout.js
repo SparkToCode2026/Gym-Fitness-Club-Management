@@ -284,3 +284,7 @@ function createWorkoutCard(plan) {
     return col;
 
 }
+
+function getMemberName(plan) {
+    return ( plan.userName );
+}
