@@ -288,3 +288,7 @@ function createWorkoutCard(plan) {
 function getMemberName(plan) {
     return ( plan.userName );
 }
+
+function getTrainerName(plan) {
+    return plan.trainerProfile?.user?.userName ?? "Self-directed";
+}
