@@ -204,3 +204,83 @@ function renderWorkoutPlans() {
         );
     });
 }
+
+function createWorkoutCard(plan) {
+    const col =
+        document.createElement("div");
+    col.className =
+        "col-12 col-md-6 col-xl-4";
+    const memberName =
+        getMemberName(plan);
+    const trainerName =
+        getTrainerName(plan);
+    const startDate =
+        formatDate(plan.startDate);
+    const endDate =
+        plan.endDate
+            ? formatDate(plan.endDate)
+            : "Ongoing";
+    const status =
+        getPlanStatus(plan);
+    const statusBadge =
+        getStatusBadge(status);
+    col.innerHTML = `
+    <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title mb-0">
+                    ${escapeHtml(plan.planTitle ?? "Untitled Plan")}
+                </h5>
+                ${statusBadge}
+            </div>
+            <div class="mb-3 text-muted">
+                <p class="mb-1">
+                    <strong>Member:</strong>
+                    ${escapeHtml(memberName)}
+                </p>
+                <p class="mb-1">
+                    <strong>Trainer:</strong>
+                    ${escapeHtml(trainerName)}
+                </p>
+                <p class="mb-1">
+                    <strong>Start:</strong>
+                    ${escapeHtml(startDate)}
+                </p>
+                <p class="mb-0">
+                    <strong>End:</strong>
+                    ${escapeHtml(endDate)}
+                </p>
+            </div>
+            <div class="border-top pt-3 mb-3">
+                <div class="text-muted small">
+                    Description
+                </div>
+                <p class="card-text mb-0">
+                    ${escapeHtml(plan.planDescription ?? "No description provided.")}
+                </p>
+            </div>
+            <div class="mt-auto">
+                <div class="d-flex flex-wrap gap-2">
+                    <button
+                        class="btn btn-sm btn-outline-primary"
+                        onclick="openEditModal(${plan.workoutPlanId})">
+                        Edit
+                    </button>
+                    <button
+                        class="btn btn-sm btn-outline-secondary"
+                        onclick="openTrainerModal(${plan.workoutPlanId})">
+                        Reassign
+                    </button>
+                    <button
+                        class="btn btn-sm btn-outline-danger"
+                        onclick="openDeleteModal(${plan.workoutPlanId})">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+    return col;
+
+}
