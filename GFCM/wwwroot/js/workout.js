@@ -286,7 +286,15 @@ function createWorkoutCard(plan) {
 }
 
 function getMemberName(plan) {
-    return ( plan.userName );
+    if (plan.user?.userName) {
+        return plan.user.userName;
+    }
+
+    const member = members.find(
+        m => Number(m.userId) === Number(plan.userId)
+    );
+
+    return member?.userName ?? "-";
 }
 
 function getTrainerName(plan) {
