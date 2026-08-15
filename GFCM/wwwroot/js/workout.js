@@ -569,10 +569,45 @@ function openTrainerModal(id) {
         .value = id;
     const currentTrainerId =
         plan.trainerProfile?.trainerProfileId ?? "";
-
     document
         .getElementById("trainerSelect")
         .value =
         currentTrainerId;
     trainerModal.show();
+}
+async function reassignTrainer(event) {
+    event.preventDefault();
+    const id =
+        document
+            .getElementById("trainerWorkoutPlanId")
+            .value;
+    const trainerValue =
+        document
+            .getElementById("trainerSelect")
+            .value;
+    try {
+        const trainerId =
+            trainerValue
+                ? Number(trainerValue)
+                : null;
+        await api(
+            `/workoutplan/updateTrainer?workoutPlanId=${encodeURIComponent(id)}&newTrainerProfileId=${encodeURIComponent(trainerId === null ? "null" : trainerId)}`,
+            "PATCH"
+        );
+
+        trainerModal.hide();
+        showToast(
+            trainerId === null
+                ? "Trainer removed. Plan is now self-directed."
+                : "Trainer reassigned successfully.",
+            "success"
+        );
+        await loadWorkoutPlans();
+    } catch (err) {
+        showToast(
+            err.message || "Unable to reassign trainer",
+            "danger"
+        );
+    }
+
 }
