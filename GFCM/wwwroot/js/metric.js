@@ -152,7 +152,7 @@ async function loadMembers() {
     try {
         console.log("Loading members from /user/getAll...");
 
-        const users = await window.apiFetch("/user/getAll");
+        const users = await window.api("/user/getAll");
 
         console.log("Users API response:", users);
 
@@ -265,7 +265,7 @@ async function loadMetrics() {
 
 
         const response =
-            await window.apiFetch(
+            await window.api(
                 "/bodymetric/getAll"
             );
 
@@ -605,7 +605,7 @@ async function addMetric() {
 
     try {
 
-        await window.apiFetch(
+        await window.api(
             "/bodymetric/add",
             {
                 method: "POST",
@@ -703,7 +703,7 @@ async function loadPreviousReading(
     try {
 
         const response =
-            await window.apiFetch(
+            await window.api(
                 `/bodymetric/getByUser?userId=${userId}`
             );
 
@@ -813,7 +813,7 @@ async function openEditMetric(
     try {
 
         const metric =
-            await window.apiFetch(
+            await window.api(
                 `/bodymetric/get?bodyMetricId=${bodyMetricId}`
             );
 
@@ -984,7 +984,7 @@ async function updateMetric() {
 
     try {
 
-        await window.apiFetch(
+        await window.api(
             `/bodymetric/update?bodyMetricId=${bodyMetricId}`,
             {
                 method: "PUT",
@@ -1109,7 +1109,7 @@ async function updateWeight() {
     try {
 
         const response =
-            await window.apiFetch(
+            await window.api(
                 `/bodymetric/updateWeight?bodyMetricId=${bodyMetricId}&newWeightKg=${Number(newWeightKg)}`,
                 {
                     method: "PATCH"
@@ -1175,7 +1175,7 @@ async function deleteMetric(
 
     try {
 
-        await window.apiFetch(
+        await window.api(
             `/bodymetric/remove?bodyMetricId=${bodyMetricId}`,
             {
                 method: "DELETE"
@@ -1264,7 +1264,7 @@ async function loadProgress() {
 
 
         const response =
-            await window.apiFetch(url);
+            await window.api(url);
 
 
         const history =
@@ -1310,7 +1310,7 @@ async function loadSummary(
     try {
 
         const summary =
-            await window.apiFetch(
+            await window.api(
                 `/bodymetric/getSummary?userId=${userId}`
             );
 
