@@ -180,3 +180,27 @@ async function loadWorkoutPlans() {
         showLoading(false);
     }
 }
+
+function renderWorkoutPlans() {
+    const container =
+        document.getElementById(
+            "workoutPlansContainer"
+        );
+    const emptyState =
+        document.getElementById("emptyState");
+    const resultCount =
+        document.getElementById("resultCount");
+    container.innerHTML = "";
+    resultCount.textContent =
+        workoutPlans.length;
+    if (workoutPlans.length === 0) {
+        emptyState.classList.remove("d-none");
+        return;
+    }
+    emptyState.classList.add("d-none");
+    workoutPlans.forEach(plan => {
+        container.appendChild(
+            createWorkoutCard(plan)
+        );
+    });
+}
