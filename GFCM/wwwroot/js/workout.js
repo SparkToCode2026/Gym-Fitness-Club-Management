@@ -69,3 +69,18 @@ async function loadMemberOptions() {
         );
     }
 }
+
+function populateMemberSelect(select, firstText) {
+    select.innerHTML = "";
+    const firstOption = document.createElement("option");
+    firstOption.value = "";
+    firstOption.textContent = firstText;
+    select.appendChild(firstOption);
+    members.forEach(member => {
+        const option = document.createElement("option");
+        option.value = member.userId;
+        option.textContent = member.userName;
+        select.appendChild(option);
+    });
+
+}
