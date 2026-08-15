@@ -471,3 +471,45 @@ function openEditModal(id) {
     editModal.show();
 }
 
+async function updateWorkoutPlan(event) {
+    event.preventDefault();
+    const id =
+        document
+            .getElementById("editWorkoutPlanId")
+            .value;
+    const title =
+        document
+            .getElementById("editPlanTitle")
+            .value
+            .trim();
+    const description =
+        document
+            .getElementById("editPlanDescription")
+            .value
+            .trim();
+    const endDate =
+        document
+            .getElementById("editEndDate")
+            .value;
+    if (!title) {
+        showToast(
+            "Plan title is required",
+            "danger"
+        );
+        return;
+    }
+    const plan =
+        workoutPlans.find(
+            p =>
+                Number(p.workoutPlanId) ===
+                Number(id)
+        );
+    if (!plan) {
+
+        showToast(
+            "Workout plan not found",
+            "danger"
+        );
+        return;
+    }
+}
