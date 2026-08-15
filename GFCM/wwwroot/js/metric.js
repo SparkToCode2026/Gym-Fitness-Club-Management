@@ -214,78 +214,40 @@ function setupEvents() {
 }
 
 async function loadMembers() {
-
     try {
+        console.log("Loading members from /user/getAll...");
 
-        console.log(
-            "Loading members from /user/getAll..."
-        );
+        const users = await window.apiFetch("/user/getAll");
 
+        console.log("Users API response:", users);
 
-        const response =
-            await window.apiFetch(
-                "/user/getAll"
-            );
+        members = Array.isArray(users)
+            ? users.filter(user => {
+                const role = user.role;
 
+                return (
+                    role === "Member" ||
+                    role === 2 ||
+                    String(role).toLowerCase() === "member"
+                );
+            })
+            : [];
 
-        console.log(
-            "Members API response:",
-            response
-        );
-
-
-        // Support multiple possible API response shapes
-        if (Array.isArray(response)) {
-
-            members = response;
-
-        } else if (Array.isArray(response?.users)) {
-
-            members = response.users;
-
-        } else if (Array.isArray(response?.data)) {
-
-            members = response.data;
-
-        } else if (Array.isArray(response?.members)) {
-
-            members = response.members;
-
-        } else {
-
-            members = [];
-
-        }
-
-
-        console.log(
-            "Members loaded:",
-            members
-        );
-
+        console.log("Members loaded:", members);
 
         populateMemberSelects();
 
-
     } catch (error) {
-
-        console.error(
-            "Failed to load members:",
-            error
-        );
+        console.error("Failed to load members:", error);
 
         members = [];
-
         populateMemberSelects();
 
         showToast(
-            error.message ||
-            "Failed to load members",
+            error.message || "Failed to load members",
             "danger"
         );
-
     }
-
 }
 
 function populateMemberSelects() {
