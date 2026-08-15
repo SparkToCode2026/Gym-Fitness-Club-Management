@@ -330,3 +330,54 @@ function getStatusBadge(status) {
 `;
 
 }
+
+async function createWorkoutPlan(event) {
+    event.preventDefault();
+    const title =
+        document
+            .getElementById("addPlanTitle")
+            .value
+            .trim();
+    const description =
+        document
+            .getElementById("addPlanDescription")
+            .value
+            .trim();
+    const userId =
+        document
+            .getElementById("addUserId")
+            .value;
+    const trainerValue =
+        document
+            .getElementById("addTrainerProfileId")
+            .value;
+    const startDate =
+        document
+            .getElementById("addStartDate")
+            .value;
+    const endDate =
+        document
+            .getElementById("addEndDate")
+            .value;
+    if (!title) {
+        showToast(
+            "Plan title is required",
+            "danger"
+        );
+        return;
+    }
+    if (!userId) {
+        showToast(
+            "Please select a member",
+            "danger"
+        );
+        return;
+    }
+    if (!startDate) {
+        showToast(
+            "Start date is required",
+            "danger"
+        );
+        return;
+    }
+}
