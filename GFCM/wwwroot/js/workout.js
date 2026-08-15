@@ -109,3 +109,20 @@ async function loadTrainerOptions() {
         );
     }
 }
+
+function populateTrainerSelect(select, firstText) {
+    select.innerHTML = "";
+    const firstOption =
+        document.createElement("option");
+    firstOption.value = "";
+    firstOption.textContent = firstText;
+    select.appendChild(firstOption);
+    trainers.forEach(trainer => {
+        const option =
+            document.createElement("option");
+            option.value = trainer.trainerProfileId;
+            option.textContent = trainer.trainerName;
+        select.appendChild(option);
+    });
+
+}
