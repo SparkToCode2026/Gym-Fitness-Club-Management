@@ -306,14 +306,31 @@ function getUserId(member) {
 
 }
 
-function getMemberName(plan) {
-    if (plan.user?.userName) {
-        return plan.user.userName;
+function getMemberName(member) {
+
+    if (!member) {
+        return "-";
     }
-    const member = members.find(
-        m => Number(m.userId) === Number(plan.userId)
+
+
+    if (typeof member === "string") {
+        return member;
+    }
+
+
+    return (
+        member.userName ??
+        member.username ??
+        member.name ??
+        member.fullName ??
+        member.memberName ??
+        member.user?.userName ??
+        member.user?.username ??
+        member.user?.name ??
+        member.user?.fullName ??
+        "-"
     );
-    return member?.userName ?? "-";
+
 }
 
 function findMemberByUserId(userId) {
@@ -338,53 +355,17 @@ function findMemberByUserId(userId) {
 
 }
 function getMetricMemberName(metric) {
-
     if (!metric) {
         return "-";
     }
-
-    if (metric.memberName) {
-        return metric.memberName;
+    if (metric.user?.userName) {
+        return metric.user.userName;
     }
+    const member = members.find(
+        m => Number(m.userId) === Number(metric.userId)
+    );
 
-    if (metric.user) {
-
-        const name =
-            getMemberName(metric.user);
-
-        if (name !== "-") {
-            return name;
-        }
-
-    }
-
-    if (metric.member) {
-
-        const name =
-            getMemberName(metric.member);
-
-        if (name !== "-") {
-            return name;
-        }
-
-    }
-
-
-    const member =
-        findMemberByUserId(
-            metric.userId
-        );
-
-
-    if (member) {
-
-        return getMemberName(member);
-
-    }
-
-
-    return "-";
-
+    return member?.userName ?? "-";
 }
 
 async function loadMetrics() {
