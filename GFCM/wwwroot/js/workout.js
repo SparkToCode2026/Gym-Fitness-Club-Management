@@ -552,3 +552,27 @@ async function updateWorkoutPlan(event) {
     }
 }
 
+function openTrainerModal(id) {
+    const plan =
+        workoutPlans.find(
+            p => p.workoutPlanId === id
+        );
+    if (!plan) {
+        showToast(
+            "Workout plan not found",
+            "danger"
+        );
+        return;
+    }
+    document
+        .getElementById("trainerWorkoutPlanId")
+        .value = id;
+    const currentTrainerId =
+        plan.trainerProfile?.trainerProfileId ?? "";
+
+    document
+        .getElementById("trainerSelect")
+        .value =
+        currentTrainerId;
+    trainerModal.show();
+}
