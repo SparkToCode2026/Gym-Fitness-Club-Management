@@ -618,3 +618,31 @@ function openDeleteModal(id) {
         .value = id;
     deleteModal.show();
 }
+
+
+async function deleteWorkoutPlan() {
+    const id =
+        document
+            .getElementById("deleteWorkoutPlanId")
+            .value;
+    if (!id) {
+        return;
+    }
+    try {
+        await api(
+            `/workoutplan/remove?workoutPlanId=${encodeURIComponent(id)}`,
+            "DELETE"
+        );
+        deleteModal.hide();
+        showToast(
+            "Workout plan deleted successfully",
+            "success"
+        );
+        await loadWorkoutPlans();
+    } catch (err) {
+        showToast(
+            err.message || "Unable to delete workout plan",
+            "danger"
+        );
+    }
+}
