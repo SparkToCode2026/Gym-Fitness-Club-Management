@@ -381,3 +381,18 @@ async function createWorkoutPlan(event) {
         return;
     }
 }
+
+if (endDate) {
+    if (
+        new Date(endDate) <
+        new Date(startDate)
+    ) {
+        showToast(
+            "End date cannot be earlier than start date",
+            "danger"
+        );
+
+        return;
+    }
+}
+
