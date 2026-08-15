@@ -779,3 +779,16 @@ function toDateTimeLocal(value) {
             .padStart(2, "0");
     return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
+
+function escapeHtml(value) {
+    if (value === null ||
+        value === undefined) {
+        return "";
+    }
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
