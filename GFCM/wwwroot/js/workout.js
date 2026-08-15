@@ -611,3 +611,10 @@ async function reassignTrainer(event) {
     }
 
 }
+
+function openDeleteModal(id) {
+    document
+        .getElementById("deleteWorkoutPlanId")
+        .value = id;
+    deleteModal.show();
+}
