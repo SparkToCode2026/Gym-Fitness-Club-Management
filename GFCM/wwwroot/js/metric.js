@@ -251,78 +251,38 @@ async function loadMembers() {
 }
 
 function populateMemberSelects() {
-
     const addSelect =
         document.getElementById("addUserId");
-
     const progressSelect =
-        document.getElementById(
-            "progressUserId"
-        );
-
-
+        document.getElementById("progressUserId");
     if (!addSelect || !progressSelect) {
         return;
     }
-
-
-    addSelect.innerHTML =
-        `<option value="">Select member</option>`;
-
-    progressSelect.innerHTML =
-        `<option value="">Select member</option>`;
-
-
-    members.forEach(member => {
-
-        const userId =
-            getUserId(member);
-
-        const name =
-            getMemberName(member);
-
-
-        if (
-            userId === null ||
-            userId === undefined ||
-            userId === ""
-        ) {
-            return;
-        }
-
-
-        const option1 =
-            document.createElement("option");
-
-        option1.value =
-            userId;
-
-        option1.textContent =
-            name;
-
-        addSelect.appendChild(option1);
-
-
-        const option2 =
-            document.createElement("option");
-
-        option2.value =
-            userId;
-
-        option2.textContent =
-            name;
-
-        progressSelect.appendChild(option2);
-
-    });
-
-
-    console.log(
-        `Populated ${members.length} member records.`
+    populateMemberSelect(
+        addSelect,
+        "Select member"
     );
-
+    populateMemberSelect(
+        progressSelect,
+        "Select member"
+    );
 }
 
+function populateMemberSelect(select, firstText) {
+    select.innerHTML = "";
+    const firstOption =
+        document.createElement("option");
+    firstOption.value = "";
+    firstOption.textContent = firstText;
+    select.appendChild(firstOption);
+    members.forEach(member => {
+        const option =
+            document.createElement("option");
+        option.value = member.userId;
+        option.textContent = member.userName;
+        select.appendChild(option);
+    });
+}
 function getUserId(member) {
 
     if (!member) {
