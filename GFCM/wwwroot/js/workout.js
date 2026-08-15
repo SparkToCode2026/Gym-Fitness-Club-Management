@@ -441,3 +441,33 @@ try {
 }
 
 
+function openEditModal(id) {
+    const plan =
+        workoutPlans.find(
+            p => p.workoutPlanId === id
+        );
+    if (!plan) {
+        showToast(
+            "Workout plan not found",
+            "danger"
+        );
+        return;
+    }
+    document
+        .getElementById("editWorkoutPlanId")
+        .value = id;
+    document
+        .getElementById("editPlanTitle")
+        .value =
+        plan.planTitle ?? "";
+    document
+        .getElementById("editPlanDescription")
+        .value =
+        plan.planDescription ?? "";
+    document
+        .getElementById("editEndDate")
+        .value =
+        toDateTimeLocal(plan.endDate);
+    editModal.show();
+}
+
