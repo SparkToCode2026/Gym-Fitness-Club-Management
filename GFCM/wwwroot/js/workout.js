@@ -126,3 +126,57 @@ function populateTrainerSelect(select, firstText) {
     });
 
 }
+
+async function loadWorkoutPlans() {
+    showLoading(true);
+    try {
+        const active =
+            document.getElementById("activeToggle").checked;
+        const userId =
+            document.getElementById("filterUserId").value;
+        let plans;
+        if (active) {
+            plans = await api("/workoutplan/getActive");
+        }
+        else if (userId) {
+            const encodedUserId =
+                encodeURIComponent(userId);
+            plans =
+                await api(
+                    `/workoutplan/getByUser?userId=${encodedUserId}`
+                );
+        }
+        else {
+            plans =
+                await api("/workoutplan/getAll");
+        }
+        workoutPlans =
+            Array.isArray(plans)
+                ? plans
+                : [];
+        if (!active && !userId) {
+
+            workoutPlans.sort(
+                (a, b) =>
+                    new Date(b.startDate) -
+                    new Date(a.startDate)
+            );
+        }
+        renderWorkoutPlans();
+        if (active) {
+            renderTrainerWorkload(workoutPlans);
+        } else {
+            clearTrainerWorkload();
+        }
+    } catch (err) {
+        workoutPlans = [];
+        renderWorkoutPlans();
+        clearTrainerWorkload();
+        showToast(
+            err.message || "Unable to load workout plans",
+            "danger"
+        );
+    } finally {
+        showLoading(false);
+    }
+}
