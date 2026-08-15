@@ -156,17 +156,6 @@ async function loadMembers() {
 
         console.log("Users API response:", users);
 
-        members = Array.isArray(users)
-            ? users.filter(user => {
-                const role = user.role;
-
-                return (
-                    role === "Member" ||
-                    role === 2 ||
-                    String(role).toLowerCase() === "member"
-                );
-            })
-            : [];
 
         console.log("Members loaded:", members);
 
