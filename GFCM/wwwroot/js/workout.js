@@ -84,3 +84,28 @@ function populateMemberSelect(select, firstText) {
     });
 
 }
+
+
+async function loadTrainerOptions() {
+    try {
+        const result =
+            await api("/trainerprofile/getAll");
+        trainers =
+            Array.isArray(result)
+                ? result
+                : [];
+        populateTrainerSelect(
+            document.getElementById("addTrainerProfileId"),
+            "Self-directed"
+        );
+        populateTrainerSelect(
+            document.getElementById("trainerSelect"),
+            "Choose trainer"
+        );
+    } catch (err) {
+        showToast(
+            err.message || "Unable to load trainers",
+            "danger"
+        );
+    }
+}
