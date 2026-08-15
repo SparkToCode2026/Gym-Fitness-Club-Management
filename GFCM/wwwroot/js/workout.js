@@ -728,3 +728,15 @@ function clearTrainerWorkload() {
     section.classList.add("d-none");
     container.innerHTML = "";
 }
+
+function showLoading(show) {
+    const spinner =
+        document.getElementById(
+            "loadingSpinner"
+        );
+    if (show) {
+        spinner.classList.remove("d-none");
+    } else {
+        spinner.classList.add("d-none");
+    }
+}
