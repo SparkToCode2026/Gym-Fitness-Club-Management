@@ -646,3 +646,71 @@ async function deleteWorkoutPlan() {
         );
     }
 }
+
+function renderTrainerWorkload(activePlans) {
+    const section =
+        document.getElementById(
+            "trainerWorkloadSection"
+        );
+    const container =
+        document.getElementById(
+            "trainerWorkloadContainer"
+        );
+    container.innerHTML = "";
+    const counts = {};
+    activePlans.forEach(plan => {
+        const trainerId =
+            plan.trainerProfile?.trainerProfileId;
+        const trainerName =
+            getTrainerName(plan);
+        if (
+            trainerId === null ||
+            trainerId === undefined
+        ) {
+            return;
+        }
+        if (!counts[trainerId]) {
+            counts[trainerId] = {
+                name: trainerName,
+                count: 0
+            };
+        }
+        counts[trainerId].count++;
+    });
+    const workloadEntries =
+        Object.values(counts);
+    if (workloadEntries.length === 0) {
+        section.classList.add("d-none");
+        return;
+    }
+    section.classList.remove("d-none");
+    workloadEntries
+        .sort((a, b) =>
+            b.count - a.count
+        )
+        .forEach(item => {
+            const col =
+                document.createElement("div");
+            col.className =
+                "col-12 col-md-6 col-lg-4";
+            col.innerHTML = `
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-muted small">
+                        Trainer
+                    </div>
+                    <div class="fw-semibold mb-2">
+                        ${escapeHtml(item.name)}
+                    </div>
+                    <div class="fs-2 fw-bold">
+                        ${item.count}
+                    </div>
+                    <div class="text-muted">
+                        Active plan${item.count === 1 ? "" : "s"}
+                    </div>
+                </div>
+            </div>
+        `;
+            container.appendChild(col);
+        });
+}
