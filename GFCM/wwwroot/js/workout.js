@@ -292,3 +292,20 @@ function getMemberName(plan) {
 function getTrainerName(plan) {
     return plan.trainerProfile?.user?.userName ?? "Self-directed";
 }
+
+function getPlanStatus(plan) {
+    const now = new Date();
+    const start =
+        new Date(plan.startDate);
+    const end =
+        plan.endDate
+            ? new Date(plan.endDate)
+            : null;
+    if (start > now) {
+        return "Upcoming";
+    }
+    if (!end || end >= now) {
+        return "Active";
+    }
+    return "Expired";
+}
