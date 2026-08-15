@@ -714,3 +714,17 @@ function renderTrainerWorkload(activePlans) {
             container.appendChild(col);
         });
 }
+
+
+function clearTrainerWorkload() {
+    const section =
+        document.getElementById(
+            "trainerWorkloadSection"
+        );
+    const container =
+        document.getElementById(
+            "trainerWorkloadContainer"
+        );
+    section.classList.add("d-none");
+    container.innerHTML = "";
+}
