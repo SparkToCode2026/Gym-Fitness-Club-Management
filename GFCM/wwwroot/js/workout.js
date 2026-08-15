@@ -309,3 +309,24 @@ function getPlanStatus(plan) {
     }
     return "Expired";
 }
+
+function getStatusBadge(status) {
+    let className =
+        "badge bg-secondary";
+    if (status === "Active") {
+        className =
+            "badge bg-success";
+    } else if (status === "Upcoming") {
+        className =
+            "badge bg-warning text-dark";
+    } else if (status === "Expired") {
+        className =
+            "badge bg-secondary";
+    }
+    return `
+    <span class="${className}">
+        ${escapeHtml(status)}
+    </span>
+`;
+
+}
