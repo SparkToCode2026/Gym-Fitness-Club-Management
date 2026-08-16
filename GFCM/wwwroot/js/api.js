@@ -25,9 +25,3 @@ async function api(path, method = "GET", body = null) {
 }
 
 function tryParse(t) { try { return JSON.parse(t); } catch { return t; } }
-
-function requireAuth() {
-  if (!getToken()) {
-    location.href = "/login.html";
-  }
-}
