@@ -103,7 +103,7 @@ namespace GFCM.Controllers
                 {
                     b.bodyMetricId,
                     b.userId,
-                    memberName = b.user,
+                    memberName = b.user.userName,
                     b.metricDate,
                     b.weightKg,
                     b.heightCm,
@@ -125,7 +125,7 @@ namespace GFCM.Controllers
                 {
                     b.bodyMetricId,
                     b.userId,
-                    memberName = b.user,
+                    memberName = b.user.userName,
                     b.metricDate,
                     b.weightKg,
                     b.heightCm,

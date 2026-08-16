@@ -136,13 +136,21 @@ namespace GFCM.Controllers
         }
 
 
-        //Case 07 — Get Users by Role
+        // Case 07 — Get Users by Role
         [HttpGet("getByRole")]
         public IActionResult GetUsersByRole(UserRole role)
         {
-            List<User> users = context.users
-            .Where(u => u.role == role)
-            .ToList();
+            var users = context.users
+                .Where(u => u.role == role && u.isActive)
+                .Select(u => new
+                {
+                    u.userId,
+                    u.userName,
+                    u.email,
+                    u.role,
+                    u.isActive
+                })
+                .ToList();
 
             return Ok(users);
         }
