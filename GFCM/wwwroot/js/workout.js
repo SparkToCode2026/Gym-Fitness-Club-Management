@@ -598,10 +598,10 @@ async function reassignTrainer(event) {
             trainerValue
                 ? Number(trainerValue)
                 : null;
-        await api(
-            `/workoutplan/updateTrainer?workoutPlanId=${encodeURIComponent(id)}&newTrainerProfileId=${encodeURIComponent(trainerId === null ? "null" : trainerId)}`,
-            "PATCH"
-        );
+
+        let url = `/workoutplan/updateTrainer?workoutPlanId=${id}`;
+        if (trainerId !== null) url += `&newTrainerProfileId=${trainerId}`;
+        await api(url, "PATCH");
 
         trainerModal.hide();
         showToast(
