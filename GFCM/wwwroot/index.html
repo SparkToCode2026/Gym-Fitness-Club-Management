@@ -6,7 +6,6 @@
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/site.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header id="navbar"></header>
@@ -14,83 +13,113 @@
     <main class="container py-4">
         <header class="page-header">
             <h2>Dashboard <span class="count">Overview</span></h2>
+            <button class="btn btn-outline-primary" id="btnRefresh">Refresh</button>
         </header>
-        
-        <section class="row g-3 mb-4" aria-label="Key Metrics">
+
+        <!-- three single-number cards -->
+        <section class="row g-3 mb-4" aria-label="Key figures">
             <article class="col-md-4">
-                <div class="stat-card">
+                <section class="stat-card">
                     <span class="stat-label">Confirmed Revenue</span>
-                    <output id="revenue-content" class="d-block stat-value">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                    </output>
-                    <a href="pages/payment.html" class="text-decoration-none small mt-2 d-inline-block">View Payments &rarr;</a>
-                </div>
+                    <output id="revenueValue" class="stat-value d-block">&mdash;</output>
+                    <small class="stat-note d-block">Total of all completed payments</small>
+                    <a href="pages/payment.html" class="small">View Payments &rarr;</a>
+                </section>
             </article>
 
             <article class="col-md-4">
-                <div class="stat-card">
-                    <span class="stat-label">Users by Role</span>
-                    <output id="users-content" class="d-block small mt-1">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                    </output>
-                    <a href="pages/user.html" class="text-decoration-none small mt-2 d-inline-block">View Users &rarr;</a>
-                </div>
+                <section class="stat-card">
+                    <span class="stat-label">Members</span>
+                    <output id="membersValue" class="stat-value d-block">&mdash;</output>
+                    <small class="stat-note d-block">Users with the Member role</small>
+                    <a href="pages/user.html" class="small">View Users &rarr;</a>
+                </section>
             </article>
 
             <article class="col-md-4">
-                <div class="stat-card">
-                    <span class="stat-label">Active Memberships (by Plan)</span>
-                    <output id="memberships-content" class="d-block small mt-1">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                    </output>
-                    <a href="pages/membership.html" class="text-decoration-none small mt-2 d-inline-block">View Memberships &rarr;</a>
-                </div>
-            </article>
-
-            <article class="col-md-4">
-                <div class="stat-card">
-                    <span class="stat-label">Equipment Status</span>
-                    <output id="equipment-content" class="d-block small mt-1">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                    </output>
-                    <a href="pages/equipment.html" class="text-decoration-none small mt-2 d-inline-block">View Equipment &rarr;</a>
-                </div>
-            </article>
-
-            <article class="col-md-4">
-                <div class="stat-card is-hold" id="expiring-card">
+                <section class="stat-card is-hold">
                     <span class="stat-label">Expiring Next 7 Days</span>
-                    <output id="expiring-content" class="d-block stat-value">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                    </output>
-                    <a href="pages/membership.html" class="text-decoration-none small mt-2 d-inline-block">View Renewals &rarr;</a>
-                </div>
-            </article>
-
-            <article class="col-md-4">
-                <div class="stat-card">
-                    <span class="stat-label">Avg. Daily Attendance</span>
-                    <output id="attendance-content" class="d-block small mt-1">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                    </output>
-                    <a href="pages/attendance.html" class="text-decoration-none small mt-2 d-inline-block">View Attendance &rarr;</a>
-                </div>
+                    <output id="expiringValue" class="stat-value d-block">&mdash;</output>
+                    <small class="stat-note d-block">Active memberships ending soon</small>
+                    <a href="pages/membership.html" class="small">View Memberships &rarr;</a>
+                </section>
             </article>
         </section>
 
-        <section class="card shadow-sm border-0" aria-label="Monthly Revenue Chart">
-            <div class="card-body">
-                <h5 class="card-title mb-3">Monthly Revenue</h5>
-                <figure id="chart-container" style="position: relative; height:350px; width:100%; margin: 0;">
-                    <div id="chart-spinner" class="d-flex justify-content-center align-items-center h-100">
-                        <div class="spinner-border text-primary" role="status"></div>
-                    </div>
-                    <canvas id="revenueChart" style="display: none;"></canvas>
-                    <figcaption id="chart-empty" class="text-center text-muted py-5" style="display: none;">
-                        No completed payment data available yet.
-                    </figcaption>
+        <!-- three breakdown tables -->
+        <section class="row g-3 mb-4" aria-label="Breakdowns">
+            <article class="col-lg-4">
+                <figure class="table-wrap mb-0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Users by Role</th>
+                                <th class="text-end">Count</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rolesBody"></tbody>
+                    </table>
                 </figure>
-            </div>
+            </article>
+
+            <article class="col-lg-4">
+                <figure class="table-wrap mb-0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Memberships by Plan</th>
+                                <th class="text-end">Active</th>
+                            </tr>
+                        </thead>
+                        <tbody id="plansBody"></tbody>
+                    </table>
+                </figure>
+            </article>
+
+            <article class="col-lg-4">
+                <figure class="table-wrap mb-0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Equipment by Status</th>
+                                <th class="text-end">Units</th>
+                            </tr>
+                        </thead>
+                        <tbody id="equipmentBody"></tbody>
+                    </table>
+                </figure>
+            </article>
+        </section>
+
+        <!-- two wider tables -->
+        <section class="row g-3" aria-label="Reports">
+            <article class="col-lg-6">
+                <figure class="table-wrap mb-0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Revenue by Month</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthlyBody"></tbody>
+                    </table>
+                </figure>
+            </article>
+
+            <article class="col-lg-6">
+                <figure class="table-wrap mb-0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Branch</th>
+                                <th class="text-end">Avg. Daily Attendance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceBody"></tbody>
+                    </table>
+                </figure>
+            </article>
         </section>
     </main>
 
@@ -101,156 +130,6 @@
     <script src="js/ui.js"></script>
     <script src="js/nav.js"></script>
     <script src="js/auth.js"></script>
-    
-    <script>
-        requireAuth();
-
-        document.addEventListener("DOMContentLoaded", () => {
-            loadDashboardData();
-        });
-
-        async function loadDashboardData() {
-            await Promise.allSettled([
-                fetchRevenue(),
-                fetchUsers(),
-                fetchMemberships(),
-                fetchEquipment(),
-                fetchExpiring(),
-                fetchAttendance()
-            ]);
-        }
-
-        async function fetchRevenue() {
-            try {
-                const data = await api("/payment/totalRevenue");
-                document.getElementById("revenue-content").innerText = formatMoney(data.total);
-                
-                const chartSpinner = document.getElementById("chart-spinner");
-                const chartCanvas = document.getElementById("revenueChart");
-                const chartEmpty = document.getElementById("chart-empty");
-                
-                chartSpinner.style.display = "none";
-                
-                if (!data.monthlyBreakdown || data.monthlyBreakdown.length === 0) {
-                    chartEmpty.style.display = "block";
-                    return;
-                }
-                
-                chartCanvas.style.display = "block";
-                const labels = data.monthlyBreakdown.map(m => m.month);
-                const values = data.monthlyBreakdown.map(m => m.amount);
-                
-                new Chart(chartCanvas, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Revenue ($)',
-                            data: values,
-                            backgroundColor: '#1f5673',
-                            borderRadius: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: { callback: value => '$' + value }
-                            }
-                        }
-                    }
-                });
-            } catch (err) {
-                document.getElementById("revenue-content").innerHTML = `<span class="text-danger small">Failed to load</span>`;
-                document.getElementById("chart-spinner").style.display = "none";
-                document.getElementById("chart-empty").innerText = "Failed to load chart data.";
-                document.getElementById("chart-empty").style.display = "block";
-            }
-        }
-
-        async function fetchUsers() {
-            try {
-                const data = await api("/user/countByRole");
-                if (data.length === 0) {
-                    document.getElementById("users-content").innerText = "No users found.";
-                    return;
-                }
-                document.getElementById("users-content").innerHTML = data.map(r => 
-                    `<div class="d-flex justify-content-between mb-1 num">
-                        <span>${r.role}</span>
-                        <strong>${r.count}</strong>
-                    </div>`
-                ).join("");
-            } catch (err) {
-                document.getElementById("users-content").innerHTML = `<span class="text-danger">Failed to load</span>`;
-            }
-        }
-
-        async function fetchMemberships() {
-            try {
-                const data = await api("/membership/countByPlan");
-                if (data.length === 0) {
-                    document.getElementById("memberships-content").innerText = "No memberships found.";
-                    return;
-                }
-                document.getElementById("memberships-content").innerHTML = data.map(m => 
-                    `<div class="d-flex justify-content-between mb-1 num">
-                        <span>${m.planName}</span>
-                        <strong>${m.activeCount}</strong>
-                    </div>`
-                ).join("");
-            } catch (err) {
-                document.getElementById("memberships-content").innerHTML = `<span class="text-danger">Failed to load</span>`;
-            }
-        }
-
-        async function fetchEquipment() {
-            try {
-                const data = await api("/equipment/countByStatus");
-                if (data.length === 0) {
-                    document.getElementById("equipment-content").innerText = "No equipment found.";
-                    return;
-                }
-                document.getElementById("equipment-content").innerHTML = data.map(e => 
-                    `<div class="d-flex justify-content-between mb-1 align-items-center num">
-                        ${statusBadge(e.status)}
-                        <strong>${e.unitCount} units</strong>
-                    </div>`
-                ).join("");
-            } catch (err) {
-                document.getElementById("equipment-content").innerHTML = `<span class="text-danger">Failed to load</span>`;
-            }
-        }
-
-        async function fetchExpiring() {
-            try {
-                const data = await api("/membership/getExpiring?days=7");
-                const count = data.length || 0;
-                document.getElementById("expiring-content").innerText = count;
-            } catch (err) {
-                document.getElementById("expiring-content").innerHTML = `<span class="text-danger small">Failed to load</span>`;
-            }
-        }
-
-        async function fetchAttendance() {
-            try {
-                const data = await api("/attendance/averagePerBranch");
-                if (data.length === 0) {
-                    document.getElementById("attendance-content").innerText = "No attendance data.";
-                    return;
-                }
-                document.getElementById("attendance-content").innerHTML = data.map(a => 
-                    `<div class="d-flex justify-content-between mb-1 num">
-                        <span>${a.branchName}</span>
-                        <strong>${Math.round(a.averageDailyAttendance)}</strong>
-                    </div>`
-                ).join("");
-            } catch (err) {
-                document.getElementById("attendance-content").innerHTML = `<span class="text-danger">Failed to load</span>`;
-            }
-        }
-    </script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>
