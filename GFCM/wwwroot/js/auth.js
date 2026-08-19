@@ -73,6 +73,7 @@ if (registerForm) {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
+    const phoneNumber = document.getElementById("phoneNumber").value;
     const role = document.getElementById("role").value;
     
     // Client-side validation
@@ -91,7 +92,7 @@ if (registerForm) {
     btnSubmit.disabled = true;
 
     try {
-      await api("/user/add", "POST", { userName, email, password, role });
+      await api("/user/add", "POST", { userName, email, password, phoneNumber, role });
       showToast("Registration successful. Redirecting to login...", "success");
       setTimeout(() => location.href = "/login.html", 1500);
     } catch (err) {
