@@ -15,6 +15,7 @@ It covers the day-to-day running of a multi-branch fitness club: registering mem
 - [Data model](#data-model)
 - [API](#api)
 - [Authentication and roles](#authentication-and-roles)
+- [Email service](#email-service)
 - [Front end](#front-end)
 - [Business rules](#business-rules)
 - [Code conventions](#code-conventions)
@@ -38,7 +39,7 @@ It covers the day-to-day running of a multi-branch fitness club: registering mem
 | **Workout plans** | Programmes assigned to a member, optionally written by a trainer, with open-ended or fixed end dates |
 | **Equipment** | Per-branch inventory with quantities, purchase dates and a maintenance status |
 | **Dashboard** | Six live report blocks summarising revenue, members, expiring memberships, plans, equipment and attendance |
-| **Email** | Transactional notifications for membership activation, cancellation, renewal reminders, booking confirmations and payment receipts |
+| **Email** | SMTP notifications through MailKit, wired into membership activation and class booking confirmation |
 
 ---
 
@@ -413,12 +414,186 @@ Full request and response shapes are in Swagger at `/swagger` while running in d
 
 - `POST /auth/login` verifies the email and the BCrypt password hash, checks the account is active, and returns a JWT valid for two hours.
 - The token carries the user id, email and role as claims.
-- Every controller is `[Authorize]` by default. Two endpoints are open: `POST /auth/login` and `POST /user/add`, so a new user can register.
-- Every `DELETE` endpoint is `[Authorize(Roles = "Admin")]`.
+- Every controller carries `[Authorize]` at class level, so by default every endpoint needs a valid token.
+- Exactly two endpoints override that with `[AllowAnonymous]`, because they have to work before a token exists:
+
+  | Endpoint | Attribute | Why it is open |
+  |---|---|---|
+  | `POST /auth/login` | `[AllowAnonymous]` on the action | You cannot get a token without calling it |
+  | `POST /user/add` | `[AllowAnonymous]` on the action, inside an `[Authorize]` controller | Registration, so the first account can be created on an empty database |
+
+  Everything else on `UserController` still requires a token. `[AllowAnonymous]` on a
+  single action wins over `[Authorize]` on the controller, which is what lets one
+  endpoint stay public while its eleven neighbours stay locked.
+
+- Every `DELETE` endpoint adds `[Authorize(Roles = "Admin")]`.
 - The front end keeps the token in `localStorage` and sends it as a `Bearer` header on every request. A `401` clears the token and returns to the login page.
 - The navigation bar is built from the stored role, so admin-only sections do not render for other users. That is convenience, not security. The API enforces the real rules.
 
 Three roles: **Admin**, **Trainer**, **Member**.
+
+---
+
+## Email service
+
+Transactional email is sent over SMTP using MailKit. All of the sending logic lives
+in one service, so no controller ever builds an email itself.
+
+### How it works
+
+1. `EmailConfiguration` is a plain settings class. It is not an entity, has no table
+   and no DbSet. It just holds the six SMTP values.
+2. At startup, `Program.cs` reads the `EmailConfiguration` section of the config into
+   that class, registers it as a singleton, and registers `EmailService` as a scoped
+   service, so a controller can inject it exactly like the DbContext.
+3. Every email goes through one low level method, `sendEmail(to, subject, htmlBody)`.
+   It builds a `MimeMessage`, connects to the SMTP server with StartTls,
+   authenticates, sends and disconnects.
+4. Each individual email is a template method on the same service, which assembles
+   its own HTML body and calls `sendEmail`. Restyling every email in the project
+   means editing one file.
+
+Two design points that surprise people:
+
+- **Failures are silent.** `sendEmail` wraps everything in a try/catch and only writes
+  to the console. A mail failure must never break the request that triggered it,
+  because by the time the email is sent the membership is already saved, and turning
+  that into a 500 would be worse than a missing email. A 200 response therefore does
+  not prove the email went out. The terminal is the only signal.
+- **Bodies are inline styled HTML.** Email clients ignore stylesheets and most modern
+  CSS, so every template uses `style` attributes. Do not try to reuse Bootstrap classes.
+
+### The file you have to create
+
+`GFCM/appsettings.json` is committed with `REPLACE_ME` placeholders instead of real
+secrets. The real credentials go in a second file that is listed in `.gitignore` and
+is deliberately not in the repository, so **each developer creates it once**:
+
+**`GFCM/appsettings.Development.json`**
+
+```json
+{
+  "EmailConfiguration": {
+    "From": "yourname@ethereal.email",
+    "UserName": "yourname@ethereal.email",
+    "Password": "your-password"
+  }
+}
+```
+
+Only the three secret values need to go here. `SenderName`, `SmtpServer` and `Port`
+are already in the committed file and are inherited.
+
+If you clone the project and email silently does nothing, this missing file is almost
+always the reason.
+
+### Files involved
+
+| File | What it does |
+|---|---|
+| `Services/EmailConfiguration.cs` | Plain class holding the SMTP values |
+| `Services/EmailService.cs` | The sender, plus one template method per email |
+| `appsettings.json` | Committed settings, with placeholders instead of secrets |
+| `appsettings.Development.json` | Your real credentials. Gitignored, you create this |
+| `Program.cs` | Two lines registering the config and the service |
+
+### Registration in `Program.cs`
+
+Already wired, shown here so you know where it comes from:
+
+```csharp
+var emailConfig = builder.Configuration
+    .GetSection("EmailConfiguration")
+    .Get<EmailConfiguration>();
+
+builder.Services.AddSingleton(emailConfig!);
+builder.Services.AddScoped<EmailService>();
+```
+
+### Calling it from a controller
+
+Two steps. First inject the service alongside the context:
+
+```csharp
+private ProjectContext context;
+private EmailService emailService;
+
+public MembershipController(ProjectContext context, EmailService emailService)
+{
+    this.context = context;
+    this.emailService = emailService;
+}
+```
+
+Then call the template method after `SaveChanges()` and before the return, so nobody
+is told about something that did not persist:
+
+```csharp
+context.memberships.Add(membership);
+context.SaveChanges();
+
+emailService.sendMembershipActivation(user, plan, membership.endDate);
+
+return Ok(new { message = "Membership created", membership.membershipId });
+```
+
+Remember `using GFCM.Services;` at the top of the controller.
+
+### Templates
+
+| Method | Sends | Status |
+|---|---|---|
+| `sendMembershipActivation` | Welcome message with the plan name and end date | Live, fires from `POST /membership/add` |
+| `sendClassBookingConfirmation` | Class name and start time | Live, fires from `POST /classbooking/add` |
+| `sendMembershipCancelled` | Cancellation notice | Stub, empty body, not called yet |
+| `sendRenewalReminder` | Expiry warning | Stub, empty body, not called yet |
+| `sendPaymentReceipt` | Payment receipt | Stub, empty body, not called yet |
+
+The three stubs already have their method signature and subject line. Fill in the HTML
+body and add the call site when you need one.
+
+### Testing with Ethereal
+
+Ethereal gives you working SMTP credentials instantly with no signup and captures
+everything the app sends into a web viewer, so nothing reaches a real inbox.
+
+1. Go to [ethereal.email](https://ethereal.email) and click **Create Ethereal Account**.
+2. Put the username and password into your `appsettings.Development.json`.
+3. Run the project and keep the terminal visible.
+4. In Swagger, trigger the action. For the activation email that is
+   `POST /membership/add` with `{ "userId": 1, "membershipPlanId": 1 }`.
+5. Log in at ethereal.email with the same credentials and open **Messages**.
+
+Watch the **Messages** tab, not Inbox. Ethereal has inbound mail disabled, so the inbox
+shows an error. These emails are outbound and appear under Messages.
+
+| Terminal shows | Meaning |
+|---|---|
+| `535 Authentication failed` | Wrong credentials. Check that `From` and `UserName` are both the full address |
+| A long pause, then a timeout | Stuck connecting. Check `SmtpServer` and that `Port` is 587 |
+| Nothing at all | The send was never reached, or the file was not saved before running. Save all, rebuild, retry |
+
+### Switching to real delivery
+
+For a live demo you can point at a real Gmail account. No code changes are needed,
+only the config values.
+
+1. Create a throwaway Gmail account for the project.
+2. Turn on 2-Step Verification. The App passwords option does not appear without it.
+3. Under Security, App passwords, generate one. You get a 16 character string.
+4. Use that string as the password, not the account password.
+5. Set `SmtpServer` to `smtp.gmail.com`. Port stays 587.
+
+### Rules
+
+- Never write MailKit code in a controller. Add a template method to `EmailService`
+  and call that instead.
+- Never commit real credentials. Once a password is committed it stays in git history
+  even if you delete it later.
+- Send after the save, not before.
+- A 200 response does not mean the email sent. Check the terminal.
+- One activation email only. It fires at enrolment (`POST /membership/add`), not at
+  registration, so a member does not receive two.
 
 ---
 
